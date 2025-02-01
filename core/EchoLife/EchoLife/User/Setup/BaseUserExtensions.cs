@@ -5,13 +5,34 @@ namespace EchoLife.User.Setup
 {
     public static class BaseUserExtensions
     {
-        public static IServiceCollection AddBaseUser(this IServiceCollection services, IConfiguration configuration)
+        public static IServiceCollection AddBaseUser(
+            this IServiceCollection services,
+            IConfiguration configuration
+        )
         {
-            var dbContextSettings = configuration.GetSection("BaseUser").Get<BaseUserDbContextSettings>() ?? throw new InvalidOperationException("'BaseUser' settings not found.");
+            var dbContextSettings =
+                configuration.GetSection("BaseUser").Get<UserDbContextSettings>()
+                ?? throw new InvalidOperationException("'BaseUser' settings not found.");
+            services.Configure<UserDbContextSettings>(builder =>
+                configuration.GetSection("BaseUser").Get<UserDbContextSettings>()
+            );
+            if (dbContextSettings.MysqlConnetionString != null)
+            {
+                services.AddDbContext<UserDbContext>(options =>
+                    options.UseMySql(
+                        dbContextSettings.MysqlConnetionString,
+                        MySqlServerVersion.AutoDetect(dbContextSettings.MysqlConnetionString)
+                    )
+                );
+            }
+            else
+            {
+                services.AddDbContext<UserDbContext>(options =>
+                    options.UseSqlite(dbContextSettings.SqlLiteConnectionString)
+                );
+            }
 
-            services.AddDbContext<BaseUserDbContext>(options => options.UseMySql(dbContextSettings.ConnectionString, MySqlServerVersion.AutoDetect(dbContextSettings.ConnectionString)));
-
-            services.AddScoped<IBaseUserRepository, BaseUserRepository>();
+            services.AddScoped<IBaseUserRepository, SqlLiteBaseUserRepository>();
             return services;
         }
     }

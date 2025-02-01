@@ -1,11 +1,11 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
-VisualStudioVersion = 17.12.35527.113 d17.12
+VisualStudioVersion = 17.12.35527.113
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EchoLife", "EchoLife\EchoLife.csproj", "{4454E44F-6160-48A5-BEA3-E6FB43FE399E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EchoLife.Tests", "EchoLife.Tests\EchoLife.Tests.csproj", "{F61C9B14-0448-4FFA-8EA5-A0E6454C3D2D}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EchoLife.Tests", "TestProject1\EchoLife.Tests.csproj", "{FA47FADF-6AA0-4C69-AFB3-4110CAB143A1}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -17,10 +17,10 @@ Global
 		{4454E44F-6160-48A5-BEA3-E6FB43FE399E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{4454E44F-6160-48A5-BEA3-E6FB43FE399E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{4454E44F-6160-48A5-BEA3-E6FB43FE399E}.Release|Any CPU.Build.0 = Release|Any CPU
-		{F61C9B14-0448-4FFA-8EA5-A0E6454C3D2D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{F61C9B14-0448-4FFA-8EA5-A0E6454C3D2D}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{F61C9B14-0448-4FFA-8EA5-A0E6454C3D2D}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{F61C9B14-0448-4FFA-8EA5-A0E6454C3D2D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FA47FADF-6AA0-4C69-AFB3-4110CAB143A1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FA47FADF-6AA0-4C69-AFB3-4110CAB143A1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FA47FADF-6AA0-4C69-AFB3-4110CAB143A1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FA47FADF-6AA0-4C69-AFB3-4110CAB143A1}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -1,6 +1,7 @@
-﻿namespace EchoLife.User.Data
+﻿using EchoLife.Common.CRUD;
+using EchoLife.User.Model;
+
+namespace EchoLife.User.Data
 {
-    public interface IBaseUserRepository
-    {
-    }
+    public interface IBaseUserRepository : IEntityRepository<BaseUser> { }
 }

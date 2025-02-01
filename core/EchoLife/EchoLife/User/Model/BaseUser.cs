@@ -1,6 +1,8 @@
-﻿namespace EchoLife.User.Model
+﻿using EchoLife.Common.CRUD;
+
+namespace EchoLife.User.Model
 {
-    public class BaseUser
+    public class BaseUser : IEntity
     {
         public string Id { get; set; } = null!;
         public string Username { get; set; } = null!;

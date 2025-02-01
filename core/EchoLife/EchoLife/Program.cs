@@ -26,8 +26,15 @@ namespace EchoLife
                 app.UseSwaggerUI();
                 using (var scope = app.Services.CreateScope())
                 {
-                    var dbContext = scope.ServiceProvider.GetRequiredService<BaseUserDbContext>();
-                    dbContext.Database.Migrate(); // 自动应用迁移
+                    var dbContext = scope.ServiceProvider.GetRequiredService<UserDbContext>();
+                    try
+                    {
+                        dbContext.Database.Migrate();
+                    }
+                    catch (Exception ex)
+                    {
+                        Console.WriteLine("Database migration is fail!\n" + ex.Message);
+                    }
                 }
             }
 
