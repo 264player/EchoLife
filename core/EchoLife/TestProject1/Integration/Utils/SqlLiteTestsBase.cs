@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Microsoft.EntityFrameworkCore;
-using NUnit.Framework;
+﻿using Microsoft.EntityFrameworkCore;
 
 namespace EchoLife.Tests.Integration.Utils
 {
@@ -22,7 +16,7 @@ namespace EchoLife.Tests.Integration.Utils
             {
                 File.Delete(_databasePath);
             }
-
+            File.Create(_databasePath);
             _dbContext.Database.EnsureCreated();
 
             TestContext.WriteLine($"✅ SQLite 数据库已创建: {_databasePath}");

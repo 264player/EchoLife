@@ -3,7 +3,6 @@ using EchoLife.Tests.Integration.Utils;
 using EchoLife.User.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
-using NUnit.Framework;
 
 namespace EchoLife.Tests.Integration.User.Data
 {
@@ -14,7 +13,7 @@ namespace EchoLife.Tests.Integration.User.Data
 
         public SqlLiteBaseUserRepositoryTests()
         {
-            _databasePath = "users.db";
+            _databasePath = $"{Guid.NewGuid()}-users.db";
             var connectionString = $"Data Source={_databasePath}";
 
             _dbContext = new UserDbContext(
@@ -90,6 +89,34 @@ namespace EchoLife.Tests.Integration.User.Data
 
             // Assert
             Assert.That(result, Is.Not.Null);
+        }
+
+        [Test]
+        public async Task ReadBaseUserByUsername_WhenBaseUserNotExist_ShouldReturnNull()
+        {
+            // Arrange
+            var baseUser = UserSeeder.SeedBaseUser();
+
+            // Act
+            var result = await sqlLiteBaseUserRepository.ReadByUsernameAsync(baseUser.Username);
+
+            // Assert
+            Assert.That(result, Is.Null);
+        }
+
+        [Test]
+        public async Task ReadBaseUserByUsername_WhenBaseUserAlreadyExist_ShouldSuccess()
+        {
+            // Arrange
+            var baseUser = UserSeeder.SeedBaseUser();
+            await sqlLiteBaseUserRepository.CreateAsync(baseUser);
+
+            // Act
+            var result = await sqlLiteBaseUserRepository.ReadByUsernameAsync(baseUser.Username);
+
+            // Assert
+            Assert.That(result, Is.Not.Null);
+            Assert.That(result.Id, Is.EqualTo(baseUser.Id));
         }
 
         [Test]

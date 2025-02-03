@@ -1,6 +1,5 @@
 using EchoLife.User.Data;
 using EchoLife.User.Setup;
-using Microsoft.EntityFrameworkCore;
 
 namespace EchoLife
 {
@@ -12,6 +11,7 @@ namespace EchoLife
 
             #region Modules
             builder.Services.AddBaseUser(builder.Configuration);
+            builder.Services.AddIdentityUser(builder.Configuration);
             #endregion
             builder.Services.AddControllers();
 
@@ -29,7 +29,7 @@ namespace EchoLife
                     var dbContext = scope.ServiceProvider.GetRequiredService<UserDbContext>();
                     try
                     {
-                        dbContext.Database.Migrate();
+                        dbContext.Database.EnsureCreated();
                     }
                     catch (Exception ex)
                     {
@@ -40,6 +40,7 @@ namespace EchoLife
 
             app.UseHttpsRedirection();
 
+            app.UseAuthentication();
             app.UseAuthorization();
 
             app.MapControllers();

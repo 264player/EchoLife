@@ -1,16 +1,25 @@
-﻿using EchoLife.User.Data;
+﻿using System.Text;
+using EchoLife.User.Data;
+using EchoLife.User.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
-using System.Text;
 
 namespace EchoLife.User.Setup
 {
     public static class IdentityUserExtensions
     {
-        public static IServiceCollection AddIdentityUser(this IServiceCollection services,IConfiguration configuration)
+        public static IServiceCollection AddIdentityUser(
+            this IServiceCollection services,
+            IConfiguration configuration
+        )
         {
-            var settings = configuration.GetSection("Jwt").Get<IdentitySettings>()??throw new InvalidOperationException("'Jwt' settings not found."); ;
-            services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+            var settings =
+                configuration.GetSection("Jwt").Get<IdentitySettings>()
+                ?? throw new InvalidOperationException("'Jwt' settings not found.");
+            ;
+            services.Configure<IdentitySettings>(configuration.GetSection("Jwt"));
+            services
+                .AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                 .AddJwtBearer(options =>
                 {
                     options.TokenValidationParameters = new TokenValidationParameters
@@ -21,10 +30,12 @@ namespace EchoLife.User.Setup
                         ValidateIssuerSigningKey = true,
                         ValidIssuer = settings.Issuer,
                         ValidAudience = settings.Audience,
-                        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(settings.SecretKey))
+                        IssuerSigningKey = new SymmetricSecurityKey(
+                            Encoding.UTF8.GetBytes(settings.SecretKey)
+                        ),
                     };
                 });
-
+            services.AddScoped<IIdentityUserService, IdentityUserService>();
             return services;
         }
     }

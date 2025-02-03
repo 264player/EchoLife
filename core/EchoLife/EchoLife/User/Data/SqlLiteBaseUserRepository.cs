@@ -24,6 +24,13 @@ namespace EchoLife.User.Data
             return await _dbContext.BaseUsers.FindAsync(id);
         }
 
+        public async Task<BaseUser?> ReadByUsernameAsync(string username)
+        {
+            return await _dbContext.BaseUsers.SingleOrDefaultAsync(u =>
+                u.Username.CompareTo(username) == 0
+            );
+        }
+
         public async Task<BaseUser?> UpdateAsync(BaseUser entity)
         {
             var result = await _dbContext
@@ -31,7 +38,6 @@ namespace EchoLife.User.Data
                 .ExecuteUpdateAsync(u =>
                     u.SetProperty(user => user.Username, entity.Username)
                         .SetProperty(user => user.NickName, entity.NickName)
-                        .SetProperty(user => user.Password, entity.Password)
                 );
             return result > 0 ? entity : null;
         }

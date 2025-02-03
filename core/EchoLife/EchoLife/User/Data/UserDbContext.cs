@@ -32,6 +32,8 @@ namespace EchoLife.User.Data
                 entity.Property(u => u.NickName).IsRequired().HasMaxLength(150);
 
                 entity.Property(u => u.CreatedAt).IsRequired();
+
+                entity.Property(u => u.Password).IsRequired().HasMaxLength(256);
             });
         }
     }

@@ -2,25 +2,27 @@
 using System.Security.Claims;
 using System.Text;
 using EchoLife.User.Data;
+using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 
 namespace EchoLife.User.Services
 {
-    public class IdentityUserService
+    public class IdentityUserService : IIdentityUserService
     {
         private IdentitySettings _settings;
 
-        public IdentityUserService(IdentitySettings settings)
+        public IdentityUserService(IOptions<IdentitySettings> settings)
         {
-            _settings = settings;
+            _settings = settings.Value;
         }
 
-        public string GenerateJwtToken(string username, string role)
+        public string GenerateToken(string username, string role)
         {
             var claims = new List<Claim>
             {
                 new(ClaimTypes.Name, username),
                 new(ClaimTypes.Role, role),
+                new(ClaimTypes.NameIdentifier, username),
                 new(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
             };
 

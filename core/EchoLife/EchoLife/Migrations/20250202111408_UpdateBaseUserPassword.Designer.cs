@@ -3,6 +3,7 @@ using System;
 using EchoLife.User.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -10,9 +11,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace EchoLife.Migrations
 {
     [DbContext(typeof(UserDbContext))]
-    partial class BaseUserDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250202111408_UpdateBaseUserPassword")]
+    partial class UpdateBaseUserPassword
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "8.0.12");

@@ -1,4 +1,5 @@
 ﻿using EchoLife.User.Data;
+using EchoLife.User.Services;
 using Microsoft.EntityFrameworkCore;
 
 namespace EchoLife.User.Setup
@@ -13,10 +14,8 @@ namespace EchoLife.User.Setup
             var dbContextSettings =
                 configuration.GetSection("BaseUser").Get<UserDbContextSettings>()
                 ?? throw new InvalidOperationException("'BaseUser' settings not found.");
-            services.Configure<UserDbContextSettings>(builder =>
-                configuration.GetSection("BaseUser").Get<UserDbContextSettings>()
-            );
-            if (dbContextSettings.MysqlConnetionString != null)
+            services.Configure<UserDbContextSettings>(configuration.GetSection("BaseUser"));
+            if (!string.IsNullOrEmpty(dbContextSettings.MysqlConnetionString))
             {
                 services.AddDbContext<UserDbContext>(options =>
                     options.UseMySql(
@@ -28,11 +27,17 @@ namespace EchoLife.User.Setup
             else
             {
                 services.AddDbContext<UserDbContext>(options =>
-                    options.UseSqlite(dbContextSettings.SqlLiteConnectionString)
+                    options.UseSqlite(
+                        $"Data Source={Path.Combine(
+                            Directory.GetCurrentDirectory(),
+                            dbContextSettings.SqlLiteConnectionString
+                        )}"
+                    )
                 );
             }
 
             services.AddScoped<IBaseUserRepository, SqlLiteBaseUserRepository>();
+            services.AddScoped<IBaseUserService, BaseUserService>();
             return services;
         }
     }

@@ -3,5 +3,8 @@ using EchoLife.User.Model;
 
 namespace EchoLife.User.Data
 {
-    public interface IBaseUserRepository : IEntityRepository<BaseUser> { }
+    public interface IBaseUserRepository : IEntityRepository<BaseUser>
+    {
+        Task<BaseUser?> ReadByUsernameAsync(string username);
+    }
 }
