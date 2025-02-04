@@ -11,13 +11,19 @@ namespace EchoLife.Tests.Integration.Utils
         [OneTimeSetUp]
         public void SetUpDatabase()
         {
-            _databasePath = Path.Combine(Path.GetTempPath(), _databasePath);
+            string testDbFolder = Path.Combine(Directory.GetCurrentDirectory(), "TestDb");
+            if (!Directory.Exists(testDbFolder))
+            {
+                Directory.CreateDirectory(testDbFolder);
+            }
+            _databasePath = Path.Combine(testDbFolder, _databasePath!);
+
             if (File.Exists(_databasePath))
             {
                 File.Delete(_databasePath);
             }
             File.Create(_databasePath);
-            _dbContext.Database.EnsureCreated();
+            _dbContext!.Database.EnsureCreatedAsync().Wait();
 
             TestContext.WriteLine($"✅ SQLite 数据库已创建: {_databasePath}");
         }
@@ -25,7 +31,8 @@ namespace EchoLife.Tests.Integration.Utils
         [OneTimeTearDown]
         public void CleanupDatabase()
         {
-            _dbContext.Dispose();
+            _dbContext!.Database.EnsureDeletedAsync().Wait();
+            _dbContext!.Dispose();
 
             if (File.Exists(_databasePath))
             {

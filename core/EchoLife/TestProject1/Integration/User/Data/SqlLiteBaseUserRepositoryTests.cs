@@ -9,11 +9,11 @@ namespace EchoLife.Tests.Integration.User.Data
     [TestFixture]
     public class SqlLiteBaseUserRepositoryTests : SqlLiteTestsBase<UserDbContext>
     {
-        private readonly SqlLiteBaseUserRepository sqlLiteBaseUserRepository;
+        private readonly SqlLiteBaseUserRepository Sut;
 
         public SqlLiteBaseUserRepositoryTests()
         {
-            _databasePath = $"{Guid.NewGuid()}-users.db";
+            _databasePath = $"EchoLifeTest_{Guid.NewGuid()}.db";
             var connectionString = $"Data Source={_databasePath}";
 
             _dbContext = new UserDbContext(
@@ -27,13 +27,13 @@ namespace EchoLife.Tests.Integration.User.Data
                 )
             );
 
-            sqlLiteBaseUserRepository = new(_dbContext);
+            Sut = new(_dbContext);
         }
 
         [TearDown]
         public void TearDown()
         {
-            _dbContext.BaseUsers.RemoveRange(_dbContext.BaseUsers);
+            _dbContext!.BaseUsers.RemoveRange(_dbContext.BaseUsers);
         }
 
         [Test]
@@ -43,7 +43,7 @@ namespace EchoLife.Tests.Integration.User.Data
             var baseUser = UserSeeder.SeedBaseUser();
 
             // Act
-            var result = await sqlLiteBaseUserRepository.CreateAsync(baseUser);
+            var result = await Sut.CreateAsync(baseUser);
 
             // Assert
             Assert.That(result, Is.Not.Null);
@@ -55,13 +55,11 @@ namespace EchoLife.Tests.Integration.User.Data
         {
             // Arrange
             var baseUser = UserSeeder.SeedBaseUser();
-            await sqlLiteBaseUserRepository.CreateAsync(baseUser);
+            await Sut.CreateAsync(baseUser);
 
             // Act
             // Assert
-            Assert.ThrowsAsync<DbUpdateException>(
-                () => sqlLiteBaseUserRepository.CreateAsync(baseUser)
-            );
+            Assert.ThrowsAsync<DbUpdateException>(() => Sut.CreateAsync(baseUser));
         }
 
         [Test]
@@ -71,7 +69,7 @@ namespace EchoLife.Tests.Integration.User.Data
             var userId = Guid.NewGuid().ToString();
 
             // Act
-            var result = await sqlLiteBaseUserRepository.ReadAsync(userId);
+            var result = await Sut.ReadAsync(userId);
 
             // Assert
             Assert.That(result, Is.Null);
@@ -82,10 +80,10 @@ namespace EchoLife.Tests.Integration.User.Data
         {
             // Arrange
             var baseUser = UserSeeder.SeedBaseUser();
-            await sqlLiteBaseUserRepository.CreateAsync(baseUser);
+            await Sut.CreateAsync(baseUser);
 
             // Act
-            var result = await sqlLiteBaseUserRepository.ReadAsync(baseUser.Id);
+            var result = await Sut.ReadAsync(baseUser.Id);
 
             // Assert
             Assert.That(result, Is.Not.Null);
@@ -98,7 +96,7 @@ namespace EchoLife.Tests.Integration.User.Data
             var baseUser = UserSeeder.SeedBaseUser();
 
             // Act
-            var result = await sqlLiteBaseUserRepository.ReadByUsernameAsync(baseUser.Username);
+            var result = await Sut.ReadByUsernameAsync(baseUser.Username);
 
             // Assert
             Assert.That(result, Is.Null);
@@ -109,10 +107,10 @@ namespace EchoLife.Tests.Integration.User.Data
         {
             // Arrange
             var baseUser = UserSeeder.SeedBaseUser();
-            await sqlLiteBaseUserRepository.CreateAsync(baseUser);
+            await Sut.CreateAsync(baseUser);
 
             // Act
-            var result = await sqlLiteBaseUserRepository.ReadByUsernameAsync(baseUser.Username);
+            var result = await Sut.ReadByUsernameAsync(baseUser.Username);
 
             // Assert
             Assert.That(result, Is.Not.Null);
@@ -126,7 +124,7 @@ namespace EchoLife.Tests.Integration.User.Data
             var baseUser = UserSeeder.SeedBaseUser();
 
             // Act
-            var result = await sqlLiteBaseUserRepository.UpdateAsync(baseUser);
+            var result = await Sut.UpdateAsync(baseUser);
 
             // Assert
             Assert.That(result, Is.Null);
@@ -137,10 +135,10 @@ namespace EchoLife.Tests.Integration.User.Data
         {
             // Arrange
             var baseUser = UserSeeder.SeedBaseUser();
-            await sqlLiteBaseUserRepository.CreateAsync(baseUser);
+            await Sut.CreateAsync(baseUser);
 
             // Act
-            var result = await sqlLiteBaseUserRepository.UpdateAsync(baseUser);
+            var result = await Sut.UpdateAsync(baseUser);
 
             // Assert
             Assert.That(result, Is.Not.Null);
@@ -152,11 +150,11 @@ namespace EchoLife.Tests.Integration.User.Data
         {
             // Arrange
             var baseUser = UserSeeder.SeedBaseUser();
-            await sqlLiteBaseUserRepository.CreateAsync(baseUser);
+            await Sut.CreateAsync(baseUser);
             baseUser.NickName = "Jax";
 
             // Act
-            var result = await sqlLiteBaseUserRepository.UpdateAsync(baseUser);
+            var result = await Sut.UpdateAsync(baseUser);
 
             // Assert
             Assert.That(result, Is.Not.Null);
@@ -170,7 +168,7 @@ namespace EchoLife.Tests.Integration.User.Data
             var userId = Guid.NewGuid().ToString();
 
             // Act
-            var result = await sqlLiteBaseUserRepository.DeleteAsync(userId);
+            var result = await Sut.DeleteAsync(userId);
 
             // Assert
             Assert.That(result, Is.False);
@@ -181,10 +179,10 @@ namespace EchoLife.Tests.Integration.User.Data
         {
             // Arrange
             var baseUser = UserSeeder.SeedBaseUser();
-            await sqlLiteBaseUserRepository.CreateAsync(baseUser);
+            await Sut.CreateAsync(baseUser);
 
             // Act
-            var result = await sqlLiteBaseUserRepository.DeleteAsync(baseUser.Id);
+            var result = await Sut.DeleteAsync(baseUser.Id);
 
             // Assert
             Assert.That(result, Is.True);

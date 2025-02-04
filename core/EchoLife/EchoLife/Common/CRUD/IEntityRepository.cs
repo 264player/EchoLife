@@ -18,7 +18,7 @@
         /// A <see cref="Task{T}"/> that represents the asynchronous operation.
         /// The result contains the created entity, which may include any auto-generated fields such as IDs.
         /// </returns>
-        Task<T> CreateAsync(T entity);
+        Task<T?> CreateAsync(T entity);
 
         /// <summary>
         /// Reads an entity from the repository based on the provided identifier.
@@ -54,5 +54,7 @@
         /// The result is <c>true</c> if the entity was deleted successfully, or <c>false</c> if no entity with the given ID was found.
         /// </returns>
         Task<bool> DeleteAsync(string id);
+
+        Task<List<T>> ReadAsync(Func<T, bool> express, string? startId, int count);
     }
 }

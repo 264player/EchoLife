@@ -26,9 +26,7 @@ namespace EchoLife.User.Data
 
         public async Task<BaseUser?> ReadByUsernameAsync(string username)
         {
-            return await _dbContext.BaseUsers.SingleOrDefaultAsync(u =>
-                u.Username.CompareTo(username) == 0
-            );
+            return await _dbContext.BaseUsers.SingleOrDefaultAsync(u => u.Username == username);
         }
 
         public async Task<BaseUser?> UpdateAsync(BaseUser entity)
@@ -46,6 +44,15 @@ namespace EchoLife.User.Data
         {
             return (await _dbContext.BaseUsers.Where(user => user.Id == id).ExecuteDeleteAsync())
                 > 0;
+        }
+
+        public Task<List<BaseUser>> ReadAsync(
+            Func<BaseUser, bool> express,
+            string startId,
+            int count
+        )
+        {
+            throw new NotImplementedException();
         }
     }
 }
