@@ -1,0 +1,20 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>EchoLife</name>
+    </assembly>
+    <members>
+        <member name="T:EchoLife.Migrations.InitialBaseUser">
+            <inheritdoc />
+        </member>
+        <member name="M:EchoLife.Migrations.InitialBaseUser.Up(Microsoft.EntityFrameworkCore.Migrations.MigrationBuilder)">
+            <inheritdoc />
+        </member>
+        <member name="M:EchoLife.Migrations.InitialBaseUser.Down(Microsoft.EntityFrameworkCore.Migrations.MigrationBuilder)">
+            <inheritdoc />
+        </member>
+        <member name="M:EchoLife.Migrations.InitialBaseUser.BuildTargetModel(Microsoft.EntityFrameworkCore.ModelBuilder)">
+            <inheritdoc />
+        </member>
+    </members>
+</doc>
