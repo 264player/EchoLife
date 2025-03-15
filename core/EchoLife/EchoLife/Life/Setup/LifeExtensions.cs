@@ -1,23 +1,23 @@
-﻿using EchoLife.Will.Data;
+﻿using EchoLife.Life.Data;
 using Microsoft.EntityFrameworkCore;
 
-namespace EchoLife.Will.SetUp
+namespace EchoLife.Life.Setup
 {
-    public static class WillExtensions
+    public static class LifeExtensions
     {
-        public static IServiceCollection AddWill(
+        public static IServiceCollection AddLife(
             this IServiceCollection services,
             IConfiguration configuration
         )
         {
             var dbContextSettings =
-                configuration.GetSection("Will").Get<WillDbContextSettings>()
+                configuration.GetSection("Life").Get<LifeDbContextSettings>()
                 ?? throw new InvalidOperationException("'BaseUser' settings not found.");
 
-            services.Configure<WillDbContextSettings>(configuration.GetSection("BaseUser"));
+            services.Configure<LifeDbContextSettings>(configuration.GetSection("Life"));
             if (!string.IsNullOrEmpty(dbContextSettings.MysqlConnetionString))
             {
-                services.AddDbContext<WillDbContext>(options =>
+                services.AddDbContext<LifeDbContext>(options =>
                     options.UseMySql(
                         dbContextSettings.MysqlConnetionString,
                         MySqlServerVersion.AutoDetect(dbContextSettings.MysqlConnetionString)
@@ -26,7 +26,7 @@ namespace EchoLife.Will.SetUp
             }
             else
             {
-                services.AddDbContext<WillDbContext>(options =>
+                services.AddDbContext<LifeDbContext>(options =>
                     options.UseSqlite(
                         $"Data Source={Path.Combine(
                             Directory.GetCurrentDirectory(),
@@ -35,6 +35,7 @@ namespace EchoLife.Will.SetUp
                     )
                 );
             }
+
             return services;
         }
     }
