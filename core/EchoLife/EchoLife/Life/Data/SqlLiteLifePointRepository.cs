@@ -1,35 +1,49 @@
 ﻿using EchoLife.Life.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace EchoLife.Life.Data;
 
-public class SqlLiteLifePointRepository : ILifePointRepository
+public class SqlLiteLifePointRepository(LifeDbContext _lifeDbContext) : ILifePointRepository
 {
-    public Task<LifePoint?> CreateAsync(LifePoint entity)
+    private DbSet<LifePoint> LifePoints => _lifeDbContext.LifePoints;
+
+    public async Task<LifePoint?> CreateAsync(LifePoint entity)
     {
-        throw new NotImplementedException();
+        await LifePoints.AddAsync(entity);
+        return await _lifeDbContext.SaveChangesAsync() > 0 ? entity : null;
     }
 
-    public Task<bool> DeleteAsync(string id)
+    public async Task<LifePoint?> ReadAsync(string id)
     {
-        throw new NotImplementedException();
+        return await LifePoints.Where(s => s.Id == id).SingleOrDefaultAsync();
     }
 
-    public Task<LifePoint?> ReadAsync(string id)
-    {
-        throw new NotImplementedException();
-    }
-
-    public Task<List<LifePoint>> ReadAsync(
+    public async Task<List<LifePoint>> ReadAsync(
         Func<LifePoint, bool> express,
         string? startId,
         int count
     )
     {
-        throw new NotImplementedException();
+        return await LifePoints
+            .Where(s => express(s) && (startId == null || s.Id.CompareTo(startId) > 0))
+            .Take(count)
+            .ToListAsync();
     }
 
-    public Task<LifePoint?> UpdateAsync(LifePoint entity)
+    public async Task<LifePoint?> UpdateAsync(LifePoint entity)
     {
-        throw new NotImplementedException();
+        var result = await LifePoints
+            .Where(u => u.Id == entity.Id)
+            .ExecuteUpdateAsync(sub =>
+                sub.SetProperty(s => s.Content, entity.Content)
+                    .SetProperty(s => s.Visibility, entity.Visibility)
+                    .SetProperty(s => s.UpdatedAt, entity.UpdatedAt)
+            );
+        return result > 0 ? entity : null;
+    }
+
+    public async Task<bool> DeleteAsync(string id)
+    {
+        return await (LifePoints.Where(s => s.Id == id).ExecuteDeleteAsync()) > 0;
     }
 }

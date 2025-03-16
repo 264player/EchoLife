@@ -1,35 +1,46 @@
 ﻿using EchoLife.Life.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace EchoLife.Life.Data;
 
-public class SqlLiteLifePointUriMapRepository : ILifePointUriMapRepository
+public class SqlLiteLifePointUriMapRepository(LifeDbContext _lifeDbContext)
+    : ILifePointUriMapRepository
 {
-    public Task<LifePointUriMap?> CreateAsync(LifePointUriMap entity)
+    private DbSet<LifePointUriMap> LifePointUriMaps => _lifeDbContext.LifePointUriMaps;
+
+    public async Task<LifePointUriMap?> CreateAsync(LifePointUriMap entity)
     {
-        throw new NotImplementedException();
+        await LifePointUriMaps.AddAsync(entity);
+        return await _lifeDbContext.SaveChangesAsync() > 0 ? entity : null;
     }
 
-    public Task<bool> DeleteAsync(string id)
+    public async Task<LifePointUriMap?> ReadAsync(string id)
     {
-        throw new NotImplementedException();
+        return await LifePointUriMaps.Where(s => s.Id == id).SingleOrDefaultAsync();
     }
 
-    public Task<LifePointUriMap?> ReadAsync(string id)
-    {
-        throw new NotImplementedException();
-    }
-
-    public Task<List<LifePointUriMap>> ReadAsync(
+    public async Task<List<LifePointUriMap>> ReadAsync(
         Func<LifePointUriMap, bool> express,
         string? startId,
         int count
     )
     {
-        throw new NotImplementedException();
+        return await LifePointUriMaps
+            .Where(s => express(s) && (startId == null || s.Id.CompareTo(startId) > 0))
+            .Take(count)
+            .ToListAsync();
     }
 
-    public Task<LifePointUriMap?> UpdateAsync(LifePointUriMap entity)
+    public async Task<LifePointUriMap?> UpdateAsync(LifePointUriMap entity)
     {
-        throw new NotImplementedException();
+        var result = await LifePointUriMaps
+            .Where(u => u.Id == entity.Id)
+            .ExecuteUpdateAsync(sub => sub.SetProperty(s => s.Uri, entity.Uri));
+        return result > 0 ? entity : null;
+    }
+
+    public async Task<bool> DeleteAsync(string id)
+    {
+        return await (LifePointUriMaps.Where(s => s.Id == id).ExecuteDeleteAsync()) > 0;
     }
 }
