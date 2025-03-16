@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace EchoLife.Life.Data;
 
-public class SqlLIteLifePointMapRepository(LifeDbContext _lifeDbContext)
+public class SqlLiteLifePointUserMapRepository(LifeDbContext _lifeDbContext)
     : ILifePointUserMapRepository
 {
     private DbSet<PointUserMap> PointUserMaps => _lifeDbContext.PointUserMaps;
@@ -42,5 +42,14 @@ public class SqlLIteLifePointMapRepository(LifeDbContext _lifeDbContext)
     public async Task<bool> DeleteAsync(string id)
     {
         return await (PointUserMaps.Where(s => s.Id == id).ExecuteDeleteAsync()) > 0;
+    }
+
+    public async Task<bool> DeleteAsync(string userId, string pointId)
+    {
+        return await (
+                PointUserMaps
+                    .Where(p => p.UserId == userId && p.PointId == pointId)
+                    .ExecuteDeleteAsync()
+            ) > 0;
     }
 }

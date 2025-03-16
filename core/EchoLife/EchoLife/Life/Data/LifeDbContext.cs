@@ -42,7 +42,8 @@ public class LifeDbContext(
             life.HasKey(l => l.Id);
             life.Property(l => l.Id).IsRequired();
             life.Property(l => l.Content).IsRequired();
-            life.Property(l => l.Visibility).IsRequired();
+            life.Property(l => l.UserId).IsRequired();
+            life.Property(l => l.Hidden).IsRequired();
             life.Property(l => l.CreatedAt).IsRequired();
             life.Property(l => l.UpdatedAt).IsRequired();
         });

@@ -36,7 +36,7 @@ public class SqlLiteLifePointRepository(LifeDbContext _lifeDbContext) : ILifePoi
             .Where(u => u.Id == entity.Id)
             .ExecuteUpdateAsync(sub =>
                 sub.SetProperty(s => s.Content, entity.Content)
-                    .SetProperty(s => s.Visibility, entity.Visibility)
+                    .SetProperty(s => s.Hidden, entity.Hidden)
                     .SetProperty(s => s.UpdatedAt, entity.UpdatedAt)
             );
         return result > 0 ? entity : null;

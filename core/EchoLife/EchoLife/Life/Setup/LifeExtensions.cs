@@ -1,4 +1,5 @@
 ﻿using EchoLife.Life.Data;
+using EchoLife.Life.Services;
 using Microsoft.EntityFrameworkCore;
 
 namespace EchoLife.Life.Setup
@@ -13,8 +14,6 @@ namespace EchoLife.Life.Setup
             var dbContextSettings =
                 configuration.GetSection("Life").Get<LifeDbContextSettings>()
                 ?? throw new InvalidOperationException("'BaseUser' settings not found.");
-
-            services.Configure<LifeDbContextSettings>(configuration.GetSection("Life"));
             if (!string.IsNullOrEmpty(dbContextSettings.MysqlConnetionString))
             {
                 services.AddDbContext<LifeDbContext>(options =>
@@ -35,6 +34,16 @@ namespace EchoLife.Life.Setup
                     )
                 );
             }
+
+            services
+                .Configure<LifeDbContextSettings>(configuration.GetSection("Life"))
+                .AddScoped<ILifeHitoryRepository, SqlLiteLifeHistoryRepository>()
+                .AddScoped<ILifePointRepository, SqlLiteLifePointRepository>()
+                .AddScoped<ILifePointUriMapRepository, SqlLiteLifePointUriMapRepository>()
+                .AddScoped<ILifePointUserMapRepository, SqlLiteLifePointUserMapRepository>()
+                .AddScoped<ILifeSubSectionRepository, SqlLiteLifeSubSectionRepository>()
+                .AddScoped<ILifePointService, LifePointService>()
+                .AddScoped<ILifeHistoryService, LifeHistoryService>();
 
             return services;
         }
