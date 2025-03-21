@@ -34,7 +34,7 @@ namespace EchoLife.Will.Data
         {
             var result = await Versions
                 .Where(u => u.Id == entity.Id)
-                .ExecuteUpdateAsync(will => will.SetProperty(w => w.Content, entity.Content));
+                .ExecuteUpdateAsync(version => version.SetProperty(v => v.Content, entity.Content));
             return result > 0 ? entity : null;
         }
 
@@ -45,7 +45,7 @@ namespace EchoLife.Will.Data
 
         public async Task<bool> DeleteAsync(string id)
         {
-            return await (Versions.Where(w => w.Id == id).ExecuteDeleteAsync()) > 0;
+            return await (Versions.Where(v => v.Id == id).ExecuteDeleteAsync()) > 0;
         }
     }
 }
