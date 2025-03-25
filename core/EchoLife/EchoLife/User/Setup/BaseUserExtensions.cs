@@ -27,12 +27,13 @@ namespace EchoLife.User.Setup
             else
             {
                 services.AddDbContext<UserDbContext>(options =>
-                    options.UseSqlite(
-                        $"Data Source={Path.Combine(
-                            Directory.GetCurrentDirectory(),
-                            dbContextSettings.SqlLiteConnectionString
-                        )}"
-                    )
+                    //options.UseSqlite(
+                    //    $"Data Source={Path.Combine(
+                    //        Directory.GetCurrentDirectory(),
+                    //        dbContextSettings.SqlLiteConnectionString
+                    //    )}"
+                    //)
+                    options.UseInMemoryDatabase("test")
                 );
             }
 

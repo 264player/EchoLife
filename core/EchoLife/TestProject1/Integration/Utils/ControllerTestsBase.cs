@@ -36,5 +36,13 @@ namespace EchoLife.Tests.Integration.Utils
             );
             return result;
         }
+
+        protected HttpClient GetCookieTokenClient(string userId, string role = "user")
+        {
+            var result = _factory.CreateClient();
+            using var scope = _factory.Services.CreateScope();
+
+            return result;
+        }
     }
 }

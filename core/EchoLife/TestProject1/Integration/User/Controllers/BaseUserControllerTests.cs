@@ -22,8 +22,11 @@ namespace EchoLife.Tests.Integration.User.Controllers
             );
 
             // Assert
-            Assert.That(response.StatusCode, Is.EqualTo(HttpStatusCode.OK));
-            Assert.That(response.RequestMessage, Is.Not.Null);
+            Assert.Multiple(() =>
+            {
+                Assert.That(response.StatusCode, Is.EqualTo(HttpStatusCode.OK));
+                Assert.That(response.RequestMessage, Is.Not.Null);
+            });
         }
 
         [Test]
