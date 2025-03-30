@@ -8,6 +8,7 @@ namespace EchoLife.Account.Services;
 
 public class AccountService(
     UserManager<IdentityAccount> _userManager,
+    SignInManager<IdentityAccount> _signInManager,
     IValidator<RegisterRequest> _registerRequestValidator
 ) : IAccountService
 {
@@ -17,5 +18,21 @@ public class AccountService(
 
         var user = new IdentityAccount { UserName = registerRequest.Username };
         return await _userManager.CreateAsync(user, registerRequest.Password);
+    }
+
+    public async Task<SignInResult> LoginWithUsernameAsync(LoginRequest loginRequest)
+    {
+        var result = await _signInManager.PasswordSignInAsync(
+            loginRequest.Username,
+            loginRequest.Password,
+            loginRequest.RememberMe,
+            false
+        );
+        return result;
+    }
+
+    public async Task LogoutAsync()
+    {
+        await _signInManager.SignOutAsync();
     }
 }

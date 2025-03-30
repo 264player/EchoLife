@@ -1,5 +1,6 @@
 ﻿using System.Net;
 using System.Net.Http.Json;
+using EchoLife.Tests.Integration.Account.Controller.Utils;
 using EchoLife.Tests.Integration.Account.Utils;
 using EchoLife.Tests.Integration.Utils;
 using static System.Guid;
@@ -65,5 +66,96 @@ internal class AccountTests : ControllerTestsBase
 
         // Assert
         Assert.That(response.StatusCode, Is.EqualTo(HttpStatusCode.InternalServerError));
+    }
+
+    [Test]
+    public async Task Login_WhenIncorrectPasswordOrUsername_ShouldFail()
+    {
+        // Arrange
+        var password = "Passw0rd";
+        var registerRequest = AccountSeeder.SeedRegisterRequest(
+            NewGuid().ToString("N"),
+            password,
+            password
+        );
+        await Sut.RegisterAsync(registerRequest);
+        var loginRequest = AccountSeeder.SeedLoginRequest(
+            registerRequest.Username,
+            "IncorrectPassword"
+        );
+        using var httpClient = GetClient();
+
+        // Act
+        var response = await httpClient.PostAsJsonAsync(UrlPackage.Login(), loginRequest);
+
+        // Assert
+        Assert.Multiple(() =>
+        {
+            Assert.That(response.StatusCode, Is.EqualTo(HttpStatusCode.BadRequest));
+            Assert.That(response.Headers.Contains("Set-Cookie"), Is.False);
+        });
+    }
+
+    [Test]
+    public async Task Login_WhenCorrectUsernameAndPassword_ShouldSuccess()
+    {
+        // Arrange
+        var password = "Passw0rd";
+        var registerRequest = AccountSeeder.SeedRegisterRequest(
+            NewGuid().ToString("N"),
+            password,
+            password
+        );
+        await Sut.RegisterAsync(registerRequest);
+        var loginRequest = AccountSeeder.SeedLoginRequest(
+            registerRequest.Username,
+            registerRequest.Password
+        );
+        using var httpClient = GetClient();
+
+        // Act
+        var response = await httpClient.PostAsJsonAsync(UrlPackage.Login(), loginRequest);
+
+        // Assert
+        Assert.Multiple(() =>
+        {
+            Assert.That(response.StatusCode, Is.EqualTo(HttpStatusCode.OK));
+            Assert.That(response.Headers.Contains("Set-Cookie"), Is.True);
+        });
+    }
+
+    [Test]
+    public async Task Logout_WhenUnauthorized_ShouldFail()
+    {
+        // Arrange
+        using var httpClient = GetClient();
+
+        // Act
+        var response = await httpClient.GetAsync(UrlPackage.Logout());
+
+        // Assert
+        Assert.That(response.StatusCode, Is.EqualTo(HttpStatusCode.Unauthorized));
+    }
+
+    [Test]
+    public async Task Logout_WhenAuthorized_ShouldSuccess()
+    { // Arrange
+        var password = "Passw0rd";
+        var registerRequest = AccountSeeder.SeedRegisterRequest(
+            NewGuid().ToString("N"),
+            password,
+            password
+        );
+        using var httpClient = await GetCookieTokenClientAsync(registerRequest);
+
+        // Act
+        var response = await httpClient.GetAsync(UrlPackage.Logout());
+
+        // Assert
+        Assert.Multiple(() =>
+        {
+            Assert.That(response.StatusCode, Is.EqualTo(HttpStatusCode.OK));
+            Assert.That(response.Headers.Contains("Set-Cookie"), Is.True);
+        });
     }
 }

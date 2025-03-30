@@ -56,7 +56,7 @@ namespace EchoLife.Tests.Integration.User.Controllers
 
             // Act
             var response = await httpClient.PostAsync(
-                UrlPackage.Login(),
+                UrlPackage.Login0(),
                 JsonContent.Create(baseUser)
             );
 
@@ -74,7 +74,7 @@ namespace EchoLife.Tests.Integration.User.Controllers
 
             // Act
             var response = await httpClient.PostAsync(
-                UrlPackage.Login(),
+                UrlPackage.Login0(),
                 JsonContent.Create(baseUser)
             );
 
