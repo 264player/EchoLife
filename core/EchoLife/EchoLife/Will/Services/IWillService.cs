@@ -1,19 +1,32 @@
-﻿namespace EchoLife.Will.Services
+﻿using System.Security.Claims;
+using EchoLife.Will.Dtos;
+
+namespace EchoLife.Will.Services
 {
     public interface IWillService
     {
-        Task<string> CreateWillAsync();
-
-        /// <summary>
-        /// Get the full will, the will include all will-versions.
-        /// </summary>
-        /// <param name="willId"></param>
-        /// <returns></returns>
-        Task GetWillAsync(string willId);
-        Task GetWillVresionAsync(string versionId);
-        Task<string> UpdateWillAsync(string willId, string versionId);
-        Task<string> UpdateWillVersionAsync(string versionId, string conten);
-        Task DeleteWillAsync(string willId);
-        Task DeleteWillVersionAsync(string versionId);
+        Task<string> CreateWillAsync(ClaimsPrincipal user);
+        Task<string> CreateWillVersionsAsync(
+            ClaimsPrincipal user,
+            string willId,
+            WillVersionRequest willVersionRequest,
+            bool isDraft
+        );
+        Task<List<WillResponse>> GetMyWillsAsync(ClaimsPrincipal user, int count, string? cursorId);
+        Task<List<WillVersionResponse>> GetMyWillVersionsAsync(
+            ClaimsPrincipal user,
+            string willId,
+            int count,
+            string? cursorId
+        );
+        Task<string> UpdateWillAsync(ClaimsPrincipal user, string willId, string versionId);
+        Task<string> UpdateWillVersionAsync(
+            ClaimsPrincipal user,
+            string willId,
+            string versionId,
+            string conten
+        );
+        Task DeleteWillAsync(ClaimsPrincipal user, string willId);
+        Task DeleteWillVersionAsync(ClaimsPrincipal user, string willId, string versionId);
     }
 }

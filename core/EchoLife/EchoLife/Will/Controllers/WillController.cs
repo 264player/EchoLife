@@ -1,4 +1,5 @@
-﻿using EchoLife.Will.Services;
+﻿using EchoLife.Will.Dtos;
+using EchoLife.Will.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -10,23 +11,59 @@ namespace EchoLife.Will.Controllers
     {
         [Authorize]
         [HttpPost("wills")]
-        public Task<IActionResult> PostWill()
+        public async Task<IActionResult> PostWill()
         {
-            throw new NotImplementedException();
+            var response = await _willService.CreateWillAsync(User);
+            return Created("", new { willId = response });
         }
 
         [Authorize]
-        [HttpPost("wills/versions")]
-        public Task<IActionResult> PostWillVresinos()
+        [HttpPost("wills/{willId}/versions")]
+        public async Task<IActionResult> PostWillVresinos(
+            [FromRoute] string willId,
+            [FromBody] WillVersionRequest willRequest,
+            [FromQuery] bool isDraft = false
+        )
         {
-            throw new NotImplementedException();
+            var response = await _willService.CreateWillVersionsAsync(
+                User,
+                willId,
+                willRequest,
+                isDraft
+            );
+            return Created("", response);
         }
 
         [Authorize]
         [HttpGet("wills")]
-        public Task<IActionResult> GetWillByUserId()
+        public async Task<IActionResult> GetWillByUserId(
+            [FromQuery] QueryWillRequest queryWillRequest
+        )
         {
-            throw new NotImplementedException();
+            return Ok(
+                await _willService.GetMyWillsAsync(
+                    User,
+                    queryWillRequest.Count,
+                    queryWillRequest.CursorId
+                )
+            );
+        }
+
+        [Authorize]
+        [HttpGet("wills/{willId}/versions")]
+        public async Task<IActionResult> GetWillByUserId(
+            [FromRoute] string willId,
+            [FromQuery] QueryWillVersionRequest queryWillVersionRequest
+        )
+        {
+            return Ok(
+                await _willService.GetMyWillVersionsAsync(
+                    User,
+                    willId,
+                    queryWillVersionRequest.Count,
+                    queryWillVersionRequest.CursorId
+                )
+            );
         }
 
         [Authorize]
@@ -48,37 +85,49 @@ namespace EchoLife.Will.Controllers
 
         [Authorize]
         [HttpPut("wills/{willId}")]
-        public Task<IActionResult> PostWill([FromRoute] string willId)
+        public async Task<IActionResult> PutWill(
+            [FromRoute] string willId,
+            [FromQuery] string versionId
+        )
         {
-            throw new NotImplementedException();
+            var result = await _willService.UpdateWillAsync(User, willId, versionId);
+            return Ok(result);
         }
 
         [Authorize]
         [HttpPut("wills/{willId}/versions/{versionId}")]
-        public Task<IActionResult> PostWillVersion(
+        public async Task<IActionResult> PutWillVersion(
             [FromRoute] string willId,
             [FromRoute] string versionId,
             [FromBody] string newContent
         )
         {
-            throw new NotImplementedException();
+            var result = await _willService.UpdateWillVersionAsync(
+                User,
+                willId,
+                versionId,
+                newContent
+            );
+            return Ok(result);
         }
 
         [Authorize]
         [HttpDelete("wills/{willId}")]
-        public Task<IActionResult> DeleteWill([FromRoute] string willId)
+        public async Task<IActionResult> DeleteWill([FromRoute] string willId)
         {
-            throw new NotImplementedException();
+            await _willService.DeleteWillAsync(User, willId);
+            return NoContent();
         }
 
         [Authorize]
         [HttpDelete("wills/{willId}/versions/{versionId}")]
-        public Task<IActionResult> DeleteWillVresion(
+        public async Task<IActionResult> DeleteWillVresion(
             [FromRoute] string willId,
             [FromRoute] string versionId
         )
         {
-            throw new NotImplementedException();
+            await _willService.DeleteWillVersionAsync(User, willId, versionId);
+            return NoContent();
         }
     }
 }

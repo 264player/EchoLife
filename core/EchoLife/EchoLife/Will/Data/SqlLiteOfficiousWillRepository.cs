@@ -42,5 +42,12 @@ namespace EchoLife.Will.Data
                 .Take(count)
                 .ToListAsync();
         }
+
+        public async Task<OfficiousWill?> ReadByUserIdAsync(string userId, string willId)
+        {
+            return await OfficiousWills
+                .Where(w => w.Id == willId && w.TestaorId == userId)
+                .SingleOrDefaultAsync();
+        }
     }
 }

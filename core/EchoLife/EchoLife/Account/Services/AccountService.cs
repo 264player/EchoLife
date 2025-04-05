@@ -20,6 +20,11 @@ public class AccountService(
         return await _userManager.CreateAsync(user, registerRequest.Password);
     }
 
+    /// <summary>
+    /// 现在支持4种claims：NameIdentifier Name amr securiStamp
+    /// </summary>
+    /// <param name="loginRequest"></param>
+    /// <returns></returns>
     public async Task<SignInResult> LoginWithUsernameAsync(LoginRequest loginRequest)
     {
         var result = await _signInManager.PasswordSignInAsync(

@@ -1,4 +1,5 @@
 ﻿using EchoLife.Will.Data;
+using EchoLife.Will.Services;
 using Microsoft.EntityFrameworkCore;
 
 namespace EchoLife.Will.SetUp
@@ -35,6 +36,12 @@ namespace EchoLife.Will.SetUp
                     )
                 );
             }
+
+            services
+                .AddScoped<IOfficiousWillRepository, SqlLiteOfficiousWillRepository>()
+                .AddScoped<IWillVersionRepository, SqlLiteWillVersionRepository>()
+                .AddScoped<IWillService, WillService>();
+
             return services;
         }
     }
