@@ -7,8 +7,14 @@ public static class IdGenerator
         return Guid.NewGuid().ToString(model);
     }
 
+    [Obsolete("To use sortable IDs, please use `GenerateUlid` to generate a ULID.")]
     public static string GenerateGuid()
     {
         return Guid.NewGuid().ToString();
+    }
+
+    public static string GenerateUlid()
+    {
+        return Ulid.NewUlid().ToString();
     }
 }

@@ -19,7 +19,7 @@ namespace EchoLife.Will.Services
 
             var will = new OfficiousWill
             {
-                Id = IdGenerator.GenerateGuid(),
+                Id = IdGenerator.GenerateUlid(),
                 TestaorId = userId,
                 WillType = WillType.SELF_WRITTEN_WILL.ToString(),
             };
@@ -44,7 +44,7 @@ namespace EchoLife.Will.Services
                 await _willVersionRepository.CreateAsync(
                     new WillVersion
                     {
-                        Id = IdGenerator.GenerateGuid(),
+                        Id = IdGenerator.GenerateUlid(),
                         WillId = willId,
                         Content = willVersionRequest.Value,
                         WillType = willVersionRequest.WillType,

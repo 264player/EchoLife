@@ -1,5 +1,6 @@
 using EchoLife.Account.Setup;
 using EchoLife.Account.Validators;
+using EchoLife.Common.Setup;
 using EchoLife.Family.Setup;
 using EchoLife.Life.Setup;
 using EchoLife.User.Setup;
@@ -24,6 +25,9 @@ public class Program
         builder.Services.AddLife(builder.Configuration);
         builder.Services.AddWill(builder.Configuration);
         builder.Services.AddFamily(builder.Configuration);
+        #endregion
+        #region Logger
+        builder.Logging.AddConsoleLogger();
         #endregion
 
         builder.Services.AddControllers();

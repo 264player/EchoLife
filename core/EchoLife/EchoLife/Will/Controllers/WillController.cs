@@ -1,4 +1,5 @@
-﻿using EchoLife.Will.Dtos;
+﻿using EchoLife.Common.Exceptions;
+using EchoLife.Will.Dtos;
 using EchoLife.Will.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -7,6 +8,7 @@ namespace EchoLife.Will.Controllers
 {
     [Route("api")]
     [ApiController]
+    [ExceptionHandling]
     public class WillController(IWillService _willService) : ControllerBase
     {
         [Authorize]
