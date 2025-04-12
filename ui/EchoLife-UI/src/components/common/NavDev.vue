@@ -9,7 +9,7 @@
               <el-icon>
                 <location />
               </el-icon>
-              <span>Navigator One</span>
+              <span>用户页面</span>
             </template>
             <el-menu-item-group title="用户">
               <el-menu-item index="1-1">
@@ -22,27 +22,26 @@
                 <RouterLink :to="{ name: 'user-info', params: { id: '1234567890' } }">用户信息</RouterLink>
               </el-menu-item>
             </el-menu-item-group>
-            <el-sub-menu index="1-4">
-              <template #title>item four</template>
-              <el-menu-item index="1-4-1">item one</el-menu-item>
-            </el-sub-menu>
           </el-sub-menu>
-          <el-menu-item index="2">
-            <el-icon><icon-menu /></el-icon>
-            <span>Navigator Two</span>
-          </el-menu-item>
-          <el-menu-item index="3" disabled>
-            <el-icon>
-              <document />
-            </el-icon>
-            <span>Navigator Three</span>
-          </el-menu-item>
-          <el-menu-item index="4">
-            <el-icon>
-              <setting />
-            </el-icon>
-            <span>Navigator Four</span>
-          </el-menu-item>
+          <el-sub-menu index="2">
+            <template #title>
+              <el-icon>
+                <location />
+              </el-icon>
+              <span>遗嘱页面</span>
+            </template>
+            <el-menu-item-group title="遗嘱">
+              <el-menu-item index="2-1">
+                <RouterLink :to="{ name: 'my-wills', params: { id: '1234567890' } }">我的遗嘱</RouterLink>
+              </el-menu-item>
+              <el-menu-item index="2-2">
+                <RouterLink :to="{ name: 'new-will-version', params: { id: '1234567890' } }">新的遗嘱版本</RouterLink>
+              </el-menu-item>
+              <el-menu-item index="2-3">
+                <RouterLink :to="{ name: 'user-info', params: { id: '1234567890' } }">遗嘱详情</RouterLink>
+              </el-menu-item>
+            </el-menu-item-group>
+          </el-sub-menu>
         </el-menu>
       </el-col>
     </el-row>
