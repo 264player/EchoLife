@@ -1,19 +1,34 @@
-﻿using EchoLife.Life.Models;
+﻿using System.Security.Claims;
+using EchoLife.Life.Dtos;
+using EchoLife.Life.Models;
 
 namespace EchoLife.Life.Services;
 
 public interface ILifeHistoryService
 {
     #region LifeHistory
-    Task CreateLifeHistoryAsync(LifeHistory lifeHistory);
-    Task<LifeHistory?> GetLifeHistoryAsync(string userId, string lifeHistoryId);
-    Task UpdateLifeHistoryAsync(LifeHistory lifeHistory);
-    Task DeleteLifeHistoryAsync(string userId, string lifeHistoryId);
+    Task CreateLifeHistoryAsync(ClaimsPrincipal me, LifeHistoryRequest lifeHistoryRequest);
+    Task<List<LifeHistory>> GetMyLifeHistoryAsync(
+        ClaimsPrincipal me,
+        QueryLifeHistoryRequest queryLifeHistoryRequest
+    );
+    Task<LifeHistory?> GetLifeHistoryAsync(ClaimsPrincipal me, string lifeHistoryId);
+    Task UpdateLifeHistoryAsync(
+        ClaimsPrincipal me,
+        string lifeHistoryId,
+        LifeHistoryRequest lifeHistoryRequest
+    );
+    Task DeleteLifeHistoryAsync(ClaimsPrincipal me, string lifeHistoryId);
     #endregion
+
     #region LifeSubSection
-    Task CreateLifeSubSectionAsync(LifeSubSection lifeSubSection);
-    Task<LifeSubSection?> GetLifeSubSectionAsync(string userId, string sectionId);
-    Task UpdateLifeSubSectionAsync(LifeSubSection lifeSubSection);
-    Task DeleteLifeSubSectionAsync(string userId, string sectionId);
+    Task CreateLifeSubSectionAsync(ClaimsPrincipal me, LifeSubSectionRequest lifeSubSectionRequest);
+    Task<LifeSubSection?> GetLifeSubSectionAsync(ClaimsPrincipal me, string sectionId);
+    Task UpdateLifeSubSectionAsync(
+        ClaimsPrincipal me,
+        string sectionId,
+        LifeSubSectionRequest lifeSubSection
+    );
+    Task DeleteLifeSubSectionAsync(ClaimsPrincipal me, string sectionId);
     #endregion
 }

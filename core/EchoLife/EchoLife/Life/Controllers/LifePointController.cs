@@ -3,12 +3,12 @@ using EchoLife.Life.Dtos;
 using EchoLife.Life.Services;
 using Microsoft.AspNetCore.Mvc;
 
-namespace EchoLife.Life;
+namespace EchoLife.Life.Controllers;
 
 [Route("api")]
 [ApiController]
 [ExceptionHandling]
-public class LifeController(ILifePointService _lifePointService) : ControllerBase
+public class LifePointController(ILifePointService _lifePointService) : ControllerBase
 {
     [HttpPost("life/points")]
     public async Task<IActionResult> Post([FromBody] LifePointRequest lifePointRequest)
