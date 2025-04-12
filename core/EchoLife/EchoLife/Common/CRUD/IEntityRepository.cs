@@ -55,6 +55,6 @@
         /// </returns>
         Task<bool> DeleteAsync(string id);
 
-        Task<List<T>> ReadAsync(Func<T, bool> express, string? startId, int count);
+        Task<List<T>> ReadAsync(Func<T, bool> express, string? cursorId, int count);
     }
 }

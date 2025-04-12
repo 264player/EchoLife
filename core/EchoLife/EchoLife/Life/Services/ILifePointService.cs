@@ -1,19 +1,20 @@
-﻿using EchoLife.Life.Models;
+﻿using System.Security.Claims;
+using EchoLife.Life.Dtos;
+using EchoLife.Life.Models;
 
 namespace EchoLife.Life.Services;
 
 public interface ILifePointService
 {
-    Task CreateLifePointAsync(LifePoint lifePoint);
-    Task GetLifePointAsync(string pointId);
+    Task CreateLifePointAsync(ClaimsPrincipal user, LifePointRequest lifePoint);
+    Task<LifePointResponse?> GetLifePointAsync(ClaimsPrincipal me, string pointId);
     Task<List<LifePoint>> GetLifePointByUserIdAsync(
+        ClaimsPrincipal me,
         string userId,
-        bool isMe,
-        string? startId,
-        int count
+        QueryLifePointsRequest queryLifePointsRequest
     );
     Task JoinLifePointAsync(string userId, string pointId);
     Task LeaveLifePointAsync(string userId, string pointId);
-    Task UpdateLifePointAsync(LifePoint lifePoint);
-    Task DeleteLifePointAsync(string userId, string pointId);
+    Task UpdateLifePointAsync(ClaimsPrincipal me, string pointId, LifePointRequest lifePoint);
+    Task DeleteLifePointAsync(ClaimsPrincipal me, string pointId);
 }
