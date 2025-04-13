@@ -64,11 +64,16 @@ public class LifeHistoryController(ILifeHistoryService _lifeHistoryService) : Co
 
     [HttpGet("life/history/{historyId}/subsections")]
     public async Task<IActionResult> GetSection(
+        [FromRoute] string historyId,
         [FromQuery] QueryLifeSubSectionRequest queryLifeSubSectionRequest
     )
     {
         return Ok(
-        //await _lifeHistoryService.GetMyLifeHistoryAsync(User, queryLifeSubSectionRequest)
+            await _lifeHistoryService.GetLifeSubSectionAsync(
+                User,
+                historyId,
+                queryLifeSubSectionRequest
+            )
         );
     }
 

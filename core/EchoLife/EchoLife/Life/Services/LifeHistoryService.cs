@@ -121,13 +121,34 @@ public class LifeHistoryService(
                 Title = lifeSubSectionRequest.Title,
                 Content = lifeSubSectionRequest.Content,
                 LifeHistoryId = lifeSubSectionRequest.LifeHistoryId,
-                FartherId = lifeSubSectionRequest.FatherId,
+                FatherId = lifeSubSectionRequest.FatherId,
                 Deep = lifeSubSectionRequest.Deep,
             }
         );
     }
 
-    public async Task<LifeSubSection?> GetLifeSubSectionAsync(ClaimsPrincipal me, string sectionId)
+    public async Task<List<LifeSubSectionResponse>> GetLifeSubSectionAsync(
+        ClaimsPrincipal me,
+        string historyId,
+        QueryLifeSubSectionRequest queryLifeSubSectionRequest
+    )
+    {
+        var userId = ClaimsManager.EnsureGetUserId(me);
+
+        var history = await EnsureAndGetLifeHistoryAsync(historyId);
+
+        var result = await _lifeSubSectionRepository.ReadAsync(
+            s => s.LifeHistoryId == historyId,
+            queryLifeSubSectionRequest.CursorId,
+            queryLifeSubSectionRequest.Count
+        );
+        return [.. result.Select(LifeSubSectionResponse.From)];
+    }
+
+    public async Task<LifeSubSectionResponse?> GetLifeSubSectionAsync(
+        ClaimsPrincipal me,
+        string sectionId
+    )
     {
         var result = await EnsureAndGetLifeSubSectionAsync(sectionId);
 
@@ -138,7 +159,7 @@ public class LifeHistoryService(
             throw new ForbiddenException();
         }
 
-        return result;
+        return LifeSubSectionResponse.From(result);
     }
 
     public async Task UpdateLifeSubSectionAsync(

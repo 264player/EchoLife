@@ -23,7 +23,12 @@ public interface ILifeHistoryService
 
     #region LifeSubSection
     Task CreateLifeSubSectionAsync(ClaimsPrincipal me, LifeSubSectionRequest lifeSubSectionRequest);
-    Task<LifeSubSection?> GetLifeSubSectionAsync(ClaimsPrincipal me, string sectionId);
+    Task<List<LifeSubSectionResponse>> GetLifeSubSectionAsync(
+        ClaimsPrincipal me,
+        string historyId,
+        QueryLifeSubSectionRequest queryLifeSubSectionRequest
+    );
+    Task<LifeSubSectionResponse?> GetLifeSubSectionAsync(ClaimsPrincipal me, string sectionId);
     Task UpdateLifeSubSectionAsync(
         ClaimsPrincipal me,
         string sectionId,
