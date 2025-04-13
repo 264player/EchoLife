@@ -99,6 +99,7 @@ public class LifeHistoryService(
             ?? throw new ResourceNotFoundException();
     }
     #endregion
+
     #region LifeSubSection
     public async Task CreateLifeSubSectionAsync(
         ClaimsPrincipal me,

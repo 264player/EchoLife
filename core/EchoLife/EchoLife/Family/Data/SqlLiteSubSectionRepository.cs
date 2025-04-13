@@ -3,24 +3,25 @@ using Microsoft.EntityFrameworkCore;
 
 namespace EchoLife.Family.Data;
 
-public class SqlLiteSubSectionRepository(FamilyDbContext _familyDbContext) : ISubSectionRepository
+public class SqlLiteSubSectionRepository(FamilyDbContext _familyDbContext)
+    : IFamilySubSectionRepository
 {
-    private DbSet<SubSection> SubSections => _familyDbContext.SubSections;
+    private DbSet<FamilySubSection> SubSections => _familyDbContext.SubSections;
 
-    public async Task<SubSection?> CreateAsync(SubSection entity)
+    public async Task<FamilySubSection?> CreateAsync(FamilySubSection entity)
     {
         await SubSections.AddAsync(entity);
         var result = await _familyDbContext.SaveChangesAsync();
         return result > 0 ? entity : null;
     }
 
-    public async Task<SubSection?> ReadAsync(string id)
+    public async Task<FamilySubSection?> ReadAsync(string id)
     {
         return await SubSections.Where(s => s.Id == id).SingleOrDefaultAsync();
     }
 
-    public async Task<List<SubSection>> ReadAsync(
-        Func<SubSection, bool> express,
+    public async Task<List<FamilySubSection>> ReadAsync(
+        Func<FamilySubSection, bool> express,
         string? startId,
         int count
     )
@@ -31,7 +32,7 @@ public class SqlLiteSubSectionRepository(FamilyDbContext _familyDbContext) : ISu
             .ToListAsync();
     }
 
-    public async Task<SubSection?> UpdateAsync(SubSection entity)
+    public async Task<FamilySubSection?> UpdateAsync(FamilySubSection entity)
     {
         var result = await SubSections
             .Where(s => s.Id == entity.Id)

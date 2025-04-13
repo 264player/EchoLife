@@ -13,7 +13,7 @@ public class FamilyDbContext(
     public DbSet<FamilyTree> FamilyTrees { get; set; }
     public DbSet<FamilyMember> FamilyMembers { get; set; }
     public DbSet<FamilyHistory> FamilyHistories { get; set; }
-    public DbSet<SubSection> SubSections { get; set; }
+    public DbSet<FamilySubSection> SubSections { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -55,7 +55,7 @@ public class FamilyDbContext(
             history.Property(h => h.UpdatedAt).IsRequired();
         });
 
-        modelBuilder.Entity<SubSection>(subSection =>
+        modelBuilder.Entity<FamilySubSection>(subSection =>
         {
             subSection.ToTable(Settings.SubSectionTableName);
             subSection.HasKey(s => s.Id);

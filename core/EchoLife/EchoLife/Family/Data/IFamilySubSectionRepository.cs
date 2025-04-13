@@ -3,4 +3,4 @@ using EchoLife.Family.Models;
 
 namespace EchoLife.Family.Data;
 
-public interface ISubSectionRepository : IEntityRepository<SubSection> { }
+public interface IFamilySubSectionRepository : IEntityRepository<FamilySubSection> { }
