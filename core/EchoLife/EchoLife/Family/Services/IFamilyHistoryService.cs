@@ -9,7 +9,7 @@ public interface IFamilyHistoryService
     Task CreateFamilyHistoryAsync(ClaimsPrincipal me, FamilyHistoryRequest familyHistoryRequest);
     Task<List<FamilyHistoryResponse>> GetFamilyHistoryAsync(
         ClaimsPrincipal me,
-        QueyFamilyHistoryRequest queyFamilyHistoryRequest
+        QueryFamilyHistoryRequest queyFamilyHistoryRequest
     );
     Task<FamilyHistoryResponse?> GetFamilyHistoryAsync(ClaimsPrincipal me, string lifeHistoryId);
     Task UpdateFamilyHistoryAsync(

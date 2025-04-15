@@ -30,7 +30,7 @@ public class FamilyHistoryService(
 
     public async Task<List<FamilyHistoryResponse>> GetFamilyHistoryAsync(
         ClaimsPrincipal me,
-        QueyFamilyHistoryRequest queyFamilyHistoryRequest
+        QueryFamilyHistoryRequest queyFamilyHistoryRequest
     )
     {
         var myId = ClaimsManager.EnsureGetUserId(me);

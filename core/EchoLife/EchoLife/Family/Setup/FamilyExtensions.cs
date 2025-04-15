@@ -1,4 +1,5 @@
 ﻿using EchoLife.Family.Data;
+using EchoLife.Family.Services;
 using EchoLife.Will.Data;
 using Microsoft.EntityFrameworkCore;
 
@@ -35,6 +36,15 @@ public static class FamilyExtensions
                 )
             );
         }
+
+        services
+            .AddScoped<IFamilyHistoryRepository, SqlLiteFamilyHistoryRepository>()
+            .AddScoped<IFamilySubSectionRepository, SqlLiteSubSectionRepository>()
+            .AddScoped<IFamilyTreeRepository, SqlLiteFamilyTreeRepository>()
+            .AddScoped<IFamilyMemberRepository, SqlLiteFamilyMemberRepotisory>()
+            .AddScoped<IFamilyHistoryService, FamilyHistoryService>()
+            .AddScoped<IFamilyTreeService, FamilyTreeService>();
+
         return services;
     }
 }
