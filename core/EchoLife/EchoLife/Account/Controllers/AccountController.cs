@@ -45,6 +45,14 @@ public class AccountController(IAccountService _accountService) : ControllerBase
     }
 
     [Authorize]
+    [HttpPost("refresh")]
+    public async Task<IActionResult> Refresh()
+    {
+        await _accountService.RefreshSignInAsync(User);
+        return Ok();
+    }
+
+    [Authorize]
     [HttpGet("logout")]
     public async Task<IActionResult> Logout()
     {
@@ -52,17 +60,12 @@ public class AccountController(IAccountService _accountService) : ControllerBase
         return Ok();
     }
 
-    //[HttpPost("refresh")]
-    //public async Task<IActionResult> Refresh()
-    //{
-    //    var user = await userManager.GetUserAsync(User);
-    //    if (user == null)
-    //    {
-    //        return BadRequest("User not found");
-    //    }
-    //    await signInManager.RefreshSignInAsync(user);
-    //    return Ok("Refresh successful");
-    //}
+    [Authorize]
+    [HttpGet("userinfo")]
+    public async Task<IActionResult> GetUserInfo()
+    {
+        return Ok(await _accountService.GetUserInfoAsync(User));
+    }
 
     //[HttpPost("forget-password")]
     //public async Task<IActionResult> ForgetPassword(string userName)

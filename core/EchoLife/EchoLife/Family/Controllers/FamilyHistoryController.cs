@@ -38,7 +38,7 @@ public class FamilyHistoryController(IFamilyHistoryService _familyHistoryService
         [FromBody] FamilyHistoryRequest familyHistoryRequest
     )
     {
-        await _familyHistoryService.UpdateFamilyHistoryAsync(User, historyId, lifeHistoryRequest);
+        await _familyHistoryService.UpdateFamilyHistoryAsync(User, historyId, familyHistoryRequest);
         return NoContent();
     }
 
@@ -58,7 +58,7 @@ public class FamilyHistoryController(IFamilyHistoryService _familyHistoryService
         [FromBody] FamilySubSectionRequest familySubSectionRequest
     )
     {
-        await _familyHistoryService.CreateFamilyHistoryAsync(User, familySubSectionRequest);
+        await _familyHistoryService.CreateFamilySubSectionAsync(User, familySubSectionRequest);
         return Created();
     }
 

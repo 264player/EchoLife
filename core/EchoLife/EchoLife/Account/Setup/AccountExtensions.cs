@@ -67,8 +67,8 @@ public static class AccountExtensions
             // 如果需要，可以设置滑动过期
             options.SlidingExpiration = true;
             // Cookie 的安全属性
-            options.Cookie.SecurePolicy = CookieSecurePolicy.SameAsRequest;
-            options.Cookie.SameSite = SameSiteMode.Strict;
+            options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
+            options.Cookie.SameSite = SameSiteMode.None;
             options.Cookie.HttpOnly = true;
         });
 
@@ -92,6 +92,15 @@ public static class AccountExtensions
         var services = scope.ServiceProvider;
         var context = services.GetRequiredService<AccountDbContext>();
         context.Database.EnsureCreated();
+        return app;
+    }
+
+    public static WebApplication EnsureDeletedAccountDatabase(this WebApplication app)
+    {
+        using var scope = app.Services.CreateScope();
+        var services = scope.ServiceProvider;
+        var context = services.GetRequiredService<AccountDbContext>();
+        context.Database.EnsureDeleted();
         return app;
     }
 }

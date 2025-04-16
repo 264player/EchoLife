@@ -1,5 +1,7 @@
-﻿using EchoLife.Account.Dtos;
+﻿using System.Security.Claims;
+using EchoLife.Account.Dtos;
 using EchoLife.Account.Models;
+using EchoLife.Common.Exceptions;
 using EchoLife.Common.Validation;
 using FluentValidation;
 using Microsoft.AspNetCore.Identity;
@@ -39,5 +41,21 @@ public class AccountService(
     public async Task LogoutAsync()
     {
         await _signInManager.SignOutAsync();
+    }
+
+    public async Task RefreshSignInAsync(ClaimsPrincipal user)
+    {
+        var result = await _userManager.GetUserAsync(user);
+        if (result == null)
+        {
+            throw new ResourceNotFoundException();
+        }
+        await _signInManager.RefreshSignInAsync(result);
+    }
+
+    public async Task<IdentiryAccountResponse?> GetUserInfoAsync(ClaimsPrincipal user)
+    {
+        var result = await _userManager.GetUserAsync(user) ?? throw new ForbiddenException();
+        return IdentiryAccountResponse.From(result);
     }
 }

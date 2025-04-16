@@ -1,6 +1,5 @@
 ﻿using EchoLife.Family.Data;
 using EchoLife.Family.Services;
-using EchoLife.Will.Data;
 using Microsoft.EntityFrameworkCore;
 
 namespace EchoLife.Family.Setup;
@@ -18,7 +17,7 @@ public static class FamilyExtensions
         services.Configure<FamilyDbContextSettings>(configuration.GetSection("Family"));
         if (!string.IsNullOrEmpty(dbContextSettings.MysqlConnetionString))
         {
-            services.AddDbContext<WillDbContext>(options =>
+            services.AddDbContext<FamilyDbContext>(options =>
                 options.UseMySql(
                     dbContextSettings.MysqlConnetionString,
                     MySqlServerVersion.AutoDetect(dbContextSettings.MysqlConnetionString)
@@ -27,7 +26,7 @@ public static class FamilyExtensions
         }
         else
         {
-            services.AddDbContext<WillDbContext>(options =>
+            services.AddDbContext<FamilyDbContext>(options =>
                 options.UseSqlite(
                     $"Data Source={Path.Combine(
                         Directory.GetCurrentDirectory(),

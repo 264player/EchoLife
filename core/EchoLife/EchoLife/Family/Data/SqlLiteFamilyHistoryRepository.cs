@@ -39,7 +39,7 @@ public class SqlLiteFamilyHistoryRepository(FamilyDbContext _familyDbContext)
             .ExecuteUpdateAsync(history =>
                 history
                     .SetProperty(h => h.UpdatedAt, entity.UpdatedAt)
-                    .SetProperty(h => h.Name, entity.Name)
+                    .SetProperty(h => h.Title, entity.Title)
             );
         return result > 0 ? entity : null;
     }

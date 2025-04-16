@@ -1,24 +1,53 @@
 <template>
     <div>
-        <el-input v-model="Username" style="width: 240px" placeholder="Please input" clearable />
-        <el-input v-model="Password" style="width: 240px" placeholder="Please input" clearable show-password />
-        <el-input v-model="EnsurePassword" style="width: 240px" placeholder="Please input agin" clearable
-            show-password />
-        <el-button @click="LoginAsync">注册</el-button>
+        <el-row>
+            <el-col :span="4"></el-col>
+            <el-col :span="16">
+                <el-input v-model="requestDto.Username" style="width: 240px" placeholder="用户名" clearable />
+            </el-col>
+            <el-col :span="4"></el-col>
+        </el-row>
+        <el-row>
+            <el-col :span="4"></el-col>
+            <el-col :span="16">
+                <el-input v-model="requestDto.Password" style="width: 240px" placeholder="密码" clearable show-password />
+            </el-col>
+            <el-col :span="4"></el-col>
+        </el-row>
+        <el-row>
+            <el-col :span="4"></el-col>
+            <el-col :span="16">
+                <el-input v-model="requestDto.EnsurePassword" style="width: 240px" placeholder="确认密码" clearable
+                    show-password />
+            </el-col>
+            <el-col :span="4"></el-col>
+        </el-row>
+        <el-row>
+            <el-col :span="4"></el-col>
+            <el-col :span="16">
+                <el-button @click="Register">注册</el-button>
+            </el-col>
+            <el-col :span="4"></el-col>
+        </el-row>
     </div>
 </template>
 
 <script setup>
 import { ref } from 'vue'
-const Username = ref('')
-const Password = ref('')
-const EnsurePassword = ref('')
+import { RegisterUserRequest } from '@/utils/RequestDtos'
+import { RegisterAsync } from '@/utils/RequestHelper'
 
-function LoginAsync() {
-    console.log(Username.value)
-    console.log(Password.value)
-    console.log(EnsurePassword.value)
+const requestDto = ref(new RegisterUserRequest("string", "P@ssw0rd", "P@ssw0rd"));
+
+async function Register() {
+    var { result, response } = await RegisterAsync(requestDto.value);
+    console.log(result)
+    console.log(response)
 }
 </script>
 
-<style lang="css" scoped></style>
+<style lang="css" scoped>
+.el-row {
+    margin-bottom: 10px;
+}
+</style>

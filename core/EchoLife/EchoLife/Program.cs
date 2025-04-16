@@ -35,13 +35,30 @@ public class Program
         builder.Services.AddEndpointsApiExplorer();
         builder.Services.AddSwaggerGen();
 
+        builder.Services.AddCors(options =>
+        {
+            options.AddPolicy(
+                "AllowAll",
+                builder =>
+                {
+                    builder
+                        .WithOrigins("http://localhost:5173")
+                        .AllowAnyMethod()
+                        .AllowAnyHeader()
+                        .AllowCredentials();
+                }
+            );
+        });
+
         var app = builder.Build();
 
         if (app.Environment.IsDevelopment())
         {
             app.UseSwagger();
             app.UseSwaggerUI();
+            app.EnsureDeletedDatabse();
             app.EnsureCreatedDatabase();
+            app.UseCors("AllowAll");
         }
 
         app.UseHttpsRedirection();
@@ -60,6 +77,12 @@ public static class ProgramExtensions
     public static WebApplication EnsureCreatedDatabase(this WebApplication app)
     {
         app.EnsureCreatedAccountDatabase();
+        return app;
+    }
+
+    public static WebApplication EnsureDeletedDatabse(this WebApplication app)
+    {
+        app.EnsureDeletedAccountDatabase();
         return app;
     }
 }

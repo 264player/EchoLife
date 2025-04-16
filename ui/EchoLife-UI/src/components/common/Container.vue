@@ -1,7 +1,7 @@
 <template>
   <div class="common-layout">
     <el-container>
-      <el-header>Header</el-header>
+      <el-header>ECHO LIFE</el-header>
       <el-container>
         <el-aside width="400px">
           <NavDev></NavDev>
