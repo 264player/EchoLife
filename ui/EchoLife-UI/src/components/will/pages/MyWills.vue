@@ -1,36 +1,63 @@
 <template>
-    <ul v-infinite-scroll="load" class="infinite-list" style="overflow: auto">
-        <li v-for="i in count" :key="i" class="infinite-list-item">{{ i }}</li>
-    </ul>
+    <el-button>新的遗嘱</el-button>
+    <el-table v-infinite-scroll="GetMyWill" :data="myWills" height="250" style="width: 100%;overflow: auto;"
+        :stripe="true" @row-dblclick="TableItemClick">
+        <el-table-column prop="id" label="ID" width="180" />
+        <el-table-column prop="name" label="名称" width="180" />
+        <el-table-column prop="testaorId" label="所属人" />
+        <el-table-column prop="contentId" label="内容ID" />
+        <el-table-column label="操作">
+            <template #default="scope">
+                <el-button size="small" type="danger" @click="DeleteWill(scope.row)">
+                    删除
+                </el-button>
+            </template>
+        </el-table-column>
+    </el-table>
 </template>
 
-<script lang="ts" setup>
+<script setup>
 import { ref } from 'vue'
-const count = ref(0)
-const load = () => {
-    count.value += 2
+import { QueryWillsRequest } from '@/utils/WillRequestDtos'
+import { GetMyWillsAsync, DeleteWillAsync } from '@/utils/WillRequestHelper'
+import { useRouter } from 'vue-router'
+
+const route = useRouter()
+
+const queryWillsRequest = ref(new QueryWillsRequest(5, null))
+// const myWills = ref([{ id: "1", name: "1", testaorId: "1", contentId: "1" }, { id: 2, name: 2, testaorId: 2, contentId: 2 }, { id: 3, name: 3, testaorId: 3, contentId: 3 }])
+const myWills = ref([])
+
+const loading = ref(false)
+
+async function GetMyWill() {
+    if (loading.value) {
+        return
+    }
+    loading.value = true
+
+    var { result, response } = await GetMyWillsAsync(queryWillsRequest.value);
+    if (result) {
+        console.log(response)
+        if (response.length != 0) {
+            queryWillsRequest.value.CusorId = response[response.length - 1].id
+            myWills.value = myWills.value.concat(response)
+        }
+    }
+
+    loading.value = false
+}
+
+function TableItemClick(row) {
+    console.debug(row.id)
+    route.push({ name: "will-details", params: { willId: row.id } })
+}
+
+async function DeleteWill(willResponse) {
+    var { result, response } = await DeleteWillAsync(willResponse.id)
+    console.log(result)
+    console.log(response)
 }
 </script>
 
-<style>
-.infinite-list {
-    height: 300px;
-    padding: 0;
-    margin: 0;
-    list-style: none;
-}
-
-.infinite-list .infinite-list-item {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    height: 50px;
-    background: var(--el-color-primary-light-9);
-    margin: 10px;
-    color: var(--el-color-primary);
-}
-
-.infinite-list .infinite-list-item+.list-item {
-    margin-top: 10px;
-}
-</style>
+<style></style>

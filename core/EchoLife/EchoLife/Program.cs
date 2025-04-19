@@ -77,12 +77,14 @@ public static class ProgramExtensions
     public static WebApplication EnsureCreatedDatabase(this WebApplication app)
     {
         app.EnsureCreatedAccountDatabase();
+        app.EnsureCreatedWillDatabase();
         return app;
     }
 
     public static WebApplication EnsureDeletedDatabse(this WebApplication app)
     {
         app.EnsureDeletedAccountDatabase();
+        app.EnsureDeletedWillDatabase();
         return app;
     }
 }

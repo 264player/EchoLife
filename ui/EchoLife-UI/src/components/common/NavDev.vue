@@ -2,7 +2,7 @@
   <div>
     <el-row class="tac">
       <el-col :span="12">
-        <h5 class="mb-2">Default colors</h5>
+        <h5 class="mb-2">Development Nav</h5>
         <el-menu default-active="2" class="el-menu-vertical-demo" @open="handleOpen" @close="handleClose">
           <el-sub-menu index="1">
             <template #title>
@@ -35,10 +35,10 @@
                 <RouterLink :to="{ name: 'my-wills', params: { id: '1234567890' } }">我的遗嘱</RouterLink>
               </el-menu-item>
               <el-menu-item index="2-2">
-                <RouterLink :to="{ name: 'new-will-version', params: { id: '1234567890' } }">新的遗嘱版本</RouterLink>
+                <RouterLink :to="{ name: 'will-details', params: { willId: '1234567890' } }">遗嘱详情</RouterLink>
               </el-menu-item>
               <el-menu-item index="2-3">
-                <RouterLink :to="{ name: 'user-info', params: { id: '1234567890' } }">遗嘱详情</RouterLink>
+                <RouterLink :to="{ name: 'new-will', params: { id: '1234567890' } }">新的遗嘱</RouterLink>
               </el-menu-item>
             </el-menu-item-group>
           </el-sub-menu>

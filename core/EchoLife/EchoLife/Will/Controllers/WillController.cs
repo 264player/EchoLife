@@ -11,29 +11,13 @@ namespace EchoLife.Will.Controllers
     [ExceptionHandling]
     public class WillController(IWillService _willService) : ControllerBase
     {
+        #region Will
         [Authorize]
         [HttpPost("wills")]
-        public async Task<IActionResult> PostWill()
+        public async Task<IActionResult> PostWill([FromBody] WillRequest willRequest)
         {
-            var response = await _willService.CreateWillAsync(User);
+            var response = await _willService.CreateWillAsync(User, willRequest);
             return Created("", new { willId = response });
-        }
-
-        [Authorize]
-        [HttpPost("wills/{willId}/versions")]
-        public async Task<IActionResult> PostWillVresinos(
-            [FromRoute] string willId,
-            [FromBody] WillVersionRequest willRequest,
-            [FromQuery] bool isDraft = false
-        )
-        {
-            var response = await _willService.CreateWillVersionsAsync(
-                User,
-                willId,
-                willRequest,
-                isDraft
-            );
-            return Created("", response);
         }
 
         [Authorize]
@@ -52,8 +36,59 @@ namespace EchoLife.Will.Controllers
         }
 
         [Authorize]
+        [HttpGet("wills/{willId}")]
+        public async Task<IActionResult> GetWillByWillId([FromRoute] string willId)
+        {
+            return Ok(await _willService.GetMyWillAsync(User, willId));
+        }
+
+        [Authorize]
+        [HttpPut("wills/{willId}")]
+        public async Task<IActionResult> PutWill(
+            [FromRoute] string willId,
+            [FromBody] PutWillRequest putWillRequest
+        )
+        {
+            var result = await _willService.UpdateWillAsync(
+                User,
+                willId,
+                putWillRequest.VersionId,
+                putWillRequest.Name
+            );
+            return Ok(result);
+        }
+
+        [Authorize]
+        [HttpDelete("wills/{willId}")]
+        public async Task<IActionResult> DeleteWill([FromRoute] string willId)
+        {
+            await _willService.DeleteWillAsync(User, willId);
+            return NoContent();
+        }
+
+        #endregion
+
+        #region Will Version
+        [Authorize]
+        [HttpPost("wills/{willId}/versions")]
+        public async Task<IActionResult> PostWillVresinos(
+            [FromRoute] string willId,
+            [FromBody] WillVersionRequest willRequest,
+            [FromQuery] bool isDraft = false
+        )
+        {
+            var response = await _willService.CreateWillVersionsAsync(
+                User,
+                willId,
+                willRequest,
+                isDraft
+            );
+            return Created("", response);
+        }
+
+        [Authorize]
         [HttpGet("wills/{willId}/versions")]
-        public async Task<IActionResult> GetWillByUserId(
+        public async Task<IActionResult> GetWillVersino(
             [FromRoute] string willId,
             [FromQuery] QueryWillVersionRequest queryWillVersionRequest
         )
@@ -69,13 +104,6 @@ namespace EchoLife.Will.Controllers
         }
 
         [Authorize]
-        [HttpGet("wills/{willId}")]
-        public Task<IActionResult> GetWillByWillId([FromRoute] string willId)
-        {
-            throw new NotImplementedException();
-        }
-
-        [Authorize]
         [HttpGet("wills/{willId}/versions/{versionId}")]
         public Task<IActionResult> GetWillByWillId(
             [FromRoute] string willId,
@@ -86,50 +114,27 @@ namespace EchoLife.Will.Controllers
         }
 
         [Authorize]
-        [HttpPut("wills/{willId}")]
-        public async Task<IActionResult> PutWill(
-            [FromRoute] string willId,
-            [FromQuery] string versionId
-        )
-        {
-            var result = await _willService.UpdateWillAsync(User, willId, versionId);
-            return Ok(result);
-        }
-
-        [Authorize]
-        [HttpPut("wills/{willId}/versions/{versionId}")]
+        [HttpPut("wills/versions/{versionId}")]
         public async Task<IActionResult> PutWillVersion(
-            [FromRoute] string willId,
             [FromRoute] string versionId,
-            [FromBody] string newContent
+            [FromBody] WillVersionRequest willVersionRequest
         )
         {
             var result = await _willService.UpdateWillVersionAsync(
                 User,
-                willId,
                 versionId,
-                newContent
+                willVersionRequest
             );
             return Ok(result);
         }
 
         [Authorize]
-        [HttpDelete("wills/{willId}")]
-        public async Task<IActionResult> DeleteWill([FromRoute] string willId)
+        [HttpDelete("wills/versions/{versionId}")]
+        public async Task<IActionResult> DeleteWillVresion([FromRoute] string versionId)
         {
-            await _willService.DeleteWillAsync(User, willId);
+            await _willService.DeleteWillVersionAsync(User, versionId);
             return NoContent();
         }
-
-        [Authorize]
-        [HttpDelete("wills/{willId}/versions/{versionId}")]
-        public async Task<IActionResult> DeleteWillVresion(
-            [FromRoute] string willId,
-            [FromRoute] string versionId
-        )
-        {
-            await _willService.DeleteWillVersionAsync(User, willId, versionId);
-            return NoContent();
-        }
+        #endregion
     }
 }

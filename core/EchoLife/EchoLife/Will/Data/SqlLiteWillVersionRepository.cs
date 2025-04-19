@@ -30,6 +30,17 @@ namespace EchoLife.Will.Data
                 .ToListAsync();
         }
 
+        public async Task<List<WillVersion>> ReadAsync(string willId, int count, string? cursorId)
+        {
+            return await Versions
+                .Where(x =>
+                    (x.WillId == willId) && (cursorId == null || x.Id.CompareTo(cursorId) < 0)
+                )
+                .OrderByDescending(x => x.Id)
+                .Take(count)
+                .ToListAsync();
+        }
+
         public async Task<WillVersion?> UpdateAsync(WillVersion entity)
         {
             var result = await Versions

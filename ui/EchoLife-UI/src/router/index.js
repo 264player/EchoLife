@@ -4,7 +4,8 @@ import Login from '@/components/user/pages/Login.vue'
 import Register from '@/components/user/pages/Register.vue'
 import UserInfo from '@/components/user/pages/UserInfo.vue'
 import MyWills from '@/components/will/pages/MyWills.vue'
-import NewWillVersion from '@/components/will/pages/NewWillVersion.vue'
+import NewWill from '@/components/will/pages/NewWill.vue'
+import WillDetails from '@/components/will/pages/WillDetails.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -22,12 +23,12 @@ const router = createRouter({
     {
       path: '/users/login',
       name: 'register',
-      component: Register
+      component: Register,
     },
     {
       path: '/:id/info',
       name: 'user-info',
-      component: UserInfo
+      component: UserInfo,
     },
     {
       path: '/:id/wills',
@@ -35,10 +36,15 @@ const router = createRouter({
       component: MyWills,
     },
     {
-      path: '/:id/wills/versions',
-      name: 'new-will-version',
-      component:NewWillVersion
-    }
+      path: '/:id/wills/new-will',
+      name: 'new-will',
+      component: NewWill,
+    },
+    {
+      path: '/wills/:willId/will-details',
+      name: 'will-details',
+      component: WillDetails,
+    },
   ],
 })
 

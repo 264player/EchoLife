@@ -13,9 +13,9 @@ namespace EchoLife.Will.SetUp
         {
             var dbContextSettings =
                 configuration.GetSection("Will").Get<WillDbContextSettings>()
-                ?? throw new InvalidOperationException("'BaseUser' settings not found.");
+                ?? throw new InvalidOperationException("'Will' settings not found.");
 
-            services.Configure<WillDbContextSettings>(configuration.GetSection("BaseUser"));
+            services.Configure<WillDbContextSettings>(configuration.GetSection("Will"));
             if (!string.IsNullOrEmpty(dbContextSettings.MysqlConnetionString))
             {
                 services.AddDbContext<WillDbContext>(options =>
@@ -43,6 +43,24 @@ namespace EchoLife.Will.SetUp
                 .AddScoped<IWillService, WillService>();
 
             return services;
+        }
+
+        public static WebApplication EnsureCreatedWillDatabase(this WebApplication app)
+        {
+            using var scope = app.Services.CreateScope();
+            var services = scope.ServiceProvider;
+            var context = services.GetRequiredService<WillDbContext>();
+            context.Database.EnsureCreated();
+            return app;
+        }
+
+        public static WebApplication EnsureDeletedWillDatabase(this WebApplication app)
+        {
+            using var scope = app.Services.CreateScope();
+            var services = scope.ServiceProvider;
+            var context = services.GetRequiredService<WillDbContext>();
+            context.Database.EnsureDeleted();
+            return app;
         }
     }
 }

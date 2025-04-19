@@ -34,8 +34,8 @@
 
 <script setup>
 import { ref } from 'vue'
-import { RegisterUserRequest } from '@/utils/RequestDtos'
-import { RegisterAsync } from '@/utils/RequestHelper'
+import { RegisterUserRequest } from '@/utils/UserRequestDtos'
+import { RegisterAsync } from '@/utils/UserRequestHelper'
 
 const requestDto = ref(new RegisterUserRequest("string", "P@ssw0rd", "P@ssw0rd"));
 

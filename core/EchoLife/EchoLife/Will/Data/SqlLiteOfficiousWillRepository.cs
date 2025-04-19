@@ -43,6 +43,21 @@ namespace EchoLife.Will.Data
                 .ToListAsync();
         }
 
+        public async Task<List<OfficiousWill>> ReadAsync(
+            string testaorId,
+            string? cursorId,
+            int count
+        )
+        {
+            return await OfficiousWills
+                .Where(w =>
+                    (w.TestaorId == testaorId) && (cursorId == null || w.Id.CompareTo(cursorId) < 0)
+                )
+                .OrderByDescending(w => w.Id)
+                .Take(count)
+                .ToListAsync();
+        }
+
         public async Task<OfficiousWill?> ReadByUserIdAsync(string userId, string willId)
         {
             return await OfficiousWills

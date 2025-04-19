@@ -1,5 +1,5 @@
 import axios from "axios";
-import {RegisterUserRequest ,LoginRequest} from   "./RequestDtos"
+import {RegisterUserRequest ,LoginRequest} from   "./UserRequestDtos"
 
 /**
  * 
@@ -15,6 +15,11 @@ export async function RegisterAsync(RegisterUserRequest) {
     })
 }
 
+/**
+ * 
+ * @param {LoginRequest} LoginRequest 
+ * @returns 
+ */
 export async function LoginAsync(LoginRequest) {
     return await axios.post("account/login", LoginRequest,{ withCredentials: true})
         .then(response => {

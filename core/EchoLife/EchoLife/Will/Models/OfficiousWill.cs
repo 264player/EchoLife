@@ -11,6 +11,8 @@ namespace EchoLife.Will.Models
         /// </summary>
         public string TestaorId { get; set; } = null!;
 
+        public string Name { get; set; } = null!;
+
         /// <summary>
         /// The current version`s Id.
         /// </summary>

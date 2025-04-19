@@ -7,10 +7,10 @@ export class RegisterUserRequest {
 }
 
 export class LoginRequest{
-    constructor(username, password) {
+    constructor(username, password,rememberMe) {
         this.Username = username
         this.Password = password
-        this.RememberMe = true
+        this.RememberMe = rememberMe
     }
 }
 

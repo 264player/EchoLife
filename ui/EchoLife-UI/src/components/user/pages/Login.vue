@@ -14,6 +14,16 @@
             </el-col>
             <el-col :span="4"></el-col>
         </el-row>
+
+        <el-row>
+            <el-col :span="4"></el-col>
+            <el-col :span="16">
+                <el-text type="=info" size="small">记住密码</el-text>
+                <el-switch v-model="requestDto.RememberMe" size="small" />
+            </el-col>
+            <el-col :span="4"></el-col>
+        </el-row>
+
         <el-row>
             <el-col :span="4"></el-col>
             <el-col :span="16">
@@ -26,10 +36,10 @@
 
 <script setup>
 import { ref } from 'vue'
-import { LoginRequest } from '@/utils/RequestDtos'
-import { LoginAsync } from '@/utils/RequestHelper'
+import { LoginRequest } from '@/utils/UserRequestDtos'
+import { LoginAsync } from '@/utils/UserRequestHelper'
 
-const requestDto = ref(new LoginRequest("string", "P@ssw0rd"))
+const requestDto = ref(new LoginRequest("string", "P@ssw0rd", false))
 
 async function Login() {
     var { result, response } = await LoginAsync(requestDto.value)

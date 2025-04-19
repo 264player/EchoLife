@@ -5,28 +5,37 @@ namespace EchoLife.Will.Services
 {
     public interface IWillService
     {
-        Task<string> CreateWillAsync(ClaimsPrincipal user);
+        #region Will
+        Task<string> CreateWillAsync(ClaimsPrincipal user, WillRequest willRequest);
+        Task<List<WillResponse>> GetMyWillsAsync(ClaimsPrincipal user, int count, string? cursorId);
+        Task<WillResponse> GetMyWillAsync(ClaimsPrincipal user, string willId);
+        Task<string> UpdateWillAsync(
+            ClaimsPrincipal user,
+            string willId,
+            string versionId,
+            string name
+        );
+        Task DeleteWillAsync(ClaimsPrincipal user, string willId);
         Task<string> CreateWillVersionsAsync(
             ClaimsPrincipal user,
             string willId,
             WillVersionRequest willVersionRequest,
             bool isDraft
         );
-        Task<List<WillResponse>> GetMyWillsAsync(ClaimsPrincipal user, int count, string? cursorId);
+        #endregion
+        #region Will Version
         Task<List<WillVersionResponse>> GetMyWillVersionsAsync(
             ClaimsPrincipal user,
             string willId,
             int count,
             string? cursorId
         );
-        Task<string> UpdateWillAsync(ClaimsPrincipal user, string willId, string versionId);
         Task<string> UpdateWillVersionAsync(
             ClaimsPrincipal user,
-            string willId,
             string versionId,
-            string conten
+            WillVersionRequest willVersionRequest
         );
-        Task DeleteWillAsync(ClaimsPrincipal user, string willId);
-        Task DeleteWillVersionAsync(ClaimsPrincipal user, string willId, string versionId);
+        Task DeleteWillVersionAsync(ClaimsPrincipal user, string versionId);
+        #endregion
     }
 }

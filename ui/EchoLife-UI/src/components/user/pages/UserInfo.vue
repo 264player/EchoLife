@@ -20,8 +20,8 @@
 </template>
 
 <script setup>
-import { UserInfoResponse } from '@/utils/RequestDtos';
-import { GetUserInfoAsync, LogOutAsync, RefreshAsync } from '@/utils/RequestHelper';
+import { UserInfoResponse } from '@/utils/UserRequestDtos';
+import { GetUserInfoAsync, LogOutAsync, RefreshAsync } from '@/utils/UserRequestHelper';
 import { onMounted, ref } from 'vue';
 
 const userInfoResponse = ref(new UserInfoResponse(""))

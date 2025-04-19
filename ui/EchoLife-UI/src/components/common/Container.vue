@@ -7,7 +7,7 @@
           <NavDev></NavDev>
         </el-aside>
         <el-container>
-          <el-main>
+          <el-main width="100%">
             <RouterView></RouterView>
           </el-main>
           <el-footer>Footer</el-footer>
