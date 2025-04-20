@@ -1,4 +1,6 @@
-﻿namespace EchoLife.Common.CRUD
+﻿using System.Linq.Expressions;
+
+namespace EchoLife.Common.CRUD
 {
     /// <summary>
     /// Repository specification for single entity operations, providing basic CRUD (Create, Read, Update, Delete) functionality.
@@ -55,6 +57,6 @@
         /// </returns>
         Task<bool> DeleteAsync(string id);
 
-        Task<List<T>> ReadAsync(Func<T, bool> express, string? cursorId, int count);
+        Task<List<T>> ReadAsync(Expression<Func<T, bool>> express, int count);
     }
 }

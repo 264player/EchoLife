@@ -13,7 +13,11 @@ namespace EchoLife.Will.Services
         IOfficiousWillRepository _officiousWillRepository
     ) : IWillService
     {
-        public async Task<string> CreateWillAsync(ClaimsPrincipal user, WillRequest willRequest)
+        #region Will
+        public async Task<WillResponse> CreateWillAsync(
+            ClaimsPrincipal user,
+            WillRequest willRequest
+        )
         {
             var userId = ClaimsManager.EnsureGetUserId(user);
 
@@ -39,10 +43,67 @@ namespace EchoLife.Will.Services
 
             will = await _officiousWillRepository.CreateAsync(will) ?? throw new UnknowException();
 
-            return will.Id;
+            return WillResponse.From(will);
         }
 
-        public async Task<string> CreateWillVersionsAsync(
+        public async Task<WillResponse> GetMyWillAsync(ClaimsPrincipal user, string willId)
+        {
+            var userId = ClaimsManager.EnsureGetUserId(user);
+
+            var will = await EnsureGetWill(willId, userId);
+
+            return WillResponse.From(will);
+        }
+
+        public async Task<List<WillResponse>> GetMyWillsAsync(
+            ClaimsPrincipal user,
+            int count,
+            string? cursorId
+        )
+        {
+            var userId = ClaimsManager.EnsureGetUserId(user);
+
+            var result = await _officiousWillRepository.ReadAsync(
+                w => w.TestaorId == userId && (cursorId == null || w.Id.CompareTo(cursorId) < 0),
+                count
+            );
+
+            return [.. result.Select(WillResponse.From)];
+        }
+
+        public async Task DeleteWillAsync(ClaimsPrincipal user, string willId)
+        {
+            var userId = ClaimsManager.EnsureGetUserId(user);
+
+            await EnsureGetWill(willId, userId);
+
+            await _officiousWillRepository.DeleteAsync(willId);
+            await _willVersionRepository.DeleteAllVersionsByWillIdAsync(willId);
+        }
+
+        public async Task<WillResponse> UpdateWillAsync(
+            ClaimsPrincipal user,
+            string willId,
+            string versionId,
+            string name
+        )
+        {
+            var userId = ClaimsManager.EnsureGetUserId(user);
+
+            var will = await EnsureGetWill(willId, userId);
+
+            will.ContentId = versionId;
+            will.Name = name;
+            var updatedWill =
+                await _officiousWillRepository.UpdateAsync(will) ?? throw new UnknowException();
+            return WillResponse.From(updatedWill);
+        }
+        #endregion
+
+        #region Will Version
+
+
+        public async Task<WillVersionResponse> CreateWillVersionsAsync(
             ClaimsPrincipal user,
             string willId,
             WillVersionRequest willVersionRequest,
@@ -70,50 +131,7 @@ namespace EchoLife.Will.Services
                 await _officiousWillRepository.UpdateAsync(will);
             }
 
-            return version.Id;
-        }
-
-        public async Task DeleteWillAsync(ClaimsPrincipal user, string willId)
-        {
-            var userId = ClaimsManager.EnsureGetUserId(user);
-
-            await EnsureGetWill(willId, userId);
-
-            await _officiousWillRepository.DeleteAsync(willId);
-            await _willVersionRepository.DeleteAllVersionsByWillIdAsync(willId);
-        }
-
-        public async Task DeleteWillVersionAsync(ClaimsPrincipal user, string versionId)
-        {
-            var userId = ClaimsManager.EnsureGetUserId(user);
-
-            var version = await EnsureGetWillVersionAsync(versionId);
-
-            await EnsureGetWill(version.WillId, userId);
-
-            await _willVersionRepository.DeleteAsync(versionId);
-        }
-
-        public async Task<WillResponse> GetMyWillAsync(ClaimsPrincipal user, string willId)
-        {
-            var userId = ClaimsManager.EnsureGetUserId(user);
-
-            var will = await EnsureGetWill(willId, userId);
-
-            return WillResponse.From(will);
-        }
-
-        public async Task<List<WillResponse>> GetMyWillsAsync(
-            ClaimsPrincipal user,
-            int count,
-            string? cursorId
-        )
-        {
-            var userId = ClaimsManager.EnsureGetUserId(user);
-
-            var result = await _officiousWillRepository.ReadAsync(userId, cursorId, count);
-
-            return [.. result.Select(WillResponse.From)];
+            return WillVersionResponse.From(version);
         }
 
         public async Task<List<WillVersionResponse>> GetMyWillVersionsAsync(
@@ -132,24 +150,7 @@ namespace EchoLife.Will.Services
             return [.. result.Select(WillVersionResponse.From)];
         }
 
-        public async Task<string> UpdateWillAsync(
-            ClaimsPrincipal user,
-            string willId,
-            string versionId,
-            string name
-        )
-        {
-            var userId = ClaimsManager.EnsureGetUserId(user);
-
-            var will = await EnsureGetWill(willId, userId);
-
-            will.ContentId = versionId;
-            will.Name = name;
-            await _officiousWillRepository.UpdateAsync(will);
-            return willId;
-        }
-
-        public async Task<string> UpdateWillVersionAsync(
+        public async Task<WillVersionResponse> UpdateWillVersionAsync(
             ClaimsPrincipal user,
             string versionId,
             WillVersionRequest willVersionRequest
@@ -160,9 +161,11 @@ namespace EchoLife.Will.Services
             var version = await EnsureGetWillVersionAsync(versionId);
             await EnsureGetWill(version.WillId, userId);
 
-            await _willVersionRepository.UpdateAsync(Update(version, willVersionRequest));
+            var updatedVersino =
+                await _willVersionRepository.UpdateAsync(Update(version, willVersionRequest))
+                ?? throw new UnknowException();
 
-            return versionId;
+            return WillVersionResponse.From(updatedVersino);
 
             WillVersion Update(WillVersion willVersion, WillVersionRequest request)
             {
@@ -172,6 +175,18 @@ namespace EchoLife.Will.Services
             }
         }
 
+        public async Task DeleteWillVersionAsync(ClaimsPrincipal user, string versionId)
+        {
+            var userId = ClaimsManager.EnsureGetUserId(user);
+
+            var version = await EnsureGetWillVersionAsync(versionId);
+
+            await EnsureGetWill(version.WillId, userId);
+
+            await _willVersionRepository.DeleteAsync(versionId);
+        }
+
+        #endregion
         protected async Task<OfficiousWill> EnsureGetWill(string willId)
         {
             var will =

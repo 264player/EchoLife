@@ -18,6 +18,28 @@ namespace EchoLife.Will.Data
             return await OfficiousWills.Where(w => w.Id == id).SingleOrDefaultAsync();
         }
 
+        public async Task<List<OfficiousWill>> ReadAsync(
+            string testaorId,
+            string? cursorId,
+            int count
+        )
+        {
+            return await OfficiousWills
+                .Where(w =>
+                    (w.TestaorId == testaorId) && (cursorId == null || w.Id.CompareTo(cursorId) < 0)
+                )
+                .OrderByDescending(w => w.Id)
+                .Take(count)
+                .ToListAsync();
+        }
+
+        public async Task<OfficiousWill?> ReadByUserIdAsync(string userId, string willId)
+        {
+            return await OfficiousWills
+                .Where(w => w.Id == willId && w.TestaorId == userId)
+                .SingleOrDefaultAsync();
+        }
+
         public async Task<OfficiousWill?> UpdateAsync(OfficiousWill entity)
         {
             var result = await OfficiousWills
@@ -41,28 +63,6 @@ namespace EchoLife.Will.Data
                 .Where(w => express(w) && (startId == null || w.Id.CompareTo(startId) > 0))
                 .Take(count)
                 .ToListAsync();
-        }
-
-        public async Task<List<OfficiousWill>> ReadAsync(
-            string testaorId,
-            string? cursorId,
-            int count
-        )
-        {
-            return await OfficiousWills
-                .Where(w =>
-                    (w.TestaorId == testaorId) && (cursorId == null || w.Id.CompareTo(cursorId) < 0)
-                )
-                .OrderByDescending(w => w.Id)
-                .Take(count)
-                .ToListAsync();
-        }
-
-        public async Task<OfficiousWill?> ReadByUserIdAsync(string userId, string willId)
-        {
-            return await OfficiousWills
-                .Where(w => w.Id == willId && w.TestaorId == userId)
-                .SingleOrDefaultAsync();
         }
     }
 }
