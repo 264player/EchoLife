@@ -42,6 +42,22 @@
               </el-menu-item>
             </el-menu-item-group>
           </el-sub-menu>
+          <el-sub-menu index="3">
+            <template #title>
+              <el-icon>
+                <location />
+              </el-icon>
+              <span>人生界面</span>
+            </template>
+            <el-menu-item-group title="人生节点">
+              <el-menu-item index="2-1">
+                <RouterLink :to="{ name: 'my-points', params: { userId: '1234567890' } }">我的人生节点</RouterLink>
+              </el-menu-item>
+              <el-menu-item index="2-2">
+                <RouterLink :to="{ name: 'life-history' }">个人传记</RouterLink>
+              </el-menu-item>
+            </el-menu-item-group>
+          </el-sub-menu>
         </el-menu>
       </el-col>
     </el-row>

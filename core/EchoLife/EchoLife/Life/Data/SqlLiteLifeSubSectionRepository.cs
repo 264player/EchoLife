@@ -1,4 +1,5 @@
-﻿using EchoLife.Life.Models;
+﻿using System.Linq.Expressions;
+using EchoLife.Life.Models;
 using Microsoft.EntityFrameworkCore;
 
 namespace EchoLife.Life.Data;
@@ -20,15 +21,11 @@ public class SqlLiteLifeSubSectionRepository(LifeDbContext _lifeDbContext)
     }
 
     public async Task<List<LifeSubSection>> ReadAsync(
-        Func<LifeSubSection, bool> express,
-        string? startId,
+        Expression<Func<LifeSubSection, bool>> express,
         int count
     )
     {
-        return await LifeSubSections
-            .Where(s => express(s) && (startId == null || s.Id.CompareTo(startId) > 0))
-            .Take(count)
-            .ToListAsync();
+        return await LifeSubSections.Where(express).Take(count).ToListAsync();
     }
 
     public async Task<LifeSubSection?> UpdateAsync(LifeSubSection entity)

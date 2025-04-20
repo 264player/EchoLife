@@ -1,4 +1,5 @@
-﻿using EchoLife.Family.Models;
+﻿using System.Linq.Expressions;
+using EchoLife.Family.Models;
 using Microsoft.EntityFrameworkCore;
 
 namespace EchoLife.Family.Data;
@@ -20,15 +21,11 @@ public class SqlLiteFamilyTreeRepository(FamilyDbContext _familyDbContext) : IFa
     }
 
     public async Task<List<FamilyTree>> ReadAsync(
-        Func<FamilyTree, bool> express,
-        string? startId,
+        Expression<Func<FamilyTree, bool>> express,
         int count
     )
     {
-        return await FamilyTrees
-            .Where(t => express(t) && (startId == null || t.Id.CompareTo(startId) > 0))
-            .Take(count)
-            .ToListAsync();
+        return await FamilyTrees.Where(express).Take(count).ToListAsync();
     }
 
     public async Task<FamilyTree?> UpdateAsync(FamilyTree entity)

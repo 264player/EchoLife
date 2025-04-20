@@ -1,4 +1,5 @@
-﻿using EchoLife.User.Model;
+﻿using System.Linq.Expressions;
+using EchoLife.User.Model;
 using Microsoft.EntityFrameworkCore;
 
 namespace EchoLife.User.Data
@@ -46,11 +47,7 @@ namespace EchoLife.User.Data
                 > 0;
         }
 
-        public Task<List<BaseUser>> ReadAsync(
-            Func<BaseUser, bool> express,
-            string startId,
-            int count
-        )
+        public Task<List<BaseUser>> ReadAsync(Expression<Func<BaseUser, bool>> express, int count)
         {
             throw new NotImplementedException();
         }

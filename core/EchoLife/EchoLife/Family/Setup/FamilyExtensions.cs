@@ -46,4 +46,22 @@ public static class FamilyExtensions
 
         return services;
     }
+
+    public static WebApplication EnsureCreatedFamilyDatabase(this WebApplication app)
+    {
+        using var scope = app.Services.CreateScope();
+        var services = scope.ServiceProvider;
+        var context = services.GetRequiredService<FamilyDbContext>();
+        context.Database.EnsureCreated();
+        return app;
+    }
+
+    public static WebApplication EnsureDeletedFamilyDatabase(this WebApplication app)
+    {
+        using var scope = app.Services.CreateScope();
+        var services = scope.ServiceProvider;
+        var context = services.GetRequiredService<FamilyDbContext>();
+        context.Database.EnsureDeleted();
+        return app;
+    }
 }

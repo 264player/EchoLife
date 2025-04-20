@@ -6,6 +6,10 @@ import UserInfo from '@/components/user/pages/UserInfo.vue'
 import MyWills from '@/components/will/pages/MyWills.vue'
 import NewWill from '@/components/will/pages/NewWill.vue'
 import WillDetails from '@/components/will/pages/WillDetails.vue'
+import NewLifePoint from '@/components/life/NewLifePoint.vue'
+import UpdateLifePoint from '@/components/life/UpdateLifePoint.vue'
+import MyLifePoints from '@/components/life/pages/MyLifePoints.vue'
+import MyLifeHistory from '@/components/life/pages/MyLifeHistory.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -44,6 +48,21 @@ const router = createRouter({
       path: '/wills/:willId/will-details',
       name: 'will-details',
       component: WillDetails,
+    },
+    {
+      path: '/life/history',
+      name: 'life-history',
+      component: MyLifeHistory,
+    },
+    {
+      path: '/life/points/:pointId',
+      name: 'update-point',
+      component: UpdateLifePoint,
+    },
+    {
+      path: '/:userId/life/points',
+      name: 'my-points',
+      component: MyLifePoints,
     },
   ],
 })

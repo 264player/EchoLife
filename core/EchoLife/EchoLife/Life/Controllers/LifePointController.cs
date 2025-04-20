@@ -1,6 +1,7 @@
 ﻿using EchoLife.Common.Exceptions;
 using EchoLife.Life.Dtos;
 using EchoLife.Life.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace EchoLife.Life.Controllers;
@@ -10,6 +11,7 @@ namespace EchoLife.Life.Controllers;
 [ExceptionHandling]
 public class LifePointController(ILifePointService _lifePointService) : ControllerBase
 {
+    [Authorize]
     [HttpPost("life/points")]
     public async Task<IActionResult> Post([FromBody] LifePointRequest lifePointRequest)
     {
@@ -17,6 +19,7 @@ public class LifePointController(ILifePointService _lifePointService) : Controll
         return Created();
     }
 
+    [Authorize]
     [HttpGet("{userId}/life/points")]
     public async Task<IActionResult> Get(
         [FromRoute] string userId,
@@ -28,12 +31,14 @@ public class LifePointController(ILifePointService _lifePointService) : Controll
         );
     }
 
+    [Authorize]
     [HttpGet("life/points/{pointId}")]
     public async Task<IActionResult> Get([FromRoute] string pointId)
     {
         return Ok(await _lifePointService.GetLifePointAsync(User, pointId));
     }
 
+    [Authorize]
     [HttpPut("life/points/{pointId}")]
     public async Task<IActionResult> Put(
         [FromRoute] string pointId,
@@ -44,6 +49,7 @@ public class LifePointController(ILifePointService _lifePointService) : Controll
         return NoContent();
     }
 
+    [Authorize]
     [HttpDelete("life/points/{pointId}")]
     public async Task<IActionResult> Delete([FromRoute] string pointId)
     {

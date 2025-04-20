@@ -18,6 +18,7 @@ public class Program
         #region Validators
         builder.Services.AddValidatorsFromAssemblyContaining<RegisterRequestValidator>();
         #endregion
+
         #region Modules
         builder.Services.AddBaseUser(builder.Configuration);
         builder.Services.AddIdentityUser(builder.Configuration);
@@ -26,6 +27,7 @@ public class Program
         builder.Services.AddWill(builder.Configuration);
         builder.Services.AddFamily(builder.Configuration);
         #endregion
+
         #region Logger
         builder.Logging.AddConsoleLogger();
         #endregion
@@ -78,6 +80,8 @@ public static class ProgramExtensions
     {
         app.EnsureCreatedAccountDatabase();
         app.EnsureCreatedWillDatabase();
+        app.EnsureCreatedLifeDatabase();
+        app.EnsureCreatedFamilyDatabase();
         return app;
     }
 
@@ -85,6 +89,8 @@ public static class ProgramExtensions
     {
         app.EnsureDeletedAccountDatabase();
         app.EnsureDeletedWillDatabase();
+        app.EnsureDeletedLifeDatabase();
+        app.EnsureDeletedFamilyDatabase();
         return app;
     }
 }

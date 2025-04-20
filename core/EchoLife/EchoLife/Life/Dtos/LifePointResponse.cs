@@ -6,6 +6,7 @@ public record LifePointResponse(
     string Id,
     string UserId,
     string Content,
+    bool Hidden,
     DateTime CreatetdAt,
     DateTime UpdatedAt
 )
@@ -16,6 +17,7 @@ public record LifePointResponse(
             lifePoint.Id,
             lifePoint.UserId,
             lifePoint.Content,
+            lifePoint.Hidden,
             lifePoint.CreatedAt,
             lifePoint.UpdatedAt
         );

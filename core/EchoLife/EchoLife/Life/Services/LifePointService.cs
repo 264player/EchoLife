@@ -15,7 +15,10 @@ public class LifePointService(
     IValidator<QueryLifePointsRequest> queryLifePointsRequestValidator
 ) : ILifePointService
 {
-    public async Task CreateLifePointAsync(ClaimsPrincipal user, LifePointRequest lifePointRequest)
+    public async Task<LifePointResponse> CreateLifePointAsync(
+        ClaimsPrincipal user,
+        LifePointRequest lifePointRequest
+    )
     {
         var userId = ClaimsManager.GetUserId(user)!;
 
@@ -26,7 +29,8 @@ public class LifePointService(
             Hidden = lifePointRequest.Hidden,
             UserId = userId,
         };
-        await _lifePointRepository.CreateAsync(point);
+        var lifePoint =
+            await _lifePointRepository.CreateAsync(point) ?? throw new UnknowException();
         await _lifePointUserMapRepository.CreateAsync(
             new PointUserMap
             {
@@ -35,9 +39,11 @@ public class LifePointService(
                 PointId = point.Id,
             }
         );
+
+        return LifePointResponse.From(lifePoint);
     }
 
-    public async Task<LifePointResponse?> GetLifePointAsync(ClaimsPrincipal me, string pointId)
+    public async Task<LifePointResponse> GetLifePointAsync(ClaimsPrincipal me, string pointId)
     {
         var myId = ClaimsManager.GetUserId(me);
 
@@ -62,30 +68,18 @@ public class LifePointService(
         var myId = ClaimsManager.GetUserId(me);
 
         return await _lifePointRepository.ReadAsync(
-            p => (p.UserId == userId) && (myId == userId || !p.Hidden),
-            queryLifePointsRequest.CursorId,
+            p =>
+                (p.UserId == userId)
+                && (myId == userId || !p.Hidden)
+                && (
+                    queryLifePointsRequest.CursorId == null
+                    || p.Id.CompareTo(queryLifePointsRequest.CursorId) < 0
+                ),
             queryLifePointsRequest.Count
         );
     }
 
-    public async Task JoinLifePointAsync(string userId, string pointId)
-    {
-        await _lifePointUserMapRepository.CreateAsync(
-            new PointUserMap
-            {
-                Id = Guid.NewGuid().ToString(),
-                UserId = userId,
-                PointId = pointId,
-            }
-        );
-    }
-
-    public async Task LeaveLifePointAsync(string userId, string pointId)
-    {
-        await _lifePointUserMapRepository.DeleteAsync(userId, pointId);
-    }
-
-    public async Task UpdateLifePointAsync(
+    public async Task<LifePointResponse> UpdateLifePointAsync(
         ClaimsPrincipal me,
         string pointId,
         LifePointRequest lifePointRequest
@@ -100,7 +94,11 @@ public class LifePointService(
             throw new ForbiddenException();
         }
 
-        await _lifePointRepository.UpdateAsync(Update(point, lifePointRequest));
+        var updatedPoint =
+            await _lifePointRepository.UpdateAsync(Update(point, lifePointRequest))
+            ?? throw new UnknowException();
+
+        return LifePointResponse.From(updatedPoint);
 
         static LifePoint Update(LifePoint lifePoint, LifePointRequest lifePointRequest)
         {
@@ -120,6 +118,23 @@ public class LifePointService(
         }
 
         await _lifePointRepository.DeleteAsync(pointId);
+    }
+
+    public async Task JoinLifePointAsync(string userId, string pointId)
+    {
+        await _lifePointUserMapRepository.CreateAsync(
+            new PointUserMap
+            {
+                Id = Guid.NewGuid().ToString(),
+                UserId = userId,
+                PointId = pointId,
+            }
+        );
+    }
+
+    public async Task LeaveLifePointAsync(string userId, string pointId)
+    {
+        await _lifePointUserMapRepository.DeleteAsync(userId, pointId);
     }
 
     private async Task<LifePoint> EnsureAndGetLifePoint(string pointId)

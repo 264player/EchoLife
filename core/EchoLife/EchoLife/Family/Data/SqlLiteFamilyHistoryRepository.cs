@@ -1,4 +1,5 @@
-﻿using EchoLife.Family.Models;
+﻿using System.Linq.Expressions;
+using EchoLife.Family.Models;
 using Microsoft.EntityFrameworkCore;
 
 namespace EchoLife.Family.Data;
@@ -21,15 +22,11 @@ public class SqlLiteFamilyHistoryRepository(FamilyDbContext _familyDbContext)
     }
 
     public async Task<List<FamilyHistory>> ReadAsync(
-        Func<FamilyHistory, bool> express,
-        string? startId,
+        Expression<Func<FamilyHistory, bool>> express,
         int count
     )
     {
-        return await FamilyHistories
-            .Where(h => express(h) && (startId == null || h.Id.CompareTo(startId) > 0))
-            .Take(count)
-            .ToListAsync();
+        return await FamilyHistories.Where(express).Take(count).ToListAsync();
     }
 
     public async Task<FamilyHistory?> UpdateAsync(FamilyHistory entity)

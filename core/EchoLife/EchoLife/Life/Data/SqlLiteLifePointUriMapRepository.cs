@@ -1,4 +1,5 @@
-﻿using EchoLife.Life.Models;
+﻿using System.Linq.Expressions;
+using EchoLife.Life.Models;
 using Microsoft.EntityFrameworkCore;
 
 namespace EchoLife.Life.Data;
@@ -20,15 +21,11 @@ public class SqlLiteLifePointUriMapRepository(LifeDbContext _lifeDbContext)
     }
 
     public async Task<List<LifePointUriMap>> ReadAsync(
-        Func<LifePointUriMap, bool> express,
-        string? startId,
+        Expression<Func<LifePointUriMap, bool>> express,
         int count
     )
     {
-        return await LifePointUriMaps
-            .Where(s => express(s) && (startId == null || s.Id.CompareTo(startId) > 0))
-            .Take(count)
-            .ToListAsync();
+        return await LifePointUriMaps.Where(express).Take(count).ToListAsync();
     }
 
     public async Task<LifePointUriMap?> UpdateAsync(LifePointUriMap entity)

@@ -1,4 +1,5 @@
-﻿using EchoLife.Will.Models;
+﻿using System.Linq.Expressions;
+using EchoLife.Will.Models;
 using Microsoft.EntityFrameworkCore;
 
 namespace EchoLife.Will.Data
@@ -54,15 +55,11 @@ namespace EchoLife.Will.Data
         }
 
         public async Task<List<OfficiousWill>> ReadAsync(
-            Func<OfficiousWill, bool> express,
-            string? startId,
+            Expression<Func<OfficiousWill, bool>> express,
             int count
         )
         {
-            return await OfficiousWills
-                .Where(w => express(w) && (startId == null || w.Id.CompareTo(startId) > 0))
-                .Take(count)
-                .ToListAsync();
+            return await OfficiousWills.Where(express).Take(count).ToListAsync();
         }
     }
 }
