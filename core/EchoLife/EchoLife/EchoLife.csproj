@@ -7,6 +7,7 @@
     <GenerateDocumentationFile>False</GenerateDocumentationFile>
     <DocumentationFile>D:\studyDay\EchoLife\src\core\EchoLife\EchoLife\ApiDocs\EchoLife.xml</DocumentationFile>
     <SignAssembly>False</SignAssembly>
+    <UserSecretsId>0bbdc831-0aaf-4f9a-af41-0e37d35f58f7</UserSecretsId>
   </PropertyGroup>
 
   <ItemGroup>

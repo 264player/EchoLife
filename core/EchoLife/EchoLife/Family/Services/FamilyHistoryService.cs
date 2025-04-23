@@ -13,7 +13,7 @@ public class FamilyHistoryService(
     IFamilySubSectionRepository familySubSectionRepository
 ) : IFamilyHistoryService
 {
-    #region LifeHistory
+    #region FamilyHistory
     public async Task CreateFamilyHistoryAsync(ClaimsPrincipal me, FamilyHistoryRequest lifeHistory)
     {
         var myId = ClaimsManager.EnsureGetUserId(me)!;
@@ -36,8 +36,12 @@ public class FamilyHistoryService(
         var myId = ClaimsManager.EnsureGetUserId(me);
 
         var result = await familyHistoryRepository.ReadAsync(
-            h => h.UserId == myId,
-            queyFamilyHistoryRequest.CursorId,
+            h =>
+                h.UserId == myId
+                && (
+                    queyFamilyHistoryRequest.CursorId == null
+                    || h.Id.CompareTo(queyFamilyHistoryRequest.CursorId) < 0
+                ),
             queyFamilyHistoryRequest.Count
         );
 
@@ -106,7 +110,7 @@ public class FamilyHistoryService(
     }
     #endregion
 
-    #region LifeSubSection
+    #region FamilySubSection
     public async Task CreateFamilySubSectionAsync(
         ClaimsPrincipal me,
         FamilySubSectionRequest familySubSectionRequest
@@ -137,7 +141,7 @@ public class FamilyHistoryService(
     public async Task<List<FamilySubSectionResponse>> GetFamilySubSectionAsync(
         ClaimsPrincipal me,
         string historyId,
-        QueryFamilySubSectionRequest queryLifeSubSectionRequest
+        QueryFamilySubSectionRequest queryFamilySubSectionRequest
     )
     {
         var userId = ClaimsManager.EnsureGetUserId(me);
@@ -145,9 +149,13 @@ public class FamilyHistoryService(
         var history = await EnsureAndGetFamilyHistoryAsync(historyId);
 
         var result = await familySubSectionRepository.ReadAsync(
-            s => s.FamilyHistoryId == historyId,
-            queryLifeSubSectionRequest.CursorId,
-            queryLifeSubSectionRequest.Count
+            s =>
+                s.FamilyHistoryId == historyId
+                || (
+                    queryFamilySubSectionRequest.CursorId == null
+                    || s.Id.CompareTo(queryFamilySubSectionRequest.CursorId) < 0
+                ),
+            queryFamilySubSectionRequest.Count
         );
         return [.. result.Select(FamilySubSectionResponse.From)];
     }

@@ -36,8 +36,12 @@ public class LifeHistoryService(
         var myId = ClaimsManager.EnsureGetUserId(me);
 
         var result = await _lifeHitoryRepository.ReadAsync(
-            h => h.UserId == myId,
-            queryLifeHistoryRequest.CursorId,
+            h =>
+                h.UserId == myId
+                || (
+                    queryLifeHistoryRequest.CursorId == null
+                    && h.Id.CompareTo(queryLifeHistoryRequest.CursorId) < 0
+                ),
             queryLifeHistoryRequest.Count
         );
 
@@ -139,8 +143,12 @@ public class LifeHistoryService(
         var history = await EnsureAndGetLifeHistoryAsync(historyId);
 
         var result = await _lifeSubSectionRepository.ReadAsync(
-            s => s.LifeHistoryId == historyId,
-            queryLifeSubSectionRequest.CursorId,
+            s =>
+                s.LifeHistoryId == historyId
+                || (
+                    queryLifeSubSectionRequest.CursorId == null
+                    && s.Id.CompareTo(queryLifeSubSectionRequest.CursorId) < 0
+                ),
             queryLifeSubSectionRequest.Count
         );
         return [.. result.Select(LifeSubSectionResponse.From)];
