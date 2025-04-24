@@ -6,6 +6,6 @@ public record WillResponse(string Id, string Name, string TestaorId, string Cont
 {
     public static WillResponse From(OfficiousWill will)
     {
-        return new WillResponse(will.Id, will.Name, will.TestaorId, will.ContentId);
+        return new WillResponse(will.Id, will.Name, will.TestaorId, will.VersionId);
     }
 }

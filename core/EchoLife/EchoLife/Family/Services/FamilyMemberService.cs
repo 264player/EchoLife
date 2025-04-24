@@ -16,7 +16,7 @@ public class FamilyMemberService(IFamilyMemberRepository _familyMemberRepository
         FamilyMemberRequest familyMemberRequest
     )
     {
-        var userId = ClaimsManager.EnsureGetUserId(user);
+        var userId = ClaimsManager.GetAuthorizedUserId(user);
 
         await _familyMemberRepository.CreateAsync(
             new FamilyMember

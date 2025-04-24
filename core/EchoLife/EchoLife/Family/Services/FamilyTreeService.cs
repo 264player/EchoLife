@@ -15,7 +15,7 @@ public class FamilyTreeService(IFamilyTreeRepository _familyTreeRepository) : IF
         FamilyTreeRequest familyTreeRequest
     )
     {
-        var userId = ClaimsManager.EnsureGetUserId(user);
+        var userId = ClaimsManager.GetAuthorizedUserId(user);
 
         await _familyTreeRepository.CreateAsync(
             new FamilyTree
@@ -40,7 +40,7 @@ public class FamilyTreeService(IFamilyTreeRepository _familyTreeRepository) : IF
         FamilyTreeRequest familyTreeRequest
     )
     {
-        var userId = ClaimsManager.EnsureGetUserId(user);
+        var userId = ClaimsManager.GetAuthorizedUserId(user);
 
         var result = await EnsureAndGetFamilyTreeAsync(familyTreeId);
 

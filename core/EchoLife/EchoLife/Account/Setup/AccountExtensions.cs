@@ -45,8 +45,10 @@ public static class AccountExtensions
 
         services
             .AddIdentityCore<IdentityAccount>()
+            .AddRoles<AccountRole>()
             .AddEntityFrameworkStores<AccountDbContext>()
             .AddApiEndpoints()
+            .AddSignInManager()
             .AddDefaultTokenProviders();
 
         services
@@ -62,11 +64,10 @@ public static class AccountExtensions
         services.ConfigureApplicationCookie(options =>
         {
             options.Cookie.Name = "hollow.love";
-            // Cookie 的过期时间
+
             options.ExpireTimeSpan = TimeSpan.FromMinutes(30);
-            // 如果需要，可以设置滑动过期
             options.SlidingExpiration = true;
-            // Cookie 的安全属性
+
             options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
             options.Cookie.SameSite = SameSiteMode.None;
             options.Cookie.HttpOnly = true;
@@ -81,7 +82,12 @@ public static class AccountExtensions
             options.Password.RequiredLength = 3;
         });
 
-        services.AddScoped<IAccountService, AccountService>();
+        services
+            .AddScoped<IAccountService, AccountService>()
+            .AddScoped<
+                IUserClaimsPrincipalFactory<IdentityAccount>,
+                AccountClaimsPrincipalFactory
+            >();
 
         return services;
     }

@@ -95,7 +95,7 @@ namespace EchoLife.Tests.Integration.Will.Data
             await Sut.CreateAsync(will);
 
             // Act
-            will.ContentId = Guid.NewGuid().ToString();
+            will.VersionId = Guid.NewGuid().ToString();
             var result = await Sut.UpdateAsync(will);
 
             // Assert
@@ -103,7 +103,7 @@ namespace EchoLife.Tests.Integration.Will.Data
             Assert.Multiple(() =>
             {
                 Assert.That(result.Id, Is.EqualTo(will.Id));
-                Assert.That(result.ContentId, Is.EqualTo(will.ContentId));
+                Assert.That(result.VersionId, Is.EqualTo(will.VersionId));
             });
         }
 

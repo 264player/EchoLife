@@ -45,7 +45,7 @@ namespace EchoLife.Will.Data
         {
             var result = await OfficiousWills
                 .Where(u => u.Id == entity.Id)
-                .ExecuteUpdateAsync(will => will.SetProperty(w => w.ContentId, entity.ContentId));
+                .ExecuteUpdateAsync(will => will.SetProperty(w => w.VersionId, entity.VersionId));
             return result > 0 ? entity : null;
         }
 
@@ -59,7 +59,11 @@ namespace EchoLife.Will.Data
             int count
         )
         {
-            return await OfficiousWills.Where(express).Take(count).ToListAsync();
+            return await OfficiousWills
+                .Where(express)
+                .OrderByDescending(w => w.Id)
+                .Take(count)
+                .ToListAsync();
         }
     }
 }

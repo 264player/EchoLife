@@ -2,11 +2,12 @@
 
 public class UnknowException : InternalException
 {
-    public UnknowException(string message, Exception innerException)
-        : base(message, innerException) { }
+    public UnknowException(string error, string errorInfo, Exception innerException)
+        : base(error, errorInfo, innerException) { }
 
-    public UnknowException(string message)
-        : base(message) { }
+    public UnknowException(string error, string errorInfo)
+        : base(error, errorInfo) { }
 
-    public UnknowException() { }
+    public UnknowException()
+        : base("unknown error", "unknow") { }
 }

@@ -6,5 +6,6 @@
         public string SqlLiteConnectionString { get; set; } = null!;
         public string WillTableName { get; set; } = null!;
         public string WillVersionTableName { get; set; } = null!;
+        public string WillReviewTableName { get; set; } = null!;
     }
 }

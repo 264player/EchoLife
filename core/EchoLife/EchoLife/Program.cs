@@ -1,3 +1,5 @@
+using System.Text.Json;
+using System.Text.Json.Serialization;
 using EchoLife.Account.Setup;
 using EchoLife.Account.Validators;
 using EchoLife.Common.Setup;
@@ -32,7 +34,13 @@ public class Program
         builder.Logging.AddConsoleLogger();
         #endregion
 
-        builder.Services.AddControllers();
+        builder
+            .Services.AddControllers()
+            .AddJsonOptions(options =>
+                options.JsonSerializerOptions.Converters.Add(
+                    new JsonStringEnumConverter(JsonNamingPolicy.CamelCase)
+                )
+            );
 
         builder.Services.AddEndpointsApiExplorer();
         builder.Services.AddSwaggerGen();

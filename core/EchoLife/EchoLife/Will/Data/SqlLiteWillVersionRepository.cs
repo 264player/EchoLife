@@ -38,6 +38,14 @@ namespace EchoLife.Will.Data
                 .ToListAsync();
         }
 
+        public async Task<List<WillVersion>> ReadAsync(IEnumerable<string> versionIds)
+        {
+            return await Versions
+                .Where(v => versionIds.Contains(v.Id))
+                .OrderByDescending(v => v.Id)
+                .ToListAsync();
+        }
+
         public async Task<WillVersion?> UpdateAsync(WillVersion entity)
         {
             var result = await Versions

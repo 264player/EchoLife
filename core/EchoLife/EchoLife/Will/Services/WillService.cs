@@ -19,7 +19,7 @@ namespace EchoLife.Will.Services
             WillRequest willRequest
         )
         {
-            var userId = ClaimsManager.EnsureGetUserId(user);
+            var userId = ClaimsManager.GetAuthorizedUserId(user);
 
             var firstVersionId = IdGenerator.GenerateUlid();
             var will = new OfficiousWill
@@ -28,7 +28,7 @@ namespace EchoLife.Will.Services
                 TestaorId = userId,
                 Name = willRequest.Name,
                 WillType = WillType.SELF_WRITTEN_WILL.ToString(),
-                ContentId = firstVersionId,
+                VersionId = firstVersionId,
             };
 
             await _willVersionRepository.CreateAsync(
@@ -41,14 +41,16 @@ namespace EchoLife.Will.Services
                 }
             );
 
-            will = await _officiousWillRepository.CreateAsync(will) ?? throw new UnknowException();
+            will =
+                await _officiousWillRepository.CreateAsync(will)
+                ?? throw new UnknowException("Create fail.", "");
 
             return WillResponse.From(will);
         }
 
         public async Task<WillResponse> GetMyWillAsync(ClaimsPrincipal user, string willId)
         {
-            var userId = ClaimsManager.EnsureGetUserId(user);
+            var userId = ClaimsManager.GetAuthorizedUserId(user);
 
             var will = await EnsureGetWill(willId, userId);
 
@@ -61,7 +63,7 @@ namespace EchoLife.Will.Services
             string? cursorId
         )
         {
-            var userId = ClaimsManager.EnsureGetUserId(user);
+            var userId = ClaimsManager.GetAuthorizedUserId(user);
 
             var result = await _officiousWillRepository.ReadAsync(
                 w => w.TestaorId == userId && (cursorId == null || w.Id.CompareTo(cursorId) < 0),
@@ -73,7 +75,7 @@ namespace EchoLife.Will.Services
 
         public async Task DeleteWillAsync(ClaimsPrincipal user, string willId)
         {
-            var userId = ClaimsManager.EnsureGetUserId(user);
+            var userId = ClaimsManager.GetAuthorizedUserId(user);
 
             await EnsureGetWill(willId, userId);
 
@@ -88,11 +90,11 @@ namespace EchoLife.Will.Services
             string name
         )
         {
-            var userId = ClaimsManager.EnsureGetUserId(user);
+            var userId = ClaimsManager.GetAuthorizedUserId(user);
 
             var will = await EnsureGetWill(willId, userId);
 
-            will.ContentId = versionId;
+            will.VersionId = versionId;
             will.Name = name;
             var updatedWill =
                 await _officiousWillRepository.UpdateAsync(will) ?? throw new UnknowException();
@@ -110,7 +112,7 @@ namespace EchoLife.Will.Services
             bool isDraft
         )
         {
-            var userId = ClaimsManager.EnsureGetUserId(user);
+            var userId = ClaimsManager.GetAuthorizedUserId(user);
 
             var will = await EnsureGetWill(willId, userId);
 
@@ -127,7 +129,7 @@ namespace EchoLife.Will.Services
 
             if (!isDraft)
             {
-                will.ContentId = version.Id;
+                will.VersionId = version.Id;
                 await _officiousWillRepository.UpdateAsync(will);
             }
 
@@ -141,7 +143,7 @@ namespace EchoLife.Will.Services
             string? cursorId
         )
         {
-            var userId = ClaimsManager.EnsureGetUserId(user);
+            var userId = ClaimsManager.GetAuthorizedUserId(user);
 
             await EnsureGetWill(willId, userId);
 
@@ -150,13 +152,33 @@ namespace EchoLife.Will.Services
             return [.. result.Select(WillVersionResponse.From)];
         }
 
+        public async Task<List<WillVersionResponse>> GetWillVersionsAsync(
+            IEnumerable<string> versionIds
+        )
+        {
+            return
+            [
+                .. (await _willVersionRepository.ReadAsync(versionIds)).Select(
+                    WillVersionResponse.From
+                ),
+            ];
+        }
+
+        public async Task<WillVersionResponse> GetWillVersionAsync(string versionId)
+        {
+            return WillVersionResponse.From(
+                await _willVersionRepository.ReadAsync(versionId)
+                    ?? throw new WillVersionNotFoundException(versionId)
+            );
+        }
+
         public async Task<WillVersionResponse> UpdateWillVersionAsync(
             ClaimsPrincipal user,
             string versionId,
             WillVersionRequest willVersionRequest
         )
         {
-            var userId = ClaimsManager.EnsureGetUserId(user);
+            var userId = ClaimsManager.GetAuthorizedUserId(user);
 
             var version = await EnsureGetWillVersionAsync(versionId);
             await EnsureGetWill(version.WillId, userId);
@@ -177,7 +199,7 @@ namespace EchoLife.Will.Services
 
         public async Task DeleteWillVersionAsync(ClaimsPrincipal user, string versionId)
         {
-            var userId = ClaimsManager.EnsureGetUserId(user);
+            var userId = ClaimsManager.GetAuthorizedUserId(user);
 
             var version = await EnsureGetWillVersionAsync(versionId);
 
@@ -191,16 +213,16 @@ namespace EchoLife.Will.Services
         {
             var will =
                 await _officiousWillRepository.ReadAsync(willId)
-                ?? throw new ResourceNotFoundException();
+                ?? throw new WillNotFoundException(willId);
             return will;
         }
 
-        protected async Task<OfficiousWill> EnsureGetWill(string willId, string testaorId)
+        protected async Task<OfficiousWill> EnsureGetWill(string willId, string userId)
         {
             var will = await EnsureGetWill(willId);
-            if (will.TestaorId != testaorId)
+            if (will.TestaorId != userId)
             {
-                throw new ForbiddenException();
+                throw new ForbiddenException(userId);
             }
             return will;
         }
@@ -209,7 +231,7 @@ namespace EchoLife.Will.Services
         {
             var version =
                 await _willVersionRepository.ReadAsync(willVersionId)
-                ?? throw new ResourceNotFoundException();
+                ?? throw new WillVersionNotFoundException(willVersionId);
             return version;
         }
     }

@@ -15,7 +15,7 @@ public static class FluentValidationExtensions
         if (!result.IsValid)
         {
             var ex = new ValidationException(result.Errors);
-            throw new EntityArgumentException(ex.Message, ex);
+            throw new EntityArgumentException("validation exception", ex.Message, ex);
         }
     }
 }

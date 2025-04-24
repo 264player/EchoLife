@@ -63,7 +63,7 @@ public class FamilyDbContext(
             subSection.Property(s => s.FamilyHistoryId).IsRequired();
             subSection.Property(s => s.Title).IsRequired();
             subSection.Property(s => s.Content).IsRequired();
-            subSection.Property(s => s.Deep).IsRequired();
+            subSection.Property(s => s.Index).IsRequired();
         });
     }
 }

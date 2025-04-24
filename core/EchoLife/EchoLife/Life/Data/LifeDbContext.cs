@@ -67,7 +67,7 @@ public class LifeDbContext(
             life.Property(l => l.Title).IsRequired();
             life.Property(l => l.Content).IsRequired();
             life.Property(l => l.LifeHistoryId).IsRequired();
-            life.Property(l => l.Deep).IsRequired();
+            life.Property(l => l.Index).IsRequired();
             life.Property(l => l.CreatedAt).IsRequired();
             life.Property(l => l.UpdatedAt).IsRequired();
         });

@@ -21,7 +21,7 @@ namespace EchoLife.Tests.Integration.Will.Utils
             {
                 Id = id ?? NewGuid().ToString(),
                 WillType = willType ?? NewGuid().ToString(),
-                ContentId = contentId ?? NewGuid().ToString(),
+                VersionId = contentId ?? NewGuid().ToString(),
                 TestaorId = testaorId ?? NewGuid().ToString(),
             };
         }

@@ -2,11 +2,12 @@
 
 public class ForbiddenException : InternalException
 {
-    public ForbiddenException(string message, Exception innerException)
-        : base(message, innerException) { }
+    public ForbiddenException(string error, string errorInfo, Exception innerException)
+        : base(error, errorInfo, innerException) { }
 
-    public ForbiddenException(string message)
-        : base(message) { }
+    public ForbiddenException(string error, string errorInfo)
+        : base(error, errorInfo) { }
 
-    public ForbiddenException() { }
+    public ForbiddenException(string userId)
+        : base("Forbidden", $"User {userId}, you do not possess the required identity.") { }
 }

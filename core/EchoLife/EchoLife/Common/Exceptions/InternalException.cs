@@ -1,12 +1,25 @@
-﻿namespace EchoLife.Common.Exceptions;
+﻿using System.Text.Json;
+
+namespace EchoLife.Common.Exceptions;
 
 public class InternalException : Exception
 {
-    public InternalException(string message, Exception innerException)
-        : base(message, innerException) { }
+    public ExceptionInfo ExceptionInfo { get; set; }
 
-    public InternalException(string message)
-        : base(message) { }
+    public InternalException(string error, string errorInfo, Exception innerException)
+        : base(errorInfo, innerException)
+    {
+        ExceptionInfo = new ExceptionInfo { Error = error, ErrorInfo = errorInfo };
+    }
 
-    public InternalException() { }
+    public InternalException(string error, string errorInfo)
+        : base(errorInfo)
+    {
+        ExceptionInfo = new ExceptionInfo { Error = error, ErrorInfo = errorInfo };
+    }
+
+    public override string ToString()
+    {
+        return JsonSerializer.Serialize(ExceptionInfo);
+    }
 }

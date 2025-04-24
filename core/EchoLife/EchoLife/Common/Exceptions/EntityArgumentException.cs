@@ -2,11 +2,9 @@
 
 public class EntityArgumentException : InternalException
 {
-    public EntityArgumentException(string message, Exception innerException)
-        : base(message, innerException) { }
+    public EntityArgumentException(string error, string errorInfo, Exception innerException)
+        : base(error, errorInfo, innerException) { }
 
-    public EntityArgumentException(string message)
-        : base(message) { }
-
-    public EntityArgumentException() { }
+    public EntityArgumentException(string error, string errorInfo)
+        : base(error, errorInfo) { }
 }

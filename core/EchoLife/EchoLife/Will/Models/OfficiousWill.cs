@@ -16,7 +16,7 @@ namespace EchoLife.Will.Models
         /// <summary>
         /// The current version`s Id.
         /// </summary>
-        public string ContentId { get; set; } = null!;
+        public string VersionId { get; set; } = null!;
         public string WillType { get; set; } = null!;
     }
 }

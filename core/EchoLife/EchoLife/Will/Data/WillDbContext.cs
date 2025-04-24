@@ -12,6 +12,7 @@ namespace EchoLife.Will.Data
         public WillDbContextSettings Settings { get; set; } = willDbContextSettings.Value;
         public DbSet<OfficiousWill> Wills { get; set; } = null!;
         public DbSet<WillVersion> WillVersions { get; set; } = null!;
+        public DbSet<WillReview> WillReviews { get; set; } = null!;
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -49,7 +50,33 @@ namespace EchoLife.Will.Data
                 wversion.Property(w => w.UpdatedAt).IsRequired();
             });
 
+            CreatingWillReviews(modelBuilder);
+
             base.OnModelCreating(modelBuilder);
+        }
+
+        protected void CreatingWillReviews(ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<WillReview>(w =>
+            {
+                w.ToTable(Settings.WillReviewTableName);
+
+                w.HasKey(w => w.Id);
+
+                w.Property(w => w.Id).IsRequired();
+
+                w.Property(w => w.WillId).IsRequired();
+
+                w.Property(w => w.ReviewerId).IsRequired();
+
+                w.Property(w => w.Status).IsRequired();
+
+                w.Property(w => w.CreatedAt).IsRequired();
+
+                w.Property(w => w.ReviewedAt);
+
+                w.Property(w => w.Comments);
+            });
         }
     }
 }

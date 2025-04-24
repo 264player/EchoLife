@@ -2,11 +2,9 @@
 
 public class ResourceNotFoundException : InternalException
 {
-    public ResourceNotFoundException(string message, Exception innerException)
-        : base(message, innerException) { }
+    public ResourceNotFoundException(string error, string errorInfo, Exception innerException)
+        : base(error, errorInfo, innerException) { }
 
-    public ResourceNotFoundException(string message)
-        : base(message) { }
-
-    public ResourceNotFoundException() { }
+    public ResourceNotFoundException(string error, string errorInfo)
+        : base(error, errorInfo) { }
 }

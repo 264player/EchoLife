@@ -16,7 +16,7 @@ public class FamilyHistoryService(
     #region FamilyHistory
     public async Task CreateFamilyHistoryAsync(ClaimsPrincipal me, FamilyHistoryRequest lifeHistory)
     {
-        var myId = ClaimsManager.EnsureGetUserId(me)!;
+        var myId = ClaimsManager.GetAuthorizedUserId(me)!;
 
         await familyHistoryRepository.CreateAsync(
             new FamilyHistory
@@ -33,7 +33,7 @@ public class FamilyHistoryService(
         QueryFamilyHistoryRequest queyFamilyHistoryRequest
     )
     {
-        var myId = ClaimsManager.EnsureGetUserId(me);
+        var myId = ClaimsManager.GetAuthorizedUserId(me);
 
         var result = await familyHistoryRepository.ReadAsync(
             h =>
@@ -53,12 +53,12 @@ public class FamilyHistoryService(
         string familyHistoryId
     )
     {
-        var myId = ClaimsManager.EnsureGetUserId(me);
+        var myId = ClaimsManager.GetAuthorizedUserId(me);
 
         var result = await EnsureAndGetFamilyHistoryAsync(familyHistoryId);
         if (result.UserId != myId)
         {
-            throw new ForbiddenException();
+            throw new ForbiddenException(myId);
         }
 
         return FamilyHistoryResponse.From(result);
@@ -72,10 +72,10 @@ public class FamilyHistoryService(
     {
         var familyHistory = await EnsureAndGetFamilyHistoryAsync(familyHistoryId);
 
-        var myId = ClaimsManager.EnsureGetUserId(me);
+        var myId = ClaimsManager.GetAuthorizedUserId(me);
         if (familyHistory.UserId != myId)
         {
-            throw new ForbiddenException();
+            throw new ForbiddenException(myId);
         }
 
         await familyHistoryRepository.UpdateAsync(Update(familyHistory, familyHistoryRequest));
@@ -92,12 +92,12 @@ public class FamilyHistoryService(
 
     public async Task DeleteFamilyHistoryAsync(ClaimsPrincipal me, string familyHistoryId)
     {
-        var myId = ClaimsManager.EnsureGetUserId(me);
+        var myId = ClaimsManager.GetAuthorizedUserId(me);
 
         var result = await EnsureAndGetFamilyHistoryAsync(familyHistoryId);
         if (result.UserId != myId)
         {
-            throw new ForbiddenException();
+            throw new ForbiddenException(myId);
         }
 
         await familyHistoryRepository.DeleteAsync(familyHistoryId);
@@ -116,13 +116,13 @@ public class FamilyHistoryService(
         FamilySubSectionRequest familySubSectionRequest
     )
     {
-        var userId = ClaimsManager.EnsureGetUserId(me);
+        var userId = ClaimsManager.GetAuthorizedUserId(me);
 
         var history = await EnsureAndGetFamilyHistoryAsync(familySubSectionRequest.FamilyHistoryId);
 
         if (userId != history.UserId)
         {
-            throw new ForbiddenException();
+            throw new ForbiddenException(myId);
         }
 
         await familySubSectionRepository.CreateAsync(
@@ -133,7 +133,7 @@ public class FamilyHistoryService(
                 Content = familySubSectionRequest.Content,
                 FamilyHistoryId = familySubSectionRequest.FamilyHistoryId,
                 FatherId = familySubSectionRequest.FatherId,
-                Deep = familySubSectionRequest.Deep,
+                Index = familySubSectionRequest.Deep,
             }
         );
     }
@@ -144,7 +144,7 @@ public class FamilyHistoryService(
         QueryFamilySubSectionRequest queryFamilySubSectionRequest
     )
     {
-        var userId = ClaimsManager.EnsureGetUserId(me);
+        var userId = ClaimsManager.GetAuthorizedUserId(me);
 
         var history = await EnsureAndGetFamilyHistoryAsync(historyId);
 
@@ -169,9 +169,9 @@ public class FamilyHistoryService(
 
         var history = await EnsureAndGetFamilyHistoryAsync(result.FamilyHistoryId);
 
-        if (history.UserId != ClaimsManager.EnsureGetUserId(me))
+        if (history.UserId != ClaimsManager.GetAuthorizedUserId(me))
         {
-            throw new ForbiddenException();
+            throw new ForbiddenException(myId);
         }
 
         return FamilySubSectionResponse.From(result);
@@ -187,9 +187,9 @@ public class FamilyHistoryService(
 
         var history = await EnsureAndGetFamilyHistoryAsync(result.FamilyHistoryId);
 
-        if (history.UserId != ClaimsManager.EnsureGetUserId(me))
+        if (history.UserId != ClaimsManager.GetAuthorizedUserId(me))
         {
-            throw new ForbiddenException();
+            throw new ForbiddenException(myId);
         }
 
         await familySubSectionRepository.UpdateAsync(Update(result, lifeSubSectionRequest));
@@ -211,9 +211,9 @@ public class FamilyHistoryService(
 
         var history = await EnsureAndGetFamilyHistoryAsync(result.FamilyHistoryId);
 
-        if (history.UserId != ClaimsManager.EnsureGetUserId(me))
+        if (history.UserId != ClaimsManager.GetAuthorizedUserId(me))
         {
-            throw new ForbiddenException();
+            throw new ForbiddenException(myId);
         }
 
         await familySubSectionRepository.DeleteAsync(sectionId);

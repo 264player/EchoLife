@@ -16,7 +16,7 @@ public class LifeHistoryService(
     #region LifeHistory
     public async Task CreateLifeHistoryAsync(ClaimsPrincipal me, LifeHistoryRequest lifeHistory)
     {
-        var myId = ClaimsManager.EnsureGetUserId(me)!;
+        var myId = ClaimsManager.GetAuthorizedUserId(me)!;
 
         await _lifeHitoryRepository.CreateAsync(
             new LifeHistory
@@ -33,7 +33,7 @@ public class LifeHistoryService(
         QueryLifeHistoryRequest queryLifeHistoryRequest
     )
     {
-        var myId = ClaimsManager.EnsureGetUserId(me);
+        var myId = ClaimsManager.GetAuthorizedUserId(me);
 
         var result = await _lifeHitoryRepository.ReadAsync(
             h =>
@@ -50,7 +50,7 @@ public class LifeHistoryService(
 
     public async Task<LifeHistory?> GetLifeHistoryAsync(ClaimsPrincipal me, string lifeHistoryId)
     {
-        var myId = ClaimsManager.EnsureGetUserId(me);
+        var myId = ClaimsManager.GetAuthorizedUserId(me);
 
         var result = await EnsureAndGetLifeHistoryAsync(lifeHistoryId);
         if (result.UserId != myId)
@@ -69,7 +69,7 @@ public class LifeHistoryService(
     {
         var lifeHitsory = await EnsureAndGetLifeHistoryAsync(lifeHistoryId);
 
-        var myId = ClaimsManager.EnsureGetUserId(me);
+        var myId = ClaimsManager.GetAuthorizedUserId(me);
         if (lifeHitsory.UserId != myId)
         {
             throw new ForbiddenException();
@@ -86,7 +86,7 @@ public class LifeHistoryService(
 
     public async Task DeleteLifeHistoryAsync(ClaimsPrincipal me, string lifeHistoryId)
     {
-        var myId = ClaimsManager.EnsureGetUserId(me);
+        var myId = ClaimsManager.GetAuthorizedUserId(me);
 
         var result = await EnsureAndGetLifeHistoryAsync(lifeHistoryId);
         if (result.UserId != myId)
@@ -110,7 +110,7 @@ public class LifeHistoryService(
         LifeSubSectionRequest lifeSubSectionRequest
     )
     {
-        var userId = ClaimsManager.EnsureGetUserId(me);
+        var userId = ClaimsManager.GetAuthorizedUserId(me);
 
         var history = await EnsureAndGetLifeHistoryAsync(lifeSubSectionRequest.LifeHistoryId);
 
@@ -127,7 +127,7 @@ public class LifeHistoryService(
                 Content = lifeSubSectionRequest.Content,
                 LifeHistoryId = lifeSubSectionRequest.LifeHistoryId,
                 FatherId = lifeSubSectionRequest.FatherId,
-                Deep = lifeSubSectionRequest.Deep,
+                Index = lifeSubSectionRequest.Deep,
             }
         );
     }
@@ -138,7 +138,7 @@ public class LifeHistoryService(
         QueryLifeSubSectionRequest queryLifeSubSectionRequest
     )
     {
-        var userId = ClaimsManager.EnsureGetUserId(me);
+        var userId = ClaimsManager.GetAuthorizedUserId(me);
 
         var history = await EnsureAndGetLifeHistoryAsync(historyId);
 
@@ -163,7 +163,7 @@ public class LifeHistoryService(
 
         var history = await EnsureAndGetLifeHistoryAsync(result.LifeHistoryId);
 
-        if (history.UserId != ClaimsManager.EnsureGetUserId(me))
+        if (history.UserId != ClaimsManager.GetAuthorizedUserId(me))
         {
             throw new ForbiddenException();
         }
@@ -181,7 +181,7 @@ public class LifeHistoryService(
 
         var history = await EnsureAndGetLifeHistoryAsync(result.LifeHistoryId);
 
-        if (history.UserId != ClaimsManager.EnsureGetUserId(me))
+        if (history.UserId != ClaimsManager.GetAuthorizedUserId(me))
         {
             throw new ForbiddenException();
         }
@@ -205,7 +205,7 @@ public class LifeHistoryService(
 
         var history = await EnsureAndGetLifeHistoryAsync(result.LifeHistoryId);
 
-        if (history.UserId != ClaimsManager.EnsureGetUserId(me))
+        if (history.UserId != ClaimsManager.GetAuthorizedUserId(me))
         {
             throw new ForbiddenException();
         }

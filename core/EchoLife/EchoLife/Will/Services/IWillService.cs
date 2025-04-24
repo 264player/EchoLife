@@ -31,6 +31,8 @@ namespace EchoLife.Will.Services
             int count,
             string? cursorId
         );
+        Task<List<WillVersionResponse>> GetWillVersionsAsync(IEnumerable<string> versionIds);
+        Task<WillVersionResponse> GetWillVersionAsync(string versionId);
         Task<WillVersionResponse> UpdateWillVersionAsync(
             ClaimsPrincipal user,
             string versionId,

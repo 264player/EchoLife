@@ -21,7 +21,7 @@ public record FamilySubSectionResponse(
             familySubSection.Content,
             familySubSection.FatherId,
             familySubSection.FamilyHistoryId,
-            familySubSection.Deep,
+            familySubSection.Index,
             familySubSection.CreatedAt,
             familySubSection.UpdatedAt
         );

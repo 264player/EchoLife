@@ -1,5 +1,6 @@
 ﻿using System.Security.Claims;
 using EchoLife.Account.Dtos;
+using EchoLife.Account.Exceptions;
 using EchoLife.Account.Models;
 using EchoLife.Common.Exceptions;
 using EchoLife.Common.Validation;
@@ -48,14 +49,16 @@ public class AccountService(
         var result = await _userManager.GetUserAsync(user);
         if (result == null)
         {
-            throw new ResourceNotFoundException();
+            throw new UserNotFoundException(ClaimsManager.GetAuthorizedUserId(user));
         }
         await _signInManager.RefreshSignInAsync(result);
     }
 
     public async Task<IdentiryAccountResponse?> GetUserInfoAsync(ClaimsPrincipal user)
     {
-        var result = await _userManager.GetUserAsync(user) ?? throw new ForbiddenException();
+        var result =
+            await _userManager.GetUserAsync(user)
+            ?? throw new ForbiddenException(ClaimsManager.GetAuthorizedUserId(user));
         return IdentiryAccountResponse.From(result);
     }
 }

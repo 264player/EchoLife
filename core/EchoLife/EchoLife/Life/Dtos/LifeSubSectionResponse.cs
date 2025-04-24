@@ -21,7 +21,7 @@ public record LifeSubSectionResponse(
             lifeSubSection.Content,
             lifeSubSection.FatherId,
             lifeSubSection.LifeHistoryId,
-            lifeSubSection.Deep,
+            lifeSubSection.Index,
             lifeSubSection.CreatedAt,
             lifeSubSection.UpdatedAt
         );

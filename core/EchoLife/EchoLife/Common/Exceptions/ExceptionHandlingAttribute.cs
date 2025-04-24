@@ -8,7 +8,22 @@ public class ExceptionHandlingAttribute : ExceptionFilterAttribute
 {
     public override void OnException(ExceptionContext context)
     {
-        context.Result = new JsonResult(new { Error = context.Exception.Message })
+        if (context.Exception is InternalException e)
+        {
+            context.Result = new JsonResult(e.ExceptionInfo)
+            {
+                StatusCode = (int)HandleException(context.Exception),
+            };
+            return;
+        }
+
+        context.Result = new JsonResult(
+            new ExceptionInfo
+            {
+                Error = "Internal Exception",
+                ErrorInfo = context.Exception.Message,
+            }
+        )
         {
             StatusCode = (int)HandleException(context.Exception),
         };
@@ -16,12 +31,26 @@ public class ExceptionHandlingAttribute : ExceptionFilterAttribute
 
     public override Task OnExceptionAsync(ExceptionContext context)
     {
-        return Task.FromResult(
-            context.Result = new JsonResult(new { Error = context.Exception.Message })
+        if (context.Exception is InternalException e)
+        {
+            context.Result = new JsonResult(e.ExceptionInfo)
             {
                 StatusCode = (int)HandleException(context.Exception),
+            };
+            return Task.CompletedTask;
+        }
+
+        context.Result = new JsonResult(
+            new ExceptionInfo
+            {
+                Error = "Internal Exception",
+                ErrorInfo = context.Exception.Message,
             }
-        );
+        )
+        {
+            StatusCode = (int)HandleException(context.Exception),
+        };
+        return Task.CompletedTask;
     }
 
     public static HttpStatusCode HandleException(Exception exception)

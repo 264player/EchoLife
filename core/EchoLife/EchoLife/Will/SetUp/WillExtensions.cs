@@ -42,6 +42,10 @@ namespace EchoLife.Will.SetUp
                 .AddScoped<IWillVersionRepository, SqlLiteWillVersionRepository>()
                 .AddScoped<IWillService, WillService>();
 
+            services
+                .AddScoped<IWillReviewRepository, SqlLiteWillReviewRepository>()
+                .AddScoped<IWillReviewService, WillReviewService>();
+
             return services;
         }
 
