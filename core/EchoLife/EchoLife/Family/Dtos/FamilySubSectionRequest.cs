@@ -5,5 +5,5 @@ public record FamilySubSectionRequest(
     string Content,
     string FamilyHistoryId,
     string? FatherId,
-    int Deep
+    int Index
 );

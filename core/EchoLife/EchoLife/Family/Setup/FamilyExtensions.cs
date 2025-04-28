@@ -42,7 +42,7 @@ public static class FamilyExtensions
             .AddScoped<IFamilyTreeRepository, SqlLiteFamilyTreeRepository>()
             .AddScoped<IFamilyMemberRepository, SqlLiteFamilyMemberRepotisory>()
             .AddScoped<IFamilyHistoryService, FamilyHistoryService>()
-            .AddScoped<IFamilyTreeService, FamilyTreeService>();
+            .AddScoped<IFamilyService, FamilyService>();
 
         return services;
     }
