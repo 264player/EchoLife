@@ -51,7 +51,7 @@ public class LifePointService(
 
         if (point == null || (point.UserId != myId && point.Hidden))
         {
-            throw new ResourceNotFoundException();
+            throw new LifePointNotFoundException(pointId);
         }
 
         return LifePointResponse.From(point);
@@ -87,11 +87,11 @@ public class LifePointService(
     {
         var point = await EnsureAndGetLifePoint(pointId);
 
-        var myId = ClaimsManager.GetUserId(me);
+        var myId = ClaimsManager.GetAuthorizedUserId(me);
 
         if (point.UserId != myId)
         {
-            throw new ForbiddenException();
+            throw new ForbiddenException(myId);
         }
 
         var updatedPoint =
@@ -110,36 +110,47 @@ public class LifePointService(
 
     public async Task DeleteLifePointAsync(ClaimsPrincipal me, string pointId)
     {
+        var myId = ClaimsManager.GetAuthorizedUserId(me);
         var point = await EnsureAndGetLifePoint(pointId);
 
-        if (point.UserId != ClaimsManager.GetUserId(me))
+        if (point.UserId != myId)
         {
-            throw new ForbiddenException();
+            throw new ForbiddenException(myId);
         }
 
         await _lifePointRepository.DeleteAsync(pointId);
     }
 
-    public async Task JoinLifePointAsync(string userId, string pointId)
+    public async Task JoinLifePointAsync(
+        ClaimsPrincipal me,
+        string pointId,
+        IEnumerable<string> userIdList
+    )
     {
-        await _lifePointUserMapRepository.CreateAsync(
-            new PointUserMap
-            {
-                Id = Guid.NewGuid().ToString(),
-                UserId = userId,
-                PointId = pointId,
-            }
-        );
+        string? myId = ClaimsManager.GetAuthorizedUserId(me);
+
+        foreach (var userId in userIdList)
+        {
+            await _lifePointUserMapRepository.CreateAsync(
+                new PointUserMap
+                {
+                    Id = Guid.NewGuid().ToString(),
+                    UserId = userId,
+                    PointId = pointId,
+                }
+            );
+        }
     }
 
-    public async Task LeaveLifePointAsync(string userId, string pointId)
+    public async Task LeaveLifePointAsync(ClaimsPrincipal me, string pointId)
     {
-        await _lifePointUserMapRepository.DeleteAsync(userId, pointId);
+        string? myId = ClaimsManager.GetAuthorizedUserId(me);
+        await _lifePointUserMapRepository.DeleteAsync(myId, pointId);
     }
 
     private async Task<LifePoint> EnsureAndGetLifePoint(string pointId)
     {
         return await _lifePointRepository.ReadAsync(pointId)
-            ?? throw new ResourceNotFoundException();
+            ?? throw new LifePointNotFoundException(pointId);
     }
 }

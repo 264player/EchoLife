@@ -5,5 +5,5 @@ public record LifeSubSectionRequest(
     string Content,
     string LifeHistoryId,
     string? FatherId,
-    int Deep
+    int Index
 );

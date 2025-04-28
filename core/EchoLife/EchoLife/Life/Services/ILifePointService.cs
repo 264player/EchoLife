@@ -19,6 +19,6 @@ public interface ILifePointService
         LifePointRequest lifePoint
     );
     Task DeleteLifePointAsync(ClaimsPrincipal me, string pointId);
-    Task JoinLifePointAsync(string userId, string pointId);
-    Task LeaveLifePointAsync(string userId, string pointId);
+    Task JoinLifePointAsync(ClaimsPrincipal me, string pointId, IEnumerable<string> userIdList);
+    Task LeaveLifePointAsync(ClaimsPrincipal me, string pointId);
 }

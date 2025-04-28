@@ -56,4 +56,23 @@ public class LifePointController(ILifePointService _lifePointService) : Controll
         await _lifePointService.DeleteLifePointAsync(User, pointId);
         return NoContent();
     }
+
+    [Authorize]
+    [HttpPost("life/points/{pointId}/join")]
+    public async Task<IActionResult> InviteUserToPoint(
+        [FromRoute] string pointId,
+        [FromBody] IEnumerable<string> userIdList
+    )
+    {
+        await _lifePointService.JoinLifePointAsync(User, pointId, userIdList);
+        return Ok();
+    }
+
+    [Authorize]
+    [HttpDelete("life/points/{pointId}/leave")]
+    public async Task<IActionResult> LeavePoint([FromRoute] string pointId)
+    {
+        await _lifePointService.LeaveLifePointAsync(User, pointId);
+        return Ok();
+    }
 }
