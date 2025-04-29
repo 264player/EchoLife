@@ -5,6 +5,7 @@ namespace EchoLife.Family.Services;
 
 public interface IFamilyService
 {
+    #region Family
     Task<FamilyTreeResponse> CreateFamilyTreeAsync(
         ClaimsPrincipal user,
         FamilyTreeRequest familyTreeRequest
@@ -21,4 +22,15 @@ public interface IFamilyService
         FamilyTreeRequest familyTreeRequest
     );
     Task DeleteFamilyTreeAsync(ClaimsPrincipal me, string familyTreeId);
+    #endregion
+
+    #region Family Member
+    Task CreateFamilyMemberAsync(ClaimsPrincipal user, FamilyMemberRequest familyMemberRequest);
+    Task<List<FamilyMemberResponse>> GetFamilyMemberAsync(string familyTreeId);
+    Task<FamilyMemberResponse> UpdateFamilyMemberAsync(
+        ClaimsPrincipal me,
+        FamilyMemberRequest familyMemberRequest
+    );
+    Task DeleteFamilyMemberAsync(ClaimsPrincipal me, string familyMemberId);
+    #endregion
 }

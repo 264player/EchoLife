@@ -13,6 +13,7 @@ public class FamilyService(
     IFamilyMemberRepository _familyMemberRepository
 ) : IFamilyService
 {
+    #region Family
     public async Task<FamilyTreeResponse> CreateFamilyTreeAsync(
         ClaimsPrincipal user,
         FamilyTreeRequest familyTreeRequest
@@ -110,6 +111,7 @@ public class FamilyService(
             throw new ForbiddenException(userId);
         }
     }
+    #endregion
 
     #region Family Member
 
@@ -172,7 +174,7 @@ public class FamilyService(
         await _familyMemberRepository.DeleteAsync(familyMemberId);
     }
 
-    public async Task<FamilyMember> EnsureAndGetFamilyMemberAsync(string memberId)
+    private async Task<FamilyMember> EnsureAndGetFamilyMemberAsync(string memberId)
     {
         return await _familyMemberRepository.ReadAsync(memberId)
             ?? throw new FamilyMemberNotFoundException(memberId);

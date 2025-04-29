@@ -29,6 +29,11 @@ public class SqlLiteFamilyMemberRepotisory(FamilyDbContext _familyDbContext)
         return await FamilyMembers.Where(express).Take(count).ToListAsync();
     }
 
+    public async Task<List<FamilyMember>> ReadByFamilyIdAsync(string familyId)
+    {
+        return await FamilyMembers.Where(m => m.FamilyId == familyId).ToListAsync();
+    }
+
     public async Task<FamilyMember?> UpdateAsync(FamilyMember entity)
     {
         var result = await FamilyMembers

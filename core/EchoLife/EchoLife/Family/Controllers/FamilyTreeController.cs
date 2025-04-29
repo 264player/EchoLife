@@ -10,10 +10,7 @@ namespace EchoLife.Family.Controllers;
 [Route("api")]
 [ApiController]
 [ExceptionHandling]
-public class FamilyTreeController(
-    IFamilyService _familyTreeService,
-    IFamilyMemberService _familyMemberService
-) : ControllerBase
+public class FamilyTreeController(IFamilyService _familyTreeService) : ControllerBase
 {
     [HttpPost("families")]
     public async Task<IActionResult> PostFamily([FromBody] FamilyTreeRequest familyTreeRequest)
@@ -47,7 +44,7 @@ public class FamilyTreeController(
     [HttpDelete("families/{familyId}")]
     public async Task<IActionResult> DeleteFamily(string familyId)
     {
-        await _familyTreeService.DeleteFamilyTreeAsync(User, familyTreeId);
+        await _familyTreeService.DeleteFamilyTreeAsync(User, familyId);
         return NoContent();
     }
 }

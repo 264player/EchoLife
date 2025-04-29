@@ -20,6 +20,11 @@ public class SqlLiteFamilyTreeRepository(FamilyDbContext _familyDbContext) : IFa
         return await FamilyTrees.Where(h => h.Id == id).SingleOrDefaultAsync();
     }
 
+    public async Task<List<FamilyTree>> ReadAsync(IEnumerable<string> ids)
+    {
+        return await FamilyTrees.Where(f => ids.Contains(f.Id)).ToListAsync();
+    }
+
     public async Task<List<FamilyTree>> ReadAsync(
         Expression<Func<FamilyTree, bool>> express,
         int count
