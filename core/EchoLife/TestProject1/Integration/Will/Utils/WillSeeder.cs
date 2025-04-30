@@ -1,8 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using EchoLife.Common;
+using EchoLife.Tests.Integration.Utils;
 using EchoLife.Will.Models;
 using static System.Guid;
 
@@ -10,38 +7,33 @@ namespace EchoLife.Tests.Integration.Will.Utils
 {
     internal static class WillSeeder
     {
-        public static OfficiousWill SeedOfficiousWill(
-            string? id = null,
-            string? willType = null,
-            string? contentId = null,
-            string? testaorId = null
-        )
+        public static OfficiousWill SeedOfficiousWill(Action<OfficiousWill>? will = null)
         {
-            return new OfficiousWill
-            {
-                Id = id ?? NewGuid().ToString(),
-                WillType = willType ?? NewGuid().ToString(),
-                VersionId = contentId ?? NewGuid().ToString(),
-                TestaorId = testaorId ?? NewGuid().ToString(),
-            };
+            return will.Modify(
+                new OfficiousWill
+                {
+                    Id = IdGenerator.GenerateUlid(),
+                    Name = NewGuid().ToString(),
+                    WillType = NewGuid().ToString(),
+                    VersionId = NewGuid().ToString(),
+                    TestaorId = NewGuid().ToString(),
+                }
+            );
         }
 
-        public static WillVersion SeedWillVersion(
-            string? id = null,
-            string? willId = null,
-            string? content = null,
-            string? willType = null,
-            DateTime? dateTime = null
-        )
+        public static WillVersion SeedWillVersion(Action<WillVersion>? willVersion = null)
         {
-            return new WillVersion
-            {
-                Id = id ?? NewGuid().ToString(),
-                WillId = willId ?? NewGuid().ToString(),
-                Content = content ?? NewGuid().ToString(),
-                WillType = willType ?? NewGuid().ToString(),
-                CreatedAt = dateTime ?? DateTime.UtcNow,
-            };
+            return willVersion.Modify(
+                new WillVersion
+                {
+                    Id = IdGenerator.GenerateUlid(),
+                    Content = NewGuid().ToString(),
+                    WillId = NewGuid().ToString(),
+                    WillType = NewGuid().ToString(),
+                    CreatedAt = DateTime.UtcNow,
+                    UpdatedAt = DateTime.UtcNow,
+                }
+            );
         }
     }
 }

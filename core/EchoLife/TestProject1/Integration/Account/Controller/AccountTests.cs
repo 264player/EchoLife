@@ -139,7 +139,8 @@ internal class AccountTests : ControllerTestsBase
 
     [Test]
     public async Task Logout_WhenAuthorized_ShouldSuccess()
-    { // Arrange
+    {
+        // Arrange
         var password = "Passw0rd";
         var registerRequest = AccountSeeder.SeedRegisterRequest(
             NewGuid().ToString("N"),
@@ -150,6 +151,8 @@ internal class AccountTests : ControllerTestsBase
 
         // Act
         var response = await httpClient.GetAsync(UrlPackage.Logout());
+
+        var stirng = await response.Content.ReadAsStringAsync();
 
         // Assert
         Assert.Multiple(() =>

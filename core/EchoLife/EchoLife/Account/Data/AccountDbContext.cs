@@ -10,6 +10,5 @@ public class AccountDbContext(DbContextOptions<AccountDbContext> options)
     protected override void OnModelCreating(ModelBuilder builder)
     {
         base.OnModelCreating(builder);
-        builder.HasDefaultSchema("identity");
     }
 }

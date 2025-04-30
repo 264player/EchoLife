@@ -65,7 +65,7 @@ namespace EchoLife.Will.Data
 
                 w.Property(w => w.Id).IsRequired();
 
-                w.Property(w => w.WillId).IsRequired();
+                w.Property(w => w.UserId).IsRequired();
 
                 w.Property(w => w.ReviewerId).IsRequired();
 

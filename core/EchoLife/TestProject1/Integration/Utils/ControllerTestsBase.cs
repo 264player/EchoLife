@@ -60,6 +60,16 @@ namespace EchoLife.Tests.Integration.Utils
                 Assert.That(response.StatusCode, Is.EqualTo(HttpStatusCode.OK));
                 Assert.That(response.Headers.Contains("Set-Cookie"), Is.True);
             });
+
+            if (response.Headers.TryGetValues("Set-Cookie", out var values))
+            {
+                var cookies = values.Select(v => v.Split(';')[0]).ToList();
+
+                var cookieHeader = string.Join("; ", cookies);
+
+                result.DefaultRequestHeaders.Add("Cookie", cookieHeader);
+            }
+
             return result;
         }
     }

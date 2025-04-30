@@ -2,11 +2,12 @@ using System.Text.Json;
 using System.Text.Json.Serialization;
 using EchoLife.Account.Setup;
 using EchoLife.Account.Validators;
+using EchoLife.Common.AIAgent.TogetherAI.Text.Setup;
 using EchoLife.Common.Setup;
 using EchoLife.Family.Setup;
 using EchoLife.Life.Setup;
 using EchoLife.User.Setup;
-using EchoLife.Will.SetUp;
+using EchoLife.Will.Setup;
 using FluentValidation;
 
 namespace EchoLife;
@@ -28,6 +29,7 @@ public class Program
         builder.Services.AddLife(builder.Configuration);
         builder.Services.AddWill(builder.Configuration);
         builder.Services.AddFamily(builder.Configuration);
+        builder.Services.AddTextToTextAiAgent(builder.Configuration);
         #endregion
 
         #region Logger
@@ -52,7 +54,7 @@ public class Program
                 builder =>
                 {
                     builder
-                        .WithOrigins("http://localhost:5173")
+                        .WithOrigins("http://localhost:5173", "http://localhost")
                         .AllowAnyMethod()
                         .AllowAnyHeader()
                         .AllowCredentials();

@@ -35,7 +35,7 @@ public class WillReviewController(IWillReviewService _willReviewService) : Contr
     public async Task<IActionResult> CompleteHumanReview(
         [FromRoute] string reviewId,
         [FromBody] WillReviewStatus willReviewStatus,
-        [FromBody] string comment
+        string comment
     )
     {
         await _willReviewService.CompleteReview(User, reviewId, comment, willReviewStatus);

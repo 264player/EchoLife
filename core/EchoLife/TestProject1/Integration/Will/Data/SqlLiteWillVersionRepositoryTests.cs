@@ -1,7 +1,6 @@
 ﻿using EchoLife.Tests.Integration.Utils;
 using EchoLife.Tests.Integration.Will.Utils;
 using EchoLife.Will.Data;
-using EchoLife.Will.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 
@@ -155,7 +154,7 @@ namespace EchoLife.Tests.Integration.Will.Data
             int count = 3;
             var willId = Guid.NewGuid().ToString();
             for (int i = 0; i < count; i++)
-                await Sut.CreateAsync(WillSeeder.SeedWillVersion(willId: willId));
+                await Sut.CreateAsync(WillSeeder.SeedWillVersion(w => w.WillId = willId));
 
             // Act
             var result = await Sut.DeleteAllVersionsByWillIdAsync(willId);

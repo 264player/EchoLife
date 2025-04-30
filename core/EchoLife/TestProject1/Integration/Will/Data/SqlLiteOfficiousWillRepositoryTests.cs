@@ -144,7 +144,7 @@ namespace EchoLife.Tests.Integration.Will.Data
             var result = await Sut.DeleteAsync(Guid.NewGuid().ToString());
 
             // Assert
-            Assert.IsFalse(result);
+            Assert.That(result, Is.False);
         }
     }
 }

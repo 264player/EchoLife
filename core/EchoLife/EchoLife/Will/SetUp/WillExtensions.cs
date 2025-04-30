@@ -2,7 +2,7 @@
 using EchoLife.Will.Services;
 using Microsoft.EntityFrameworkCore;
 
-namespace EchoLife.Will.SetUp
+namespace EchoLife.Will.Setup
 {
     public static class WillExtensions
     {
