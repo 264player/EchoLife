@@ -1,3 +1,5 @@
-﻿namespace EchoLife.Will.Dtos;
+﻿using EchoLife.Common.Dtos;
 
-public record QueryWillVersionRequest(int Count, string? CursorId = null);
+namespace EchoLife.Will.Dtos;
+
+public record QueryWillVersionRequest : PageInfo { }

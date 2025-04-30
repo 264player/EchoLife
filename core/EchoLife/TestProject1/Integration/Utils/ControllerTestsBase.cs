@@ -42,6 +42,13 @@ namespace EchoLife.Tests.Integration.Utils
             return result;
         }
 
+        protected async Task<HttpClient> GetCookieTokenClientAsync(string userId)
+        {
+            return await GetCookieTokenClientAsync(
+                new RegisterRequest(userId, "P@ssw0rd", "P@ssw0rd")
+            );
+        }
+
         protected async Task<HttpClient> GetCookieTokenClientAsync(RegisterRequest registerRequest)
         {
             var result = Sut.CreateClient();

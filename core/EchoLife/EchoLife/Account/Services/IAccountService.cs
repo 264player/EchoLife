@@ -10,5 +10,5 @@ public interface IAccountService
     Task<SignInResult> LoginWithUsernameAsync(LoginRequest loginRequest);
     Task LogoutAsync();
     Task RefreshSignInAsync(ClaimsPrincipal user);
-    Task<IdentiryAccountResponse?> GetUserInfoAsync(ClaimsPrincipal user);
+    Task<IdentityAccountResponse?> GetUserInfoAsync(ClaimsPrincipal user);
 }

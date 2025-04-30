@@ -54,11 +54,11 @@ public class AccountService(
         await _signInManager.RefreshSignInAsync(result);
     }
 
-    public async Task<IdentiryAccountResponse?> GetUserInfoAsync(ClaimsPrincipal user)
+    public async Task<IdentityAccountResponse?> GetUserInfoAsync(ClaimsPrincipal user)
     {
         var result =
             await _userManager.GetUserAsync(user)
             ?? throw new ForbiddenException(ClaimsManager.GetAuthorizedUserId(user));
-        return IdentiryAccountResponse.From(result);
+        return IdentityAccountResponse.From(result);
     }
 }

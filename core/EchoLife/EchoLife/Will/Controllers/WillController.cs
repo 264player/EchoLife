@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace EchoLife.Will.Controllers
 {
-    [Route("api")]
+    [Route("/api")]
     [ApiController]
     [ExceptionHandling]
     public class WillController(IWillService _willService) : ControllerBase
@@ -16,8 +16,8 @@ namespace EchoLife.Will.Controllers
         [HttpPost("wills")]
         public async Task<IActionResult> PostWill([FromBody] WillRequest willRequest)
         {
-            var response = await _willService.CreateWillAsync(User, willRequest);
-            return Created("", new { willId = response });
+            var result = await _willService.CreateWillAsync(User, willRequest);
+            return Ok(result);
         }
 
         [Authorize]
@@ -83,7 +83,7 @@ namespace EchoLife.Will.Controllers
                 willRequest,
                 isDraft
             );
-            return Created("", response);
+            return Ok(response);
         }
 
         [Authorize]
@@ -101,16 +101,6 @@ namespace EchoLife.Will.Controllers
                     queryWillVersionRequest.CursorId
                 )
             );
-        }
-
-        [Authorize]
-        [HttpGet("wills/{willId}/versions/{versionId}")]
-        public Task<IActionResult> GetWillByWillId(
-            [FromRoute] string willId,
-            [FromRoute] string versionId
-        )
-        {
-            throw new NotImplementedException();
         }
 
         [Authorize]

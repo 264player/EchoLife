@@ -52,7 +52,7 @@ namespace EchoLife.Will.Services
         {
             var userId = ClaimsManager.GetAuthorizedUserId(user);
 
-            var will = await EnsureGetWill(willId, userId);
+            var will = await EnsureAndGetWillAsync(willId, userId);
 
             return WillResponse.From(will);
         }
@@ -77,7 +77,7 @@ namespace EchoLife.Will.Services
         {
             var userId = ClaimsManager.GetAuthorizedUserId(user);
 
-            await EnsureGetWill(willId, userId);
+            await EnsureAndGetWillAsync(willId, userId);
 
             await _officiousWillRepository.DeleteAsync(willId);
             await _willVersionRepository.DeleteAllVersionsByWillIdAsync(willId);
@@ -92,7 +92,7 @@ namespace EchoLife.Will.Services
         {
             var userId = ClaimsManager.GetAuthorizedUserId(user);
 
-            var will = await EnsureGetWill(willId, userId);
+            var will = await EnsureAndGetWillAsync(willId, userId);
 
             will.VersionId = versionId;
             will.Name = name;
@@ -114,7 +114,7 @@ namespace EchoLife.Will.Services
         {
             var userId = ClaimsManager.GetAuthorizedUserId(user);
 
-            var will = await EnsureGetWill(willId, userId);
+            var will = await EnsureAndGetWillAsync(willId, userId);
 
             var version =
                 await _willVersionRepository.CreateAsync(
@@ -145,7 +145,7 @@ namespace EchoLife.Will.Services
         {
             var userId = ClaimsManager.GetAuthorizedUserId(user);
 
-            await EnsureGetWill(willId, userId);
+            await EnsureAndGetWillAsync(willId, userId);
 
             var result = await _willVersionRepository.ReadAsync(willId, count, cursorId);
 
@@ -181,7 +181,7 @@ namespace EchoLife.Will.Services
             var userId = ClaimsManager.GetAuthorizedUserId(user);
 
             var version = await EnsureGetWillVersionAsync(versionId);
-            await EnsureGetWill(version.WillId, userId);
+            await EnsureAndGetWillAsync(version.WillId, userId);
 
             var updatedVersino =
                 await _willVersionRepository.UpdateAsync(Update(version, willVersionRequest))
@@ -200,10 +200,13 @@ namespace EchoLife.Will.Services
         public async Task DeleteWillVersionAsync(ClaimsPrincipal user, string versionId)
         {
             var userId = ClaimsManager.GetAuthorizedUserId(user);
+            try
+            {
+                var version = await EnsureGetWillVersionAsync(versionId);
 
-            var version = await EnsureGetWillVersionAsync(versionId);
-
-            await EnsureGetWill(version.WillId, userId);
+                await EnsureAndGetWillAsync(version.WillId, userId);
+            }
+            catch (ResourceNotFoundException) { }
 
             await _willVersionRepository.DeleteAsync(versionId);
         }
@@ -217,7 +220,7 @@ namespace EchoLife.Will.Services
             return will;
         }
 
-        protected async Task<OfficiousWill> EnsureGetWill(string willId, string userId)
+        protected async Task<OfficiousWill> EnsureAndGetWillAsync(string willId, string userId)
         {
             var will = await EnsureGetWill(willId);
             if (will.TestaorId != userId)

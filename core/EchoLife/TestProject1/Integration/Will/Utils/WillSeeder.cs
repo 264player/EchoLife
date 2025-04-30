@@ -1,5 +1,6 @@
 ﻿using EchoLife.Common;
 using EchoLife.Tests.Integration.Utils;
+using EchoLife.Will.Dtos;
 using EchoLife.Will.Models;
 using static System.Guid;
 
@@ -33,6 +34,22 @@ namespace EchoLife.Tests.Integration.Will.Utils
                     CreatedAt = DateTime.UtcNow,
                     UpdatedAt = DateTime.UtcNow,
                 }
+            );
+        }
+
+        public static WillRequest SeedWillRequest(string? name = null)
+        {
+            return new WillRequest(name ?? NewGuid().ToString());
+        }
+
+        public static WillVersionRequest SeedWillVersionRequest(
+            string? willType = null,
+            string? value = null
+        )
+        {
+            return new WillVersionRequest(
+                willType ?? NewGuid().ToString(),
+                value ?? NewGuid().ToString()
             );
         }
     }
