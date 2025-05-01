@@ -1,4 +1,7 @@
 ﻿using EchoLife.Account.Dtos;
+using EchoLife.Account.Models;
+using EchoLife.Common;
+using EchoLife.Tests.Integration.Utils;
 using static System.Guid;
 
 namespace EchoLife.Tests.Integration.Account.Utils;
@@ -31,5 +34,16 @@ internal class AccountSeeder
             Password = password ?? NewGuid().ToString(),
             RememberMe = remenmberMe,
         };
+    }
+
+    public static IdentityAccount SeedIdentityAccount(Action<IdentityAccount>? account = null)
+    {
+        return account.Modify(
+            new IdentityAccount
+            {
+                Id = IdGenerator.GenerateUlid(),
+                UserName = IdGenerator.GenerateGuid(),
+            }
+        );
     }
 }

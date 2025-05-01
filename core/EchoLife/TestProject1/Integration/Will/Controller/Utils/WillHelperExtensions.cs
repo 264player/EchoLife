@@ -46,4 +46,24 @@ internal static class WillHelperExtensions
         var repo = scope.ServiceProvider.GetRequiredService<IWillVersionRepository>();
         return await repo.ReadAsync(versionId);
     }
+
+    public static async Task<WillReview?> CreateWillReviewAsync(
+        this TestWebAppFactory sut,
+        WillReview willReview
+    )
+    {
+        using var scope = sut.Services.CreateAsyncScope();
+        var repo = scope.ServiceProvider.GetRequiredService<IWillReviewRepository>();
+        return await repo.CreateAsync(willReview);
+    }
+
+    public static async Task<WillReview?> ReadWillReviewAsync(
+        this TestWebAppFactory sut,
+        string reviewId
+    )
+    {
+        using var scope = sut.Services.CreateAsyncScope();
+        var repo = scope.ServiceProvider.GetRequiredService<IWillReviewRepository>();
+        return await repo.ReadAsync(reviewId);
+    }
 }

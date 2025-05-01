@@ -52,5 +52,22 @@ namespace EchoLife.Tests.Integration.Will.Utils
                 value ?? NewGuid().ToString()
             );
         }
+
+        public static WillReview SeedWillReview(Action<WillReview>? willReview = null)
+        {
+            return willReview.Modify(
+                new WillReview
+                {
+                    Id = IdGenerator.GenerateUlid(),
+                    Status = WillReviewStatus.Pending,
+                    Comments = null,
+                    CreatedAt = DateTime.UtcNow,
+                    UserId = IdGenerator.GenerateGuid(),
+                    VersionId = IdGenerator.GenerateUlid(),
+                    ReviewerId = IdGenerator.GenerateGuid(),
+                    ReviewedAt = DateTime.UtcNow,
+                }
+            );
+        }
     }
 }

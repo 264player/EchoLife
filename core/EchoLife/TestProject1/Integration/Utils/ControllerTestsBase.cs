@@ -1,6 +1,7 @@
 ﻿using System.Net;
 using System.Net.Http.Json;
 using EchoLife.Account.Dtos;
+using EchoLife.Account.Models;
 using EchoLife.Tests.Integration.Account.Controller.Utils;
 using EchoLife.Tests.Integration.Account.Utils;
 using EchoLife.User.Services;
@@ -42,10 +43,15 @@ namespace EchoLife.Tests.Integration.Utils
             return result;
         }
 
-        protected async Task<HttpClient> GetCookieTokenClientAsync(string userId)
+        protected async Task<HttpClient> GetCookieTokenClientAsync(
+            string userId,
+            AccountRoles accountRoles = AccountRoles.User
+        )
         {
             return await GetCookieTokenClientAsync(
-                new RegisterRequest(userId, "P@ssw0rd", "P@ssw0rd")
+                new RegisterRequest(userId, "P@ssw0rd", "P@ssw0rd"),
+                userId,
+                accountRoles
             );
         }
 
@@ -59,6 +65,45 @@ namespace EchoLife.Tests.Integration.Utils
                 registerRequest.Username,
                 registerRequest.Password
             );
+
+            var response = await result.PostAsJsonAsync(UrlPackage.Login(), loginRequest);
+
+            Assert.Multiple(() =>
+            {
+                Assert.That(response.StatusCode, Is.EqualTo(HttpStatusCode.OK));
+                Assert.That(response.Headers.Contains("Set-Cookie"), Is.True);
+            });
+
+            if (response.Headers.TryGetValues("Set-Cookie", out var values))
+            {
+                var cookies = values.Select(v => v.Split(';')[0]).ToList();
+
+                var cookieHeader = string.Join("; ", cookies);
+
+                result.DefaultRequestHeaders.Add("Cookie", cookieHeader);
+            }
+
+            return result;
+        }
+
+        protected async Task<HttpClient> GetCookieTokenClientAsync(
+            RegisterRequest register,
+            string userId,
+            AccountRoles accountRoles
+        )
+        {
+            var result = Sut.CreateClient();
+            using var scope = Sut.Services.CreateScope();
+
+            var account = AccountSeeder.SeedIdentityAccount(a =>
+            {
+                a.Id = userId;
+                a.UserName = register.Username;
+            });
+            await Sut.SudoCreateAccountAsync(account, register.Password);
+
+            var loginRequest = AccountSeeder.SeedLoginRequest(register.Username, register.Password);
+            await Sut.AddRoleToUserAsync(account.Id, accountRoles);
 
             var response = await result.PostAsJsonAsync(UrlPackage.Login(), loginRequest);
 

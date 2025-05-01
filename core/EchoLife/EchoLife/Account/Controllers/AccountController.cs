@@ -66,4 +66,12 @@ public class AccountController(IAccountService _accountService) : ControllerBase
     {
         return Ok(await _accountService.GetUserInfoAsync(User));
     }
+
+    [Authorize]
+    [HttpGet("become-reviewer")]
+    public async Task<IActionResult> BecomeAReviewer()
+    {
+        await _accountService.BecomeAReviewerAsync(User);
+        return Ok();
+    }
 }

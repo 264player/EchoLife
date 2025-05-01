@@ -33,7 +33,14 @@ public class SqlLiteWillReviewRepository(WillDbContext _dbContext) : IWillReview
 
     public async Task<WillReview?> UpdateAsync(WillReview entity)
     {
-        var result = await WillReviews.Where(u => u.Id == entity.Id).ExecuteUpdateAsync(w => w);
+        var result = await WillReviews
+            .Where(u => u.Id == entity.Id)
+            .ExecuteUpdateAsync(w =>
+                w.SetProperty(x => x.Status, entity.Status)
+                    .SetProperty(x => x.Comments, entity.Comments)
+                    .SetProperty(x => x.ReviewedAt, entity.ReviewedAt)
+                    .SetProperty(x => x.ReviewerId, entity.ReviewerId)
+            );
         return result > 0 ? entity : null;
     }
 

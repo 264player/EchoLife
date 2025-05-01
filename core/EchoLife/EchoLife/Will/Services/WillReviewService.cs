@@ -22,12 +22,18 @@ public class WillReviewService(
     )
     {
         ClaimsManager.EnsureRole(me, AccountRoles.User);
+        var myId = ClaimsManager.GetAuthorizedUserId(me);
 
         var willVersion = await _willService.GetWillVersionAsync(willVersinoId);
 
         var result =
             await _willReviewRepository.CreateAsync(
-                new WillReview { Id = IdGenerator.GenerateUlid(), VersionId = willVersinoId }
+                new WillReview
+                {
+                    Id = IdGenerator.GenerateUlid(),
+                    UserId = myId,
+                    VersionId = willVersinoId,
+                }
             ) ?? throw new UnknowException();
 
         return WillReviewResponse.From(result, willVersion);
@@ -39,6 +45,7 @@ public class WillReviewService(
     )
     {
         ClaimsManager.EnsureRole(me, AccountRoles.User);
+        var myId = ClaimsManager.GetAuthorizedUserId(me);
 
         var willVersion = await _willService.GetWillVersionAsync(willVersinoId);
 
@@ -49,6 +56,7 @@ public class WillReviewService(
                 new WillReview
                 {
                     Id = IdGenerator.GenerateUlid(),
+                    UserId = myId,
                     VersionId = willVersinoId,
                     Comments = comment,
                     ReviewedAt = DateTime.UtcNow,
@@ -68,7 +76,7 @@ public class WillReviewService(
 
         var version = await _willService.GetWillVersionAsync(result.VersionId);
 
-        if (result.ReviewerId != myId || result.UserId != myId)
+        if (result.ReviewerId != myId && result.UserId != myId)
         {
             throw new ForbiddenException(myId);
         }

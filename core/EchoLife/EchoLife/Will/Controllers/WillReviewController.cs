@@ -1,5 +1,6 @@
-﻿using EchoLife.Common.Exceptions;
-using EchoLife.Will.Models;
+﻿using EchoLife.Common.Dtos;
+using EchoLife.Common.Exceptions;
+using EchoLife.Will.Dtos;
 using EchoLife.Will.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -12,52 +13,33 @@ namespace EchoLife.Will.Controllers;
 [ExceptionHandling]
 public class WillReviewController(IWillReviewService _willReviewService) : ControllerBase
 {
-    [HttpPost("wills/review/ai")]
-    public async Task<IActionResult> RequestAIReview([FromBody] string versionId)
+    [HttpPost("wills/versions/{versionId}/reviews/ai")]
+    public async Task<IActionResult> RequestAIReview([FromRoute] string versionId)
     {
         return Ok(await _willReviewService.RequestAIReviewAsync(User, versionId));
     }
 
-    [HttpPost("wills/review/human")]
-    public async Task<IActionResult> RequestHumanReview([FromBody] string versionId)
+    [HttpPost("wills/versions/{versionId}/reviews/human")]
+    public async Task<IActionResult> RequestHumanReview([FromRoute] string versionId)
     {
-        return Ok(await _willReviewService.RequestAIReviewAsync(User, versionId));
+        return Ok(await _willReviewService.RequestHumanReviewAsync(User, versionId));
     }
 
-    [HttpPost("wills/review/{reviewId}/human/process")]
-    public async Task<IActionResult> InprogressHumanReview([FromRoute] string reviewId)
-    {
-        await _willReviewService.ProcessReview(User, reviewId);
-        return Ok();
-    }
-
-    [HttpPost("wills/review/{reviewId}/human/complete")]
-    public async Task<IActionResult> CompleteHumanReview(
-        [FromRoute] string reviewId,
-        [FromBody] WillReviewStatus willReviewStatus,
-        string comment
-    )
-    {
-        await _willReviewService.CompleteReview(User, reviewId, comment, willReviewStatus);
-        return Ok();
-    }
-
-    [HttpGet("wills/review/{reviewId}")]
+    [HttpGet("wills/versions/reviews/{reviewId}")]
     public async Task<IActionResult> GetReview([FromRoute] string reviewId)
     {
         return Ok(await _willReviewService.GetReviewAsync(User, reviewId));
     }
 
-    [HttpGet("wills/review")]
-    public async Task<IActionResult> GetMyReview(
-        [FromQuery] int count,
-        [FromQuery] string? cursorId
-    )
+    [HttpGet("wills/versions/reviews")]
+    public async Task<IActionResult> GetMyReview([FromQuery] PageInfo pageInfo)
     {
-        return Ok(await _willReviewService.GetMyReviewAsync(User, count, cursorId));
+        return Ok(
+            await _willReviewService.GetMyReviewAsync(User, pageInfo.Count, pageInfo.CursorId)
+        );
     }
 
-    [HttpGet("wills/review/requests")]
+    [HttpGet("wills/versions/reviews/requests")]
     public async Task<IActionResult> GetMyReviewRequest(
         [FromQuery] int count,
         [FromQuery] string? cursorId
@@ -66,12 +48,34 @@ public class WillReviewController(IWillReviewService _willReviewService) : Contr
         return Ok(await _willReviewService.GetMyReviewRequestAsync(User, count, cursorId));
     }
 
-    [HttpGet("wills/review/requests/pendding")]
+    [HttpGet("wills/versions/reviews/requests/pendding")]
     public async Task<IActionResult> GetAllReviewRequest(
         [FromQuery] int count,
         [FromQuery] string? cursorId
     )
     {
         return Ok(await _willReviewService.GetAllReviewRequestAsync(User, count, cursorId));
+    }
+
+    [HttpPut("wills/versions/reviews/{reviewId}/human/process")]
+    public async Task<IActionResult> ProcessHumanReview([FromRoute] string reviewId)
+    {
+        await _willReviewService.ProcessReview(User, reviewId);
+        return Ok();
+    }
+
+    [HttpPut("wills/versions/reviews/{reviewId}/human/complete")]
+    public async Task<IActionResult> CompleteHumanReview(
+        [FromRoute] string reviewId,
+        [FromBody] CompleteWillReviewRequest completeWillReviewRequest
+    )
+    {
+        await _willReviewService.CompleteReview(
+            User,
+            reviewId,
+            completeWillReviewRequest.Comment,
+            completeWillReviewRequest.Status
+        );
+        return Ok();
     }
 }
