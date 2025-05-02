@@ -38,6 +38,10 @@
 import { ref } from 'vue'
 import { LoginRequest } from '@/utils/UserRequestDtos'
 import { LoginAsync } from '@/utils/UserRequestHelper'
+import { useUserStore } from '@/stores/counter'
+import { ElMessage } from 'element-plus'
+
+const userStore = useUserStore()
 
 const requestDto = ref(new LoginRequest("string", "P@ssw0rd", false))
 
@@ -45,6 +49,17 @@ async function Login() {
     var { result, response } = await LoginAsync(requestDto.value)
     console.log(result)
     console.log(response)
+    if (result) {
+        userStore.isLoggedIn = true
+        loginSuccess()
+    }
+}
+
+const loginSuccess = () => {
+    ElMessage({
+        type: "success",
+        message: "登录成功"
+    })
 }
 </script>
 

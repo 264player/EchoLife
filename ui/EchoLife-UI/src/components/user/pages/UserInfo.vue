@@ -3,8 +3,8 @@
         <el-col :span="4"></el-col>
         <el-col :span="16">
             <el-descriptions title="个人信息" :column="1" :border="true">
-                <el-descriptions-item label="用户名">{{ userInfoResponse.Username }}</el-descriptions-item>
-                <el-descriptions-item label="邮箱">18100000000</el-descriptions-item>
+                <el-descriptions-item label="ID">{{ userInfoResponse.userId }}</el-descriptions-item>
+                <el-descriptions-item label="用户名">{{ userInfoResponse.username }}</el-descriptions-item>
             </el-descriptions>
         </el-col>
         <el-col :span="4"></el-col>
@@ -23,13 +23,16 @@
 import { UserInfoResponse } from '@/utils/UserRequestDtos';
 import { GetUserInfoAsync, LogOutAsync, RefreshAsync } from '@/utils/UserRequestHelper';
 import { onMounted, ref } from 'vue';
+import { useUserStore } from '@/stores/counter';
 
-const userInfoResponse = ref(new UserInfoResponse(""))
+const userStore = useUserStore()
+const userInfoResponse = ref(new UserInfoResponse("", ""))
 
 onMounted(async () => {
     var { result, response } = await GetUserInfoAsync()
     if (result) {
-        userInfoResponse.value.Username = response.username;
+        userInfoResponse.value.username = response.username;
+        userInfoResponse.value.userId = response.id;
     } else {
         console.log(response)
     }
@@ -38,6 +41,7 @@ onMounted(async () => {
 async function LogOut() {
     var { result, response } = await LogOutAsync()
     if (result) {
+        userStore.isLoggedIn = false
         console.log("logout success!")
     } else {
         console.log(response)

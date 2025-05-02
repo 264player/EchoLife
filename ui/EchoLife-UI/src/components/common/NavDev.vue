@@ -4,25 +4,6 @@
       <el-col :span="12">
         <h5 class="mb-2">Development Nav</h5>
         <el-menu default-active="2" class="el-menu-vertical-demo" @open="handleOpen" @close="handleClose">
-          <el-sub-menu index="1">
-            <template #title>
-              <el-icon>
-                <location />
-              </el-icon>
-              <span>用户页面</span>
-            </template>
-            <el-menu-item-group title="用户">
-              <el-menu-item index="1-1">
-                <RouterLink :to="{ name: 'login' }">登录</RouterLink>
-              </el-menu-item>
-              <el-menu-item index="1-2">
-                <RouterLink :to="{ name: 'register' }">注册</RouterLink>
-              </el-menu-item>
-              <el-menu-item index="1-3">
-                <RouterLink :to="{ name: 'user-info', params: { id: '1234567890' } }">用户信息</RouterLink>
-              </el-menu-item>
-            </el-menu-item-group>
-          </el-sub-menu>
           <el-sub-menu index="2">
             <template #title>
               <el-icon>

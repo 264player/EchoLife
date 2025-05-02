@@ -1,11 +1,13 @@
 ﻿using EchoLife.Account.Dtos;
 using EchoLife.Account.Services;
+using EchoLife.Common.Exceptions;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace EchoLife.Account.Controllers;
 
 [Route("/api/account")]
+[ExceptionHandling]
 [ApiController]
 public class AccountController(IAccountService _accountService) : ControllerBase
 {
