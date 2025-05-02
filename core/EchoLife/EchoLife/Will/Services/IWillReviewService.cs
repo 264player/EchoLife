@@ -27,4 +27,5 @@ public interface IWillReviewService
         string comment,
         WillReviewStatus status
     );
+    Task CancelReviewRequestAsync(ClaimsPrincipal me, string reviewId);
 }

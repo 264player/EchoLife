@@ -1,6 +1,7 @@
 <template>
-    <el-button>新的遗嘱</el-button>
-    <el-table v-infinite-scroll="GetMyWill" :data="myWills" height="250" style="width: 100%;overflow: auto;"
+    <NewWill v-model:status="viewNewWill" v-model:list="myWills"></NewWill>
+    <el-button @click="viewNewWill = true">新的遗嘱</el-button>
+    <el-table v-infinite-scroll="GetMyWill" :data="myWills" height="800px" style="width: 100%;overflow: auto;"
         :stripe="true" @row-dblclick="TableItemClick">
         <el-table-column prop="id" label="ID" width="180" />
         <el-table-column prop="name" label="名称" width="180" />
@@ -20,12 +21,15 @@
 import { ref } from 'vue'
 import { QueryWillsRequest } from '@/utils/WillRequestDtos'
 import { GetMyWillsAsync, DeleteWillAsync } from '@/utils/WillRequestHelper'
+import NewWill from '../NewWill.vue'
 import { useRouter } from 'vue-router'
+import { ElMessage } from 'element-plus'
 
 const route = useRouter()
+const viewNewWill = ref(false)
 
 const queryWillsRequest = ref(new QueryWillsRequest(5, null))
-// const myWills = ref([{ id: "1", name: "1", testaorId: "1", contentId: "1" }, { id: 2, name: 2, testaorId: 2, contentId: 2 }, { id: 3, name: 3, testaorId: 3, contentId: 3 }])
+
 const myWills = ref([])
 
 const loading = ref(false)
@@ -57,6 +61,16 @@ async function DeleteWill(willResponse) {
     var { result, response } = await DeleteWillAsync(willResponse.id)
     console.log(result)
     console.log(response)
+    ElMessage({
+        type: result ? "success" : "error",
+        message: result ? "删除成功" : "删除失败"
+    })
+    if (result) {
+        var index = myWills.value.findIndex(v => v.id == willResponse.id)
+        if (index !== -1) {
+            myWills.value.splice(index, 1)
+        }
+    }
 }
 </script>
 

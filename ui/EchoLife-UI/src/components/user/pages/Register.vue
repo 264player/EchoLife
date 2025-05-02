@@ -36,13 +36,23 @@
 import { ref } from 'vue'
 import { RegisterUserRequest } from '@/utils/UserRequestDtos'
 import { RegisterAsync } from '@/utils/UserRequestHelper'
+import { ElMessage } from 'element-plus';
+import { useRouter } from 'vue-router';
 
+const router = useRouter()
 const requestDto = ref(new RegisterUserRequest("string", "P@ssw0rd", "P@ssw0rd"));
 
 async function Register() {
     var { result, response } = await RegisterAsync(requestDto.value);
     console.log(result)
     console.log(response)
+    ElMessage({
+        type: result ? "success" : "error",
+        message: result ? "注册成功" : "注册失败"
+    })
+    if (result) {
+        router.push({ name: "login" })
+    }
 }
 </script>
 

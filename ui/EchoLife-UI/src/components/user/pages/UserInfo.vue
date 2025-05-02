@@ -14,6 +14,7 @@
         <el-col :span="16">
             <el-button @click="LogOut">退出登录</el-button>
             <el-button @click="Refresh">刷新登录</el-button>
+            <el-button @click="BecomeAReviewer">成为审核员</el-button>
         </el-col>
         <el-col :span="4"></el-col>
     </el-row>
@@ -21,9 +22,10 @@
 
 <script setup>
 import { UserInfoResponse } from '@/utils/UserRequestDtos';
-import { GetUserInfoAsync, LogOutAsync, RefreshAsync } from '@/utils/UserRequestHelper';
+import { BecomeAReviewerAsync, GetUserInfoAsync, LogOutAsync, RefreshAsync } from '@/utils/UserRequestHelper';
 import { onMounted, ref } from 'vue';
 import { useUserStore } from '@/stores/counter';
+import { ElMessage } from 'element-plus';
 
 const userStore = useUserStore()
 const userInfoResponse = ref(new UserInfoResponse("", ""))
@@ -55,6 +57,16 @@ async function Refresh() {
     } else {
         console.log(response)
     }
+}
+
+async function BecomeAReviewer() {
+    var { result, response } = await BecomeAReviewerAsync()
+    console.log(result)
+    console.log(response)
+    ElMessage({
+        type: result ? "success" : "error",
+        message: result ? "已成为审核员" : "未成为审核员"
+    })
 }
 
 </script>

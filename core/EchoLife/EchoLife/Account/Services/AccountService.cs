@@ -26,7 +26,9 @@ public class AccountService(
             Id = IdGenerator.GenerateUlid(),
             UserName = registerRequest.Username,
         };
-        return await _userManager.CreateAsync(user, registerRequest.Password);
+        var result = await _userManager.CreateAsync(user, registerRequest.Password);
+        await AddRoleToUserAsync(user.Id, AccountRoles.User);
+        return result;
     }
 
     public async Task<IdentityResult> SudoCreateUserAsync(

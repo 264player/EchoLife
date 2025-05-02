@@ -1,5 +1,10 @@
 import axios from 'axios'
-import { QueryWillsRequest, QueryWillVersionsRequest, WillVersionRequest } from './WillRequestDtos'
+import {
+  QueryWillsRequest,
+  QueryWillVersionsRequest,
+  WillVersionRequest,
+  PageInfo,
+} from './WillRequestDtos'
 import { WillRequest } from './WillRequestDtos'
 
 /**
@@ -157,6 +162,141 @@ export async function UpdateWillVersionAsync(versionId, willVersionRequest) {
 export async function DeleteWillVersionAsync(versionId) {
   return await axios
     .delete(`wills/versions/${versionId}`, { withCredentials: true })
+    .then((response) => {
+      console.log(response)
+      return { result: true, response: response.data }
+    })
+    .catch((error) => {
+      return { result: false, response: error }
+    })
+}
+
+export async function RequestAIReviewAsync(versionId) {
+  return await axios
+    .post(`wills/versions/${versionId}/reviews/ai`, null, { withCredentials: true })
+    .then((response) => {
+      console.log(response)
+      return { result: true, response: response.data }
+    })
+    .catch((error) => {
+      return { result: false, response: error }
+    })
+}
+
+export async function RequestHumanReviewAsync(versionId) {
+  return await axios
+    .post(`wills/versions/${versionId}/reviews/human`, null, { withCredentials: true })
+    .then((response) => {
+      console.log(response)
+      return { result: true, response: response.data }
+    })
+    .catch((error) => {
+      return { result: false, response: error }
+    })
+}
+
+export async function GetReviewDetailsAsync(reviewId) {
+  return await axios
+    .get(`wills/versions/reviews/${reviewId}`, {
+      withCredentials: true,
+    })
+    .then((response) => {
+      console.log(response)
+      return { result: true, response: response.data }
+    })
+    .catch((error) => {
+      return { result: false, response: error }
+    })
+}
+
+/**
+ *
+ * @param {PageInfo} pageInfo
+ */
+export async function GetAllReviewRequestAsync(pageInfo) {
+  return await axios
+    .get(`wills/versions/reviews/requests/pendding`, {
+      withCredentials: true,
+      params: { count: pageInfo.count, cursorId: pageInfo.cursorId },
+    })
+    .then((response) => {
+      console.log(response)
+      return { result: true, response: response.data }
+    })
+    .catch((error) => {
+      return { result: false, response: error }
+    })
+}
+
+/**
+ *
+ * @param {PageInfo} pageInfo
+ */
+export async function GetMyReviewRequestsAsync(pageInfo) {
+  return await axios
+    .get(`wills/versions/reviews/requests`, {
+      withCredentials: true,
+      params: { count: pageInfo.count, cursorId: pageInfo.cursorId },
+    })
+    .then((response) => {
+      console.log(response)
+      return { result: true, response: response.data }
+    })
+    .catch((error) => {
+      return { result: false, response: error }
+    })
+}
+
+/**
+ *
+ * @param {PageInfo} pageInfo
+ */
+export async function GetMyReviewsAsync(pageInfo) {
+  return await axios
+    .get(`wills/versions/reviews`, {
+      withCredentials: true,
+      params: { count: pageInfo.count, cursorId: pageInfo.cursorId },
+    })
+    .then((response) => {
+      console.log(response)
+      return { result: true, response: response.data }
+    })
+    .catch((error) => {
+      return { result: false, response: error }
+    })
+}
+
+export async function ProcessReviewAsync(reviewId) {
+  return await axios
+    .put(`wills/versions/reviews/${reviewId}/human/process`, null, {
+      withCredentials: true,
+    })
+    .then((response) => {
+      console.log(response)
+      return { result: true, response: response.data }
+    })
+    .catch((error) => {
+      return { result: false, response: error }
+    })
+}
+
+export async function CompleteReviewAsync(reviewId, completeWillReviewRequest) {
+  return await axios
+    .put(`wills/versions/reviews/${reviewId}/human/complete`, completeWillReviewRequest, {
+      withCredentials: true,
+    })
+    .then((response) => {
+      console.log(response)
+      return { result: true, response: response.data }
+    })
+    .catch((error) => {
+      return { result: false, response: error }
+    })
+}
+
+export async function CancelReviewAsync(reviewId) {
+  return await axios
+    .put(`wills/versions/reviews/${reviewId}/human/cancel`, {}, { withCredentials: true })
     .then((response) => {
       console.log(response)
       return { result: true, response: response.data }

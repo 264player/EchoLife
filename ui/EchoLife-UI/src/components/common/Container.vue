@@ -12,7 +12,7 @@
           <el-main width="100%">
             <RouterView></RouterView>
           </el-main>
-          <el-footer>Footer</el-footer>
+          <el-footer><el-empty description="footer"></el-empty></el-footer>
         </el-container>
       </el-container>
     </el-container>
@@ -24,13 +24,16 @@ import Header from './Header.vue';
 import NavDev from './NavDev.vue';
 import { useRouter, useRoute } from 'vue-router';
 import { useUserStore } from '@/stores/counter';
-import { watch, ref } from 'vue';
-import { ElMessage } from 'element-plus';
+import { watch, onMounted } from 'vue';
 import { GetUserInfoAsync } from '@/utils/UserRequestHelper';
 
 const router = useRouter()
 const routeInfo = useRoute()
 const userStore = useUserStore()
+
+onMounted(() => {
+  GetUserInfo()
+})
 
 watch(() => routeInfo.name, (newName) => {
   GotoLogin(newName)
@@ -39,7 +42,6 @@ watch(() => routeInfo.name, (newName) => {
 watch(() => userStore.isLoggedIn, async (status) => {
   if (!status) {
     router.push({ name: "login" })
-    pleaseLogin()
   } else {
     await GetUserInfo()
     router.push({ name: "user-info", params: { id: `${userStore.userInfo.userId}` } })
@@ -51,6 +53,7 @@ async function GetUserInfo() {
   if (result) {
     userStore.userInfo.username = response.username;
     userStore.userInfo.userId = response.id;
+    userStore.isLoggedIn = true
   } else {
     console.log(response)
   }
@@ -69,13 +72,5 @@ function GotoLogin(newName) {
   }
 
   router.push({ name: "login" })
-  pleaseLogin()
-}
-
-const pleaseLogin = () => {
-  ElMessage({
-    message: "请登录",
-    type: 'warning',
-  })
 }
 </script>

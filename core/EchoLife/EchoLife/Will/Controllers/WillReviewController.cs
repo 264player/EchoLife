@@ -78,4 +78,11 @@ public class WillReviewController(IWillReviewService _willReviewService) : Contr
         );
         return Ok();
     }
+
+    [HttpPut("wills/versions/reviews/{reviewId}/human/cancel")]
+    public async Task<IActionResult> CancleHumanReview([FromRoute] string reviewId)
+    {
+        await _willReviewService.CancelReviewRequestAsync(User, reviewId);
+        return Ok();
+    }
 }

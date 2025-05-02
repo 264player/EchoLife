@@ -61,3 +61,29 @@ export class WillVersionResponse {
     this.updateAt = updateAt
   }
 }
+
+export class PageInfo {
+  constructor(count, cursorId) {
+    this.count = count
+    this.cursorId = cursorId
+  }
+}
+
+export class ReviewResponse {
+  constructor(id, reviewerId, status, reviewedAt, createdAt, comments, willVersion) {
+    this.id = id
+    this.reviewerId = reviewerId
+    this.status = status
+    this.reviewedAt = reviewedAt
+    this.createdAt = createdAt
+    this.comments = comments
+    this.willVersion = willVersion
+  }
+}
+
+export class ReviewRequest {
+  constructor(comment, status) {
+    this.comment = comment
+    this.status = status
+  }
+}

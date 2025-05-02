@@ -70,7 +70,7 @@ public class AccountController(IAccountService _accountService) : ControllerBase
     }
 
     [Authorize]
-    [HttpGet("become-reviewer")]
+    [HttpPost("become-reviewer")]
     public async Task<IActionResult> BecomeAReviewer()
     {
         await _accountService.BecomeAReviewerAsync(User);

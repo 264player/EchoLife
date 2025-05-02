@@ -200,12 +200,39 @@ public class WillReviewService(
         }
 
         if (review.Status != WillReviewStatus.InProgress)
-        { // throw bussiness exception
-            return;
+        {
+            throw new EntityArgumentException(
+                "review status error",
+                "complete review should be inprogress."
+            );
         }
 
         review.Comments = comment;
         review.Status = status;
+        review.ReviewedAt = DateTime.UtcNow;
+        await _willReviewRepository.UpdateAsync(review);
+    }
+
+    public async Task CancelReviewRequestAsync(ClaimsPrincipal me, string reviewId)
+    {
+        var myId = ClaimsManager.GetAuthorizedUserId(me);
+
+        var review = await EnsureAndGetAsync(reviewId);
+
+        if (review.UserId != myId)
+        {
+            throw new ForbiddenException(myId);
+        }
+
+        if (review.Status != WillReviewStatus.Pending)
+        {
+            throw new EntityArgumentException(
+                "review status error",
+                "cancel review should be pending."
+            );
+        }
+
+        review.Status = WillReviewStatus.Rejected;
         review.ReviewedAt = DateTime.UtcNow;
         await _willReviewRepository.UpdateAsync(review);
     }

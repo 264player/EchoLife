@@ -1,6 +1,6 @@
 <template>
     <el-row>
-        <el-co :span="18">
+        <el-col :span="16">
             <el-row>
                 <el-col :span="24"><el-text>遗嘱名</el-text>
                     <el-input v-model="willResponse.name" />
@@ -20,17 +20,19 @@
                 <el-col :span="24">
                     <el-button @click="UpdateWillAndVersion">保存更改</el-button>
                     <el-button @click="DeleteWillVersion">删除该版本</el-button>
+                    <el-button @click="aiReviewStatus = true">查看AI审核</el-button>
+                    <el-button @click="RequestHumanReview">请求审核</el-button>
                 </el-col>
             </el-row>
-        </el-co>
-        <el-co :span="6">
+        </el-col>
+        <el-col :span="6" :offset="2">
             <el-button @click="newWillVersion = true"><el-text>创建新的版本</el-text></el-button>
             <el-table :data="willVersions" height="150" style="width: 100%;overflow: auto;" :stripe="true"
                 :show-overflow-tooltip="true" v-infinite-scroll="GetWillVersions" @row-dblclick="SwitchVersion">
                 <el-table-column prop="id" label="ID" width="180" />
                 <el-table-column prop="value" label="内容" width="180" />
             </el-table>
-        </el-co>
+        </el-col>
     </el-row>
 
     <el-dialog v-model="newWillVersion" title="新的版本" width="800">
@@ -40,13 +42,18 @@
         <el-input v-model="willVersionRequest.Value" />
         <el-button @click="CreateWillVersion">确认</el-button>
     </el-dialog>
+
+    <el-drawer v-model="aiReviewStatus" title="I am the title" :with-header="false">
+        <span>Hi there!</span>
+    </el-drawer>
 </template>
 
 <script setup>
 import { WillResponse, QueryWillVersionsRequest, WillVersionRequest, WillVersionResponse, WillRequest, PutWillRequest } from '@/utils/WillRequestDtos';
-import { GetWillAsyn, GetWillVersionsAsync, CreateWillVersionAsync, UpdateWillAsync, UpdateWillVersionAsync, DeleteWillVersionAsync } from '@/utils/WillRequestHelper';
+import { GetWillAsyn, GetWillVersionsAsync, CreateWillVersionAsync, UpdateWillAsync, UpdateWillVersionAsync, DeleteWillVersionAsync, RequestHumanReviewAsync } from '@/utils/WillRequestHelper';
 import { useRoute } from 'vue-router';
 import { ref, onMounted } from 'vue';
+import { ElMessage } from 'element-plus';
 
 const route = useRoute()
 
@@ -55,6 +62,7 @@ const willId = ref("")
 const loading = ref(false)
 const isEnd = ref(false)
 const newWillVersion = ref(false)
+const aiReviewStatus = ref(false)
 
 const currentVersion = ref(new WillVersionResponse())
 
@@ -91,6 +99,13 @@ async function CreateWillVersion() {
     var { result, response } = await CreateWillVersionAsync(willId.value, willVersionRequest.value, false)
     console.log(result)
     console.log(response)
+    if (result) {
+        ElMessage({
+            type: "success",
+            message: "创建成功"
+        })
+        willVersions.value.unshift(response)
+    }
 }
 
 async function GetWillVersions() {
@@ -132,16 +147,38 @@ async function UpdateWillVersion() {
     var { result, response } = await UpdateWillVersionAsync(currentVersion.value.id, new WillVersionRequest(currentVersion.value.willType, currentVersion.value.value))
     console.debug(result)
     console.debug(response)
-}
-
-async function DeleteWill() {
-
+    ElMessage({
+        type: result ? "success" : "error",
+        message: result ? "保存成功" : "保存失败"
+    })
 }
 
 async function DeleteWillVersion() {
     var { result, response } = await DeleteWillVersionAsync(currentVersion.value.id)
     console.debug(result)
     console.debug(response)
+    ElMessage({
+        type: result ? "success" : "error",
+        message: result ? "删除成功" : "删除失败"
+    })
+
+    if (result) {
+        var index = willVersions.value.findIndex(v => v.id == currentVersion.value.id)
+        if (index !== -1) {
+            willVersions.value.splice(index, 1)
+            currentVersion.value = new WillVersionResponse()
+        }
+    }
+}
+
+async function RequestHumanReview() {
+    var { result, _ } = await RequestHumanReviewAsync(currentVersion.value.id)
+    if (result) {
+        ElMessage({
+            type: "info",
+            message: "请求成功，前往审核中心查看"
+        })
+    }
 }
 </script>
 
@@ -166,5 +203,10 @@ li:hover {
 
 li:last-child {
     border-bottom: none;
+}
+
+.el-input,
+.el-textarea {
+    margin-bottom: 16px;
 }
 </style>
