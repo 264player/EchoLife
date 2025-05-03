@@ -15,8 +15,7 @@ public class LifePointController(ILifePointService _lifePointService) : Controll
     [HttpPost("life/points")]
     public async Task<IActionResult> Post([FromBody] LifePointRequest lifePointRequest)
     {
-        await _lifePointService.CreateLifePointAsync(User, lifePointRequest);
-        return Created();
+        return Ok(await _lifePointService.CreateLifePointAsync(User, lifePointRequest));
     }
 
     [Authorize]

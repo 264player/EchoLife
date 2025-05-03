@@ -40,6 +40,9 @@
               <el-menu-item index="2-2">
                 <RouterLink :to="{ name: 'life-history' }">个人传记</RouterLink>
               </el-menu-item>
+              <el-menu-item index="2-3">
+                <RouterLink :to="{ name: 'life-history' }">家族树</RouterLink>
+              </el-menu-item>
             </el-menu-item-group>
           </el-sub-menu>
         </el-menu>

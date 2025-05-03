@@ -1,62 +1,88 @@
 <template>
-    <el-row>
-        <el-col :span="18">
-            <p><el-text>{{ currentSection.title }}</el-text></p>
-            <p><el-text>{{ currentSection.content }}</el-text></p>
-            <p> <el-text>{{ currentSection.createdAt }}</el-text></p>
-            <p> <el-text>{{ currentSection.updatedAt }}</el-text></p>
-        </el-col>
-        <el-col :span="4">
-            <LifeSubsection v-for="node in treeData.children" :key="node.id" :treeData="node"
-                @node-click="handleNodeClick"></LifeSubsection>
-        </el-col>
-    </el-row>
+    <NewLifeHistory v-model:status="newLifeHistoryStatus" v-model:list="histories"></NewLifeHistory>
+    <UpdateHistory v-model:status="updateHistoryStatus" v-model:model="currentHistory"></UpdateHistory>
+    <el-button @click="newLifeHistoryStatus = true">新的传记</el-button>
+    <el-table v-infinite-scroll="GetMyHistories" :data="histories" height="800" style="width: 100%;overflow: auto;"
+        :stripe="true" @row-dblclick="GetPointDetails">
+        <el-table-column prop="id" label="ID" width="100" />
+        <el-table-column prop="title" label="传记标题" width="100" />
+        <el-table-column label="操作">
+            <template #default="scope">
+                <el-button size="small" @click="ViewDetails(scope.row)">
+                    查看详情
+                </el-button>
+                <el-button size="small" @click="UpdatePoint(scope.row)">
+                    修改
+                </el-button>
+                <el-button size="small" type="danger" @click="DeleteHistory(scope.row)">
+                    删除
+                </el-button>
+            </template>
+        </el-table-column>
+    </el-table>
 </template>
 
 <script setup>
-import LifeSubsection from '../LifeSubsection.vue';
-import { ref, onMounted } from 'vue';
-import { LifeSubSectionResponse } from '../utils/LifeDtos';
+import { ref } from 'vue';
+import { DeleteLifeHistoryAsync, GetMyLifeHistoriesAsync } from '../utils/LifeHelpers';
+import { PageInfo } from '@/utils/WillRequestDtos';
+import { ElMessage } from 'element-plus';
+import NewLifeHistory from '../NewLifeHistory.vue';
+import UpdateHistory from '../UpdateHistory.vue';
+import { useRouter } from 'vue-router';
 
-const originalData = ref([{ id: 1, title: "hhh", fatherId: null }, { id: 2, fatherId: "1" }, { id: 3, fatherId: "2" }, { id: 4, fatherId: "3" }])
-const treeData = ref([])
+const router = useRouter()
 
-const currentSection = ref(new LifeSubSectionResponse(1, "title", "content", null, null, 0, "createdAt", "updatedAt"))
+// status
+const newLifeHistoryStatus = ref(false)
+const updateHistoryStatus = ref(false)
+const loading = ref(false)
 
-onMounted(() => {
-    GetTreeData()
-    console.debug(treeData.value)
-})
+const histories = ref([])
+const currentHistory = ref({})
 
-function GetTreeData() {
-    treeData.value.children = ComputeTreeData(originalData.value, null)
-}
+const pageInfo = ref(new PageInfo(30, null))
 
-function ComputeTreeData(tree, fatherId) {
-    var list = []
-    tree.forEach(node => {
-        if (node.fatherId == fatherId) {
-            node.children = ComputeTreeData(tree, node.id)
-            list.push(node)
+async function GetMyHistories() {
+    if (loading.value) {
+        return
+    }
+    loading.value = true
+
+    var { result, response } = await GetMyLifeHistoriesAsync(pageInfo.value)
+    if (result) {
+        console.log(response)
+        if (response.length != 0) {
+            pageInfo.value.cursorId = response[response.length - 1].id
+            histories.value = histories.value.concat(response)
         }
-    });
-    return list
+    }
+    loading.value = false
 }
 
-function handleNodeClick(nodeId) {
-    console.debug(`nodeId:${nodeId}`)
-    const node = originalData.value.find((item) => item.id === nodeId);
-    if (node) {
-        currentSection.value = new LifeSubSectionResponse(
-            node.id,
-            node.title,
-            node.content,
-            node.fatherId,
-            null,
-            0,
-            node.createdAt,
-            node.updatedAt
-        );
+function ViewDetails(history) {
+    router.push({ name: "history-details", params: { historyId: history.id } })
+}
+
+function UpdatePoint(history) {
+    updateHistoryStatus.value = true
+    console.debug(history)
+    currentHistory.value = history
+}
+
+async function DeleteHistory(history) {
+    var { result, response } = await DeleteLifeHistoryAsync(history.id)
+    console.log(result)
+    console.log(response)
+    ElMessage({
+        type: result ? "success" : "error",
+        message: result ? "删除成功" : "删除失败"
+    })
+    if (result) {
+        var index = histories.value.findIndex(v => v.id == history.id)
+        if (index !== -1) {
+            histories.value.splice(index, 1)
+        }
     }
 }
 </script>

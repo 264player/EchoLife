@@ -20,7 +20,7 @@ public class LifeDbContext(
     {
         modelBuilder.Entity<PointUserMap>(life =>
         {
-            life.ToTable(Settings.LifeTableName);
+            life.ToTable(Settings.LifeUserPointMapTableName);
             life.HasKey(l => l.Id);
             life.Property(l => l.Id).IsRequired();
             life.Property(l => l.UserId).IsRequired();
@@ -38,7 +38,7 @@ public class LifeDbContext(
 
         modelBuilder.Entity<LifePoint>(life =>
         {
-            life.ToTable(Settings.LifePotintTableName);
+            life.ToTable(Settings.LifePointTableName);
             life.HasKey(l => l.Id);
             life.Property(l => l.Id).IsRequired();
             life.Property(l => l.Content).IsRequired();
@@ -50,7 +50,7 @@ public class LifeDbContext(
 
         modelBuilder.Entity<LifeHistory>(life =>
         {
-            life.ToTable(Settings.LifePotintTableName);
+            life.ToTable(Settings.LifeHistoryTableName);
             life.HasKey(l => l.Id);
             life.Property(l => l.Id).IsRequired();
             life.Property(l => l.UserId).IsRequired();
@@ -61,12 +61,13 @@ public class LifeDbContext(
 
         modelBuilder.Entity<LifeSubSection>(life =>
         {
-            life.ToTable(Settings.LifePotintTableName);
+            life.ToTable(Settings.LifeSubSectionTableName);
             life.HasKey(l => l.Id);
             life.Property(l => l.Id).IsRequired();
             life.Property(l => l.Title).IsRequired();
             life.Property(l => l.Content).IsRequired();
             life.Property(l => l.LifeHistoryId).IsRequired();
+            life.Property(l => l.FatherId);
             life.Property(l => l.Index).IsRequired();
             life.Property(l => l.CreatedAt).IsRequired();
             life.Property(l => l.UpdatedAt).IsRequired();

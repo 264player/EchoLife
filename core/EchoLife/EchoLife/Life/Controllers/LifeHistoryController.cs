@@ -14,8 +14,7 @@ public class LifeHistoryController(ILifeHistoryService _lifeHistoryService) : Co
     [HttpPost("life/history")]
     public async Task<IActionResult> Post([FromBody] LifeHistoryRequest lifeHistoryRequest)
     {
-        await _lifeHistoryService.CreateLifeHistoryAsync(User, lifeHistoryRequest);
-        return Created();
+        return Ok(await _lifeHistoryService.CreateLifeHistoryAsync(User, lifeHistoryRequest));
     }
 
     [HttpGet("life/history")]
@@ -58,8 +57,7 @@ public class LifeHistoryController(ILifeHistoryService _lifeHistoryService) : Co
         [FromBody] LifeSubSectionRequest lifeSubSectionRequest
     )
     {
-        await _lifeHistoryService.CreateLifeSubSectionAsync(User, lifeSubSectionRequest);
-        return Created();
+        return Ok(await _lifeHistoryService.CreateLifeSubSectionAsync(User, lifeSubSectionRequest));
     }
 
     [HttpGet("life/history/{historyId}/subsections")]

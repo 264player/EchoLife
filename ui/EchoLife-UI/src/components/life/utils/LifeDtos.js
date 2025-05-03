@@ -15,6 +15,16 @@ export class LifePointResponse {
   }
 }
 
+export class LifeSubsectionRequest {
+  constructor(title, content, lifeHistoryId, fatherId, index) {
+    this.title = title
+    this.content = content
+    this.lifeHistoryId = lifeHistoryId
+    this.fatherId = fatherId
+    this.index = index
+  }
+}
+
 export class LifeSubSectionResponse {
   constructor(id, title, content, fatherId, lifeHistoryId, index, createdAt, updatedAt) {
     this.id = id
@@ -25,5 +35,11 @@ export class LifeSubSectionResponse {
     this.index = index
     this.createdAt = createdAt
     this.updatedAt = updatedAt
+  }
+}
+
+export class LifeHistoryRequest {
+  constructor(title) {
+    this.title = title
   }
 }

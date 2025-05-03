@@ -31,14 +31,6 @@ public class LifePointService(
         };
         var lifePoint =
             await _lifePointRepository.CreateAsync(point) ?? throw new UnknowException();
-        await _lifePointUserMapRepository.CreateAsync(
-            new PointUserMap
-            {
-                Id = Guid.NewGuid().ToString(),
-                UserId = point.UserId,
-                PointId = point.Id,
-            }
-        );
 
         return LifePointResponse.From(lifePoint);
     }

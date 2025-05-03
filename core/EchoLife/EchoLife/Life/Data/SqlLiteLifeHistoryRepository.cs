@@ -24,7 +24,11 @@ public class SqlLiteLifeHistoryRepository(LifeDbContext _lifeDbContext) : ILifeH
         int count
     )
     {
-        return await LifeHistories.Where(express).Take(count).ToListAsync();
+        return await LifeHistories
+            .Where(express)
+            .OrderByDescending(h => h.Id)
+            .Take(count)
+            .ToListAsync();
     }
 
     public async Task<LifeHistory?> UpdateAsync(LifeHistory entity)

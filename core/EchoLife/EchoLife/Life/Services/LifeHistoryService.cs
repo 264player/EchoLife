@@ -14,21 +14,26 @@ public class LifeHistoryService(
 ) : ILifeHistoryService
 {
     #region LifeHistory
-    public async Task CreateLifeHistoryAsync(ClaimsPrincipal me, LifeHistoryRequest lifeHistory)
+    public async Task<LifeHistoryResponse> CreateLifeHistoryAsync(
+        ClaimsPrincipal me,
+        LifeHistoryRequest lifeHistory
+    )
     {
         var myId = ClaimsManager.GetAuthorizedUserId(me)!;
 
-        await _lifeHitoryRepository.CreateAsync(
-            new LifeHistory
-            {
-                Id = IdGenerator.GenerateUlid(),
-                Title = lifeHistory.Title,
-                UserId = myId,
-            }
-        );
+        var result =
+            await _lifeHitoryRepository.CreateAsync(
+                new LifeHistory
+                {
+                    Id = IdGenerator.GenerateUlid(),
+                    Title = lifeHistory.Title,
+                    UserId = myId,
+                }
+            ) ?? throw new UnknowException();
+        return LifeHistoryResponse.From(result);
     }
 
-    public async Task<List<LifeHistory>> GetMyLifeHistoryAsync(
+    public async Task<List<LifeHistoryResponse>> GetMyLifeHistoryAsync(
         ClaimsPrincipal me,
         QueryLifeHistoryRequest queryLifeHistoryRequest
     )
@@ -38,17 +43,20 @@ public class LifeHistoryService(
         var result = await _lifeHitoryRepository.ReadAsync(
             h =>
                 h.UserId == myId
-                || (
+                && (
                     queryLifeHistoryRequest.CursorId == null
-                    && h.Id.CompareTo(queryLifeHistoryRequest.CursorId) < 0
+                    || h.Id.CompareTo(queryLifeHistoryRequest.CursorId) < 0
                 ),
             queryLifeHistoryRequest.Count
         );
 
-        return result;
+        return [.. result.Select(LifeHistoryResponse.From)];
     }
 
-    public async Task<LifeHistory?> GetLifeHistoryAsync(ClaimsPrincipal me, string lifeHistoryId)
+    public async Task<LifeHistoryResponse?> GetLifeHistoryAsync(
+        ClaimsPrincipal me,
+        string lifeHistoryId
+    )
     {
         var myId = ClaimsManager.GetAuthorizedUserId(me);
 
@@ -58,7 +66,7 @@ public class LifeHistoryService(
             throw new ForbiddenException(myId);
         }
 
-        return result;
+        return LifeHistoryResponse.From(result);
     }
 
     public async Task UpdateLifeHistoryAsync(
@@ -105,7 +113,7 @@ public class LifeHistoryService(
     #endregion
 
     #region LifeSubSection
-    public async Task CreateLifeSubSectionAsync(
+    public async Task<LifeSubSectionResponse> CreateLifeSubSectionAsync(
         ClaimsPrincipal me,
         LifeSubSectionRequest lifeSubSectionRequest
     )
@@ -119,17 +127,19 @@ public class LifeHistoryService(
             throw new ForbiddenException(myId);
         }
 
-        await _lifeSubSectionRepository.CreateAsync(
-            new LifeSubSection
-            {
-                Id = IdGenerator.GenerateUlid(),
-                Title = lifeSubSectionRequest.Title,
-                Content = lifeSubSectionRequest.Content,
-                LifeHistoryId = lifeSubSectionRequest.LifeHistoryId,
-                FatherId = lifeSubSectionRequest.FatherId,
-                Index = lifeSubSectionRequest.Index,
-            }
-        );
+        var result =
+            await _lifeSubSectionRepository.CreateAsync(
+                new LifeSubSection
+                {
+                    Id = IdGenerator.GenerateUlid(),
+                    Title = lifeSubSectionRequest.Title,
+                    Content = lifeSubSectionRequest.Content,
+                    LifeHistoryId = lifeSubSectionRequest.LifeHistoryId,
+                    FatherId = lifeSubSectionRequest.FatherId,
+                    Index = lifeSubSectionRequest.Index,
+                }
+            ) ?? throw new UnknowException();
+        return LifeSubSectionResponse.From(result);
     }
 
     public async Task<List<LifeSubSectionResponse>> GetLifeSubSectionAsync(
@@ -145,9 +155,9 @@ public class LifeHistoryService(
         var result = await _lifeSubSectionRepository.ReadAsync(
             s =>
                 s.LifeHistoryId == historyId
-                || (
+                && (
                     queryLifeSubSectionRequest.CursorId == null
-                    && s.Id.CompareTo(queryLifeSubSectionRequest.CursorId) < 0
+                    || s.Id.CompareTo(queryLifeSubSectionRequest.CursorId) < 0
                 ),
             queryLifeSubSectionRequest.Count
         );

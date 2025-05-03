@@ -12,6 +12,7 @@ import MyWillReviews from '@/components/will/pages/MyWillReviews.vue'
 import AllReviewRequests from '@/components/will/pages/AllReviewRequests.vue'
 import WillReviewDetails from '@/components/will/pages/WillReviewDetails.vue'
 import ProcessReview from '@/components/will/ProcessReview.vue'
+import HistoryDetails from '@/components/life/pages/HistoryDetails.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -75,6 +76,11 @@ const router = createRouter({
       path: '/life/history',
       name: 'life-history',
       component: MyLifeHistory,
+    },
+    {
+      path: '/life/history/:historyId',
+      name: 'history-details',
+      component: HistoryDetails,
     },
     {
       path: '/life/points/:pointId',

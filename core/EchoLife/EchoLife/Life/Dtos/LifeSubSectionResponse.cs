@@ -8,7 +8,7 @@ public record LifeSubSectionResponse(
     string Content,
     string? FatherId,
     string LifeHistoryId,
-    int index,
+    int Index,
     DateTime CreatedAt,
     DateTime UpdatedAt
 )

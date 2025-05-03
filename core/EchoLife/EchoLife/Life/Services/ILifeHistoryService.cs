@@ -1,18 +1,20 @@
 ﻿using System.Security.Claims;
 using EchoLife.Life.Dtos;
-using EchoLife.Life.Models;
 
 namespace EchoLife.Life.Services;
 
 public interface ILifeHistoryService
 {
     #region LifeHistory
-    Task CreateLifeHistoryAsync(ClaimsPrincipal me, LifeHistoryRequest lifeHistoryRequest);
-    Task<List<LifeHistory>> GetMyLifeHistoryAsync(
+    Task<LifeHistoryResponse> CreateLifeHistoryAsync(
+        ClaimsPrincipal me,
+        LifeHistoryRequest lifeHistoryRequest
+    );
+    Task<List<LifeHistoryResponse>> GetMyLifeHistoryAsync(
         ClaimsPrincipal me,
         QueryLifeHistoryRequest queryLifeHistoryRequest
     );
-    Task<LifeHistory?> GetLifeHistoryAsync(ClaimsPrincipal me, string lifeHistoryId);
+    Task<LifeHistoryResponse?> GetLifeHistoryAsync(ClaimsPrincipal me, string lifeHistoryId);
     Task UpdateLifeHistoryAsync(
         ClaimsPrincipal me,
         string lifeHistoryId,
@@ -22,7 +24,10 @@ public interface ILifeHistoryService
     #endregion
 
     #region LifeSubSection
-    Task CreateLifeSubSectionAsync(ClaimsPrincipal me, LifeSubSectionRequest lifeSubSectionRequest);
+    Task<LifeSubSectionResponse> CreateLifeSubSectionAsync(
+        ClaimsPrincipal me,
+        LifeSubSectionRequest lifeSubSectionRequest
+    );
     Task<List<LifeSubSectionResponse>> GetLifeSubSectionAsync(
         ClaimsPrincipal me,
         string historyId,
