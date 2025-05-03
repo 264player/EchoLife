@@ -26,7 +26,11 @@ public class SqlLiteFamilyHistoryRepository(FamilyDbContext _familyDbContext)
         int count
     )
     {
-        return await FamilyHistories.Where(express).Take(count).ToListAsync();
+        return await FamilyHistories
+            .Where(express)
+            .OrderByDescending(h => h.Id)
+            .Take(count)
+            .ToListAsync();
     }
 
     public async Task<FamilyHistory?> UpdateAsync(FamilyHistory entity)

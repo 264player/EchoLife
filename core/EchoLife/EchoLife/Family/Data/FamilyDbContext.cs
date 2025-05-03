@@ -36,11 +36,11 @@ public class FamilyDbContext(
             member.Property(m => m.FamilyId).IsRequired();
             member.Property(m => m.DisplayName).IsRequired();
             member.Property(m => m.Gender).IsRequired();
-            member.Property(m => m.FatherId).IsRequired();
-            member.Property(m => m.MotherId).IsRequired();
-            member.Property(m => m.SpouseId).IsRequired();
-            member.Property(m => m.BirthDate).IsRequired();
-            member.Property(m => m.DeathDate).IsRequired();
+            member.Property(m => m.FatherId);
+            member.Property(m => m.MotherId);
+            member.Property(m => m.SpouseId);
+            member.Property(m => m.BirthDate);
+            member.Property(m => m.DeathDate);
             member.Property(m => m.Generation).IsRequired();
             member.Property(m => m.PowerLevel).IsRequired();
         });

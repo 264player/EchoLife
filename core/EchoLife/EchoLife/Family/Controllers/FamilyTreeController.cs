@@ -1,4 +1,5 @@
-﻿using EchoLife.Common.Exceptions;
+﻿using EchoLife.Common.Dtos;
+using EchoLife.Common.Exceptions;
 using EchoLife.Family.Dtos;
 using EchoLife.Family.Services;
 using Microsoft.AspNetCore.Authorization;
@@ -7,7 +8,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace EchoLife.Family.Controllers;
 
 [Authorize]
-[Route("api")]
+[Route("/api")]
 [ApiController]
 [ExceptionHandling]
 public class FamilyTreeController(IFamilyService _familyTreeService) : ControllerBase
@@ -25,9 +26,11 @@ public class FamilyTreeController(IFamilyService _familyTreeService) : Controlle
     }
 
     [HttpGet("families")]
-    public async Task<IActionResult> GetMyFamilies([FromQuery] int count, string? cursorId)
+    public async Task<IActionResult> GetMyFamilies([FromQuery] PageInfo pageInfo)
     {
-        return Ok(await _familyTreeService.GetFamilyTreeAsync(User, count, cursorId));
+        return Ok(
+            await _familyTreeService.GetFamilyTreeAsync(User, pageInfo.Count, pageInfo.CursorId)
+        );
     }
 
     [HttpPut("families/{familyId}")]
@@ -42,9 +45,36 @@ public class FamilyTreeController(IFamilyService _familyTreeService) : Controlle
     }
 
     [HttpDelete("families/{familyId}")]
-    public async Task<IActionResult> DeleteFamily(string familyId)
+    public async Task<IActionResult> DeleteFamily([FromRoute] string familyId)
     {
         await _familyTreeService.DeleteFamilyTreeAsync(User, familyId);
+        return Ok();
+    }
+
+    [HttpPost("families/members")]
+    public async Task<IActionResult> PostMember([FromBody] FamilyMemberRequest familyMemberRequest)
+    {
+        return Ok(await _familyTreeService.CreateFamilyMemberAsync(User, familyMemberRequest));
+    }
+
+    [HttpGet("families/{familyId}/members")]
+    public async Task<IActionResult> GetMembers([FromRoute] string familyId)
+    {
+        return Ok(await _familyTreeService.GetFamilyMemberAsync(familyId));
+    }
+
+    [HttpPut("families/members")]
+    public async Task<IActionResult> UpdateMember(
+        [FromBody] FamilyMemberRequest familyMemberRequest
+    )
+    {
+        return Ok(await _familyTreeService.UpdateFamilyMemberAsync(User, familyMemberRequest));
+    }
+
+    [HttpDelete("families/members/{memberId}")]
+    public async Task<IActionResult> DeleteMember(string memberId)
+    {
+        await _familyTreeService.DeleteFamilyMemberAsync(User, memberId);
         return NoContent();
     }
 }

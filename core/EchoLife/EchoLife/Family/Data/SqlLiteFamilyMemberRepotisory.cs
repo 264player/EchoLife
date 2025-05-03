@@ -26,7 +26,11 @@ public class SqlLiteFamilyMemberRepotisory(FamilyDbContext _familyDbContext)
         int count
     )
     {
-        return await FamilyMembers.Where(express).Take(count).ToListAsync();
+        return await FamilyMembers
+            .Where(express)
+            .OrderByDescending(m => m.Id)
+            .Take(count)
+            .ToListAsync();
     }
 
     public async Task<List<FamilyMember>> ReadByFamilyIdAsync(string familyId)

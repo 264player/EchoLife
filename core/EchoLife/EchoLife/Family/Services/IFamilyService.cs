@@ -25,7 +25,10 @@ public interface IFamilyService
     #endregion
 
     #region Family Member
-    Task CreateFamilyMemberAsync(ClaimsPrincipal user, FamilyMemberRequest familyMemberRequest);
+    Task<FamilyMemberResponse> CreateFamilyMemberAsync(
+        ClaimsPrincipal user,
+        FamilyMemberRequest familyMemberRequest
+    );
     Task<List<FamilyMemberResponse>> GetFamilyMemberAsync(string familyTreeId);
     Task<FamilyMemberResponse> UpdateFamilyMemberAsync(
         ClaimsPrincipal me,

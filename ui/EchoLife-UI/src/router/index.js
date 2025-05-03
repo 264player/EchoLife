@@ -13,6 +13,8 @@ import AllReviewRequests from '@/components/will/pages/AllReviewRequests.vue'
 import WillReviewDetails from '@/components/will/pages/WillReviewDetails.vue'
 import ProcessReview from '@/components/will/ProcessReview.vue'
 import HistoryDetails from '@/components/life/pages/HistoryDetails.vue'
+import FamilyDetails from '@/components/family/pages/FamilyDetails.vue'
+import MyFamilies from '@/components/family/pages/MyFamilies.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -91,6 +93,16 @@ const router = createRouter({
       path: '/:userId/life/points',
       name: 'my-points',
       component: MyLifePoints,
+    },
+    {
+      path: '/family/:familyId',
+      name: 'family-details',
+      component: FamilyDetails,
+    },
+    {
+      path: '/family',
+      name: 'my-families',
+      component: MyFamilies,
     },
   ],
 })

@@ -31,6 +31,17 @@ public class FamilyService(
                 }
             ) ?? throw new UnknowException();
 
+        await _familyMemberRepository.CreateAsync(
+            new FamilyMember
+            {
+                Id = IdGenerator.GenerateUlid(),
+                UserId = userId,
+                FamilyId = result.Id,
+                DisplayName = userId,
+                Gender = "x",
+            }
+        );
+
         return FamilyTreeResponse.From(result);
     }
 
@@ -89,7 +100,11 @@ public class FamilyService(
     public async Task DeleteFamilyTreeAsync(ClaimsPrincipal me, string familyTreeId)
     {
         var myId = ClaimsManager.GetAuthorizedUserId(me);
-        await EnsureUserInFamilyAsync(myId, familyTreeId);
+        var familyTree = await EnsureAndGetFamilyTreeAsync(familyTreeId);
+        if (familyTree.CreatedUserId != myId)
+        {
+            throw new ForbiddenException(myId);
+        }
 
         await _familyTreeRepository.DeleteAsync(familyTreeId);
     }
@@ -115,30 +130,32 @@ public class FamilyService(
 
     #region Family Member
 
-    public async Task CreateFamilyMemberAsync(
+    public async Task<FamilyMemberResponse> CreateFamilyMemberAsync(
         ClaimsPrincipal user,
         FamilyMemberRequest familyMemberRequest
     )
     {
         var userId = ClaimsManager.GetAuthorizedUserId(user);
 
-        await _familyMemberRepository.CreateAsync(
-            new FamilyMember
-            {
-                Id = IdGenerator.GenerateUlid(),
-                UserId = userId,
-                FamilyId = familyMemberRequest.FamilyId,
-                DisplayName = familyMemberRequest.DisplayName,
-                Gender = familyMemberRequest.Gender,
-                FatherId = familyMemberRequest.FatherId,
-                MotherId = familyMemberRequest.MotherId,
-                SpouseId = familyMemberRequest.SpouseId,
-                Generation = familyMemberRequest.Generation,
-                BirthDate = familyMemberRequest.BirthDate,
-                DeathDate = familyMemberRequest.DeathDate,
-                PowerLevel = familyMemberRequest.PowerLevel,
-            }
-        );
+        var result =
+            await _familyMemberRepository.CreateAsync(
+                new FamilyMember
+                {
+                    Id = IdGenerator.GenerateUlid(),
+                    UserId = userId,
+                    FamilyId = familyMemberRequest.FamilyId,
+                    DisplayName = familyMemberRequest.DisplayName,
+                    Gender = familyMemberRequest.Gender,
+                    FatherId = familyMemberRequest.FatherId,
+                    MotherId = familyMemberRequest.MotherId,
+                    SpouseId = familyMemberRequest.SpouseId,
+                    Generation = familyMemberRequest.Generation,
+                    BirthDate = familyMemberRequest.BirthDate,
+                    DeathDate = familyMemberRequest.DeathDate,
+                    PowerLevel = familyMemberRequest.PowerLevel,
+                }
+            ) ?? throw new UnknowException();
+        return FamilyMemberResponse.From(result);
     }
 
     public async Task<List<FamilyMemberResponse>> GetFamilyMemberAsync(string familyTreeId)

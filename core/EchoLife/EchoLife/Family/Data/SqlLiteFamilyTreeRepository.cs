@@ -30,7 +30,11 @@ public class SqlLiteFamilyTreeRepository(FamilyDbContext _familyDbContext) : IFa
         int count
     )
     {
-        return await FamilyTrees.Where(express).Take(count).ToListAsync();
+        return await FamilyTrees
+            .Where(express)
+            .OrderByDescending(t => t.Id)
+            .Take(count)
+            .ToListAsync();
     }
 
     public async Task<FamilyTree?> UpdateAsync(FamilyTree entity)

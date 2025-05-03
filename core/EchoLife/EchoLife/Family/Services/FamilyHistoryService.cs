@@ -152,7 +152,7 @@ public class FamilyHistoryService(
         var result = await familySubSectionRepository.ReadAsync(
             s =>
                 s.FamilyHistoryId == historyId
-                || (
+                && (
                     queryFamilySubSectionRequest.CursorId == null
                     || s.Id.CompareTo(queryFamilySubSectionRequest.CursorId) < 0
                 ),

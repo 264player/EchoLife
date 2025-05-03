@@ -12,7 +12,7 @@ public class FamilyMember : IEntity
     public string? FatherId { get; set; }
     public string? MotherId { get; set; }
     public string? SpouseId { get; set; }
-    public DateTime BirthDate { get; set; }
+    public DateTime BirthDate { get; set; } = DateTime.UtcNow;
     public DateTime? DeathDate { get; set; }
     public int Generation { get; set; }
     public int PowerLevel { get; set; } = 0;
