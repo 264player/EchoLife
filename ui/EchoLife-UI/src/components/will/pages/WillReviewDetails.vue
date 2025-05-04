@@ -2,13 +2,15 @@
     <el-row>
         <el-col :span="4"></el-col>
         <el-col :span="16">
-            <el-descriptions title="遗嘱审核" :column="1" :border="true">
-                <el-descriptions-item label="ID">{{ review.id }}</el-descriptions-item>
+            <el-descriptions title="遗嘱审核详情" :column="1" :border="true">
                 <el-descriptions-item label="状态">{{ review.status }}</el-descriptions-item>
                 <el-descriptions-item label="遗嘱ID">{{ review.willVersion.id }}</el-descriptions-item>
                 <el-descriptions-item label="遗嘱类型">{{ review.willVersion.willType }}</el-descriptions-item>
                 <el-descriptions-item label="遗嘱内容">{{ review.willVersion.value }}</el-descriptions-item>
+                <el-descriptions-item label="审核人">{{ review.reviewerId }}</el-descriptions-item>
                 <el-descriptions-item label="评论">{{ review.comments }}</el-descriptions-item>
+                <el-descriptions-item label="请求时间">{{ review.createdAt }}</el-descriptions-item>
+                <el-descriptions-item label="审核时间">{{ review.reviewedAt }}</el-descriptions-item>
             </el-descriptions>
         </el-col>
         <el-col :span="4"></el-col>

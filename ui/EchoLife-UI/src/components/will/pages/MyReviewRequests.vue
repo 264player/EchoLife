@@ -1,12 +1,14 @@
 <template>
     <el-table v-infinite-scroll="GetMyReviewRequests" :data="myReviewRequests" height="100%"
         style="width: 100%;overflow: auto;" :stripe="true" @row-dblclick="TableItemClick">
-        <el-table-column prop="id" label="ID" width="180" />
         <el-table-column prop="status" label="名称" width="180" />
-        <el-table-column prop="reviwerId" label="所属人" />
+        <el-table-column prop="reviewerId" label="审核人" />
+        <el-table-column prop="createdAt" label="请求时间" width="180" />
+        <el-table-column prop="reviewedAt" label="审核完成时间" width="180" />
         <el-table-column label="操作">
             <template #default="scope">
-                <el-button size="small" type="danger" @click="CancelRequest(scope.row)">
+                <el-button size="small" type="danger" @click="CancelRequest(scope.row)"
+                    :disabled="scope.row.status != 'pendding'">
                     取消请求
                 </el-button>
             </template>

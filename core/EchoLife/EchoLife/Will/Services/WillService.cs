@@ -27,7 +27,7 @@ namespace EchoLife.Will.Services
                 Id = IdGenerator.GenerateUlid(),
                 TestaorId = userId,
                 Name = willRequest.Name,
-                WillType = WillType.SELF_WRITTEN_WILL.ToString(),
+                WillType = WillType.SelfWritten,
                 VersionId = firstVersionId,
             };
 
@@ -36,7 +36,7 @@ namespace EchoLife.Will.Services
                 {
                     Id = firstVersionId,
                     WillId = will.Id,
-                    WillType = "self",
+                    WillType = WillType.SelfWritten,
                     Content = "",
                 }
             );
@@ -87,7 +87,8 @@ namespace EchoLife.Will.Services
             ClaimsPrincipal user,
             string willId,
             string versionId,
-            string name
+            string name,
+            WillType willType
         )
         {
             var userId = ClaimsManager.GetAuthorizedUserId(user);
@@ -96,6 +97,7 @@ namespace EchoLife.Will.Services
 
             will.VersionId = versionId;
             will.Name = name;
+            will.WillType = willType;
             var updatedWill =
                 await _officiousWillRepository.UpdateAsync(will) ?? throw new UnknowException();
             return WillResponse.From(updatedWill);
@@ -189,10 +191,11 @@ namespace EchoLife.Will.Services
 
             return WillVersionResponse.From(updatedVersino);
 
-            WillVersion Update(WillVersion willVersion, WillVersionRequest request)
+            static WillVersion Update(WillVersion willVersion, WillVersionRequest request)
             {
                 willVersion.WillType = request.WillType;
                 willVersion.Content = request.Value;
+                willVersion.UpdatedAt = DateTime.UtcNow;
                 return willVersion;
             }
         }

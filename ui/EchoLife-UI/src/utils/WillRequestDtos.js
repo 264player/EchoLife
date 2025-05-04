@@ -11,11 +11,12 @@ export class QueryWillsRequest {
 }
 
 export class WillResponse {
-  constructor(id, testaordId, contentId, name) {
+  constructor(id, testaordId, contentId, name, willType) {
     this.id = id
     this.testaordId = testaordId
     this.contentId = contentId
     this.name = name
+    this.willType = willType
   }
 }
 
@@ -26,9 +27,10 @@ export class WillRequest {
 }
 
 export class PutWillRequest {
-  constructor(name, versionId) {
+  constructor(name, versionId, willType) {
     this.Name = name
     this.VersionId = versionId
+    this.willType = willType
   }
 }
 
@@ -87,3 +89,14 @@ export class ReviewRequest {
     this.status = status
   }
 }
+
+const willTypes = [
+  'SelfWritten',
+  'WrittenByOthers',
+  'Audio',
+  'Video',
+  'Living',
+  'Notarized',
+  'Trust',
+]
+export { willTypes }

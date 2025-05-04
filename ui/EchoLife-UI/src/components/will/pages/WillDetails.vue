@@ -7,12 +7,16 @@
                 </el-col>
             </el-row>
             <el-row>
-                <el-col :span="24"><el-text>遗嘱类型</el-text>
-                    <el-input v-model="currentVersion.willType" />
+                <el-col :span="24">
+                    <p><el-text>遗嘱类型</el-text></p>
+                    <el-select v-model="currentVersion.willType" placeholder="Select" style="width: 240px">
+                        <el-option v-for="item in willTypes" :key="item" :label="item" :value="item" />
+                    </el-select>
                 </el-col>
             </el-row>
             <el-row>
-                <el-col :span="24"><el-text>遗嘱内容</el-text>
+                <el-col :span="24">
+                    <p><el-text>遗嘱内容</el-text></p>
                     <el-input v-model="currentVersion.value" type="textarea" :rows="10" />
                 </el-col>
             </el-row>
@@ -20,24 +24,28 @@
                 <el-col :span="24">
                     <el-button @click="UpdateWillAndVersion">保存更改</el-button>
                     <el-button @click="DeleteWillVersion">删除该版本</el-button>
-                    <el-button @click="aiReviewStatus = true">查看AI审核</el-button>
+                    <el-button @click="aiReviewStatus = true" :disabled="true">查看AI审核</el-button>
                     <el-button @click="RequestHumanReview">请求审核</el-button>
                 </el-col>
             </el-row>
         </el-col>
         <el-col :span="6" :offset="2">
             <el-button @click="newWillVersion = true"><el-text>创建新的版本</el-text></el-button>
-            <el-table :data="willVersions" height="150" style="width: 100%;overflow: auto;" :stripe="true"
-                :show-overflow-tooltip="true" v-infinite-scroll="GetWillVersions" @row-dblclick="SwitchVersion">
-                <el-table-column prop="id" label="ID" width="180" />
-                <el-table-column prop="value" label="内容" width="180" />
+            <el-table :data="willVersions" height="800" style="width: 100%;overflow: auto;" :stripe="true"
+                :show-overflow-tooltip="true" v-infinite-scroll="GetWillVersions" @row-click="SwitchVersion">
+                <el-table-column prop="updatedAt" label="更新时间" width="180" />
+                <el-table-column prop="willType" label="遗嘱类型" width="180" />
             </el-table>
         </el-col>
     </el-row>
 
     <el-dialog v-model="newWillVersion" title="新的版本" width="800">
-        <el-text>遗嘱类型</el-text>
-        <el-input v-model="willVersionRequest.WillType" />
+        <p><el-text>遗嘱类型</el-text></p>
+        <p>
+            <el-select v-model="willVersionRequest.WillType" placeholder="Select" style="width: 240px">
+                <el-option v-for="item in willTypes" :key="item" :label="item" :value="item" />
+            </el-select>
+        </p>
         <el-text>内容</el-text>
         <el-input v-model="willVersionRequest.Value" />
         <el-button @click="CreateWillVersion">确认</el-button>
@@ -54,6 +62,7 @@ import { GetWillAsyn, GetWillVersionsAsync, CreateWillVersionAsync, UpdateWillAs
 import { useRoute } from 'vue-router';
 import { ref, onMounted } from 'vue';
 import { ElMessage } from 'element-plus';
+import { willTypes } from '@/utils/WillRequestDtos';
 
 const route = useRoute()
 
@@ -138,7 +147,7 @@ async function GetWill() {
 }
 
 async function UpdateWill() {
-    var { result, response } = await UpdateWillAsync(willId.value, new PutWillRequest(willResponse.value.name, willResponse.value.contentId))
+    var { result, response } = await UpdateWillAsync(willId.value, new PutWillRequest(willResponse.value.name, willResponse.value.contentId, currentVersion.value.willType))
     console.debug(result)
     console.debug(response)
 }

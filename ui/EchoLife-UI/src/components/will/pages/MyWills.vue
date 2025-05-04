@@ -2,11 +2,10 @@
     <NewWill v-model:status="viewNewWill" v-model:list="myWills"></NewWill>
     <el-button @click="viewNewWill = true">新的遗嘱</el-button>
     <el-table v-infinite-scroll="GetMyWill" :data="myWills" height="800px" style="width: 100%;overflow: auto;"
-        :stripe="true" @row-dblclick="TableItemClick">
-        <el-table-column prop="id" label="ID" width="180" />
+        :stripe="true" @row-click="TableItemClick">
         <el-table-column prop="name" label="名称" width="180" />
-        <el-table-column prop="testaorId" label="所属人" />
-        <el-table-column prop="contentId" label="内容ID" />
+        <el-table-column prop="testaorId" label="所属人" width="180" />
+        <el-table-column prop="willType" label="遗嘱类型" />
         <el-table-column label="操作">
             <template #default="scope">
                 <el-button size="small" type="danger" @click="DeleteWill(scope.row)">

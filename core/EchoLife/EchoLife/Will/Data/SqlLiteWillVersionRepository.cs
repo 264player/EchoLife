@@ -50,7 +50,12 @@ namespace EchoLife.Will.Data
         {
             var result = await Versions
                 .Where(u => u.Id == entity.Id)
-                .ExecuteUpdateAsync(version => version.SetProperty(v => v.Content, entity.Content));
+                .ExecuteUpdateAsync(version =>
+                    version
+                        .SetProperty(v => v.Content, entity.Content)
+                        .SetProperty(v => v.WillType, entity.WillType)
+                        .SetProperty(v => v.UpdatedAt, entity.UpdatedAt)
+                );
             return result > 0 ? entity : null;
         }
 

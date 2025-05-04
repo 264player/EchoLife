@@ -3,15 +3,15 @@
         <el-row>
             <el-col :span="4"></el-col>
             <el-col :span="16">
-                <el-text type="=info">{{ review.comments }}</el-text>
-                <el-input v-model="willVersion" size="small" /></el-col>
+                <el-text type="=info">遗嘱内容</el-text>
+                <el-input v-model="willVersion.value" size="large" /></el-col>
             <el-col :span="4"></el-col>
         </el-row>
         <el-row>
             <el-col :span="4"></el-col>
             <el-col :span="16">
                 <el-text type="=info">评论</el-text>
-                <el-input v-model="review.id" size="small" /></el-col>
+                <el-input v-model="review.comments" type="textarea" /></el-col>
             <el-col :span="4"></el-col>
         </el-row>
         <el-row>
@@ -48,7 +48,7 @@ onMounted(async () => {
 
 
 async function CompleteReview() {
-    var { result, response } = await CompleteReviewAsync(reviewId.value, { comment: "12312", status: "approved" });
+    var { result, response } = await CompleteReviewAsync(reviewId.value, { comment: review.value.comments, status: "approved" });
     console.log(result)
     console.log(response)
     ElMessage({

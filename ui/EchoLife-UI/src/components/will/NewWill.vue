@@ -3,14 +3,15 @@
         <el-row>
             <el-col :span="4"></el-col>
             <el-col :span="16">
-                <el-text type="=info">遗嘱名</el-text>
-                <el-input v-model="willRequest.Name" size="small" /></el-col>
-            <el-col :span="4"></el-col>
-        </el-row>
-        <el-row>
-            <el-col :span="4"></el-col>
-            <el-col :span="16">
-                <el-button @click="CreateWill">创建新的遗嘱</el-button>
+                <el-row>
+                    <el-col :span="24">
+                        <el-text type="=info">遗嘱名称</el-text>
+                        <el-input v-model="willRequest.Name" size="large" />
+                    </el-col>
+                    <el-col :span="24">
+                        <el-button @click="CreateWill">创建新的遗嘱</el-button>
+                    </el-col>
+                </el-row>
             </el-col>
             <el-col :span="4"></el-col>
         </el-row>
@@ -44,7 +45,7 @@ async function CreateWill() {
 </script>
 
 <style lang="css" scoped>
-.el-row {
+.el-col {
     margin-bottom: 10px;
 }
 </style>

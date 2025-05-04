@@ -1,4 +1,4 @@
-﻿namespace EchoLife.Will.Data
+﻿namespace EchoLife.Will.Models
 {
     /// <summary>
     /// Enum representing different types of wills as per the provisions under the Civil Code of the People's Republic of China.
@@ -11,36 +11,36 @@
         /// <summary>
         /// A handwritten will personally written and signed by the testator.
         /// </summary>
-        SELF_WRITTEN_WILL,
+        SelfWritten,
 
         /// <summary>
         /// A will written by another person under the direction of the testator, with at least two witnesses.
         /// </summary>
-        WRITTEN_BY_OTHERS_WILL,
+        WrittenByOthers,
 
         /// <summary>
         /// A will recorded in audio format, with at least two witnesses.
         /// </summary>
-        AUDIO_WILL,
+        Audio,
 
         /// <summary>
         /// A will recorded in video format, with at least two witnesses.
         /// </summary>
-        VIDEO_WILL,
+        Video,
 
         /// <summary>
         /// A living will that specifies medical or end-of-life decisions.
         /// </summary>
-        LIVING_WILL,
+        Living,
 
         /// <summary>
         /// A will notarized by a public notary, carrying the highest legal authority.
         /// </summary>
-        NOTARIZED_WILL,
+        Notarized,
 
         /// <summary>
         /// A will that establishes a trust to manage assets after death.
         /// </summary>
-        TRUST_WILL,
+        Trust,
     }
 }

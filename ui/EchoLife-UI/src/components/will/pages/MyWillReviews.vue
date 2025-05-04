@@ -1,15 +1,16 @@
 <template>
     <el-table v-infinite-scroll="GetMyReview" :data="myReviewRequests" height="100%" style="width: 100%;overflow: auto;"
         :stripe="true">
-        <el-table-column prop="id" label="ID" width="180" />
         <el-table-column prop="status" label="名称" width="180" />
-        <el-table-column prop="reviwerId" label="所属人" />
+        <el-table-column prop="reviewerId" label="审核人" />
+        <el-table-column prop="createdAt" label="请求时间" width="180" />
+        <el-table-column prop="reviewedAt" label="审核完成时间" width="180" />
         <el-table-column label="操作">
             <template #default="scope">
-                <el-button size="small" v-if="scope.row.status == 'inprogress'" @click="Process(scope.row)">
+                <el-button size="small" v-if="scope.row.status == 'inProgress'" @click="Process(scope.row)">
                     处理请求
                 </el-button>
-                <el-button size="small" v-if="scope.row.status != 'inprogress'" @click="ReviewDetails(scope.row)">
+                <el-button size="small" v-if="scope.row.status != 'inProgress'" @click="ReviewDetails(scope.row)">
                     查看审核
                 </el-button>
             </template>

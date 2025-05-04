@@ -1,5 +1,6 @@
 ﻿using System.Security.Claims;
 using EchoLife.Will.Dtos;
+using EchoLife.Will.Models;
 
 namespace EchoLife.Will.Services
 {
@@ -13,7 +14,8 @@ namespace EchoLife.Will.Services
             ClaimsPrincipal user,
             string willId,
             string versionId,
-            string name
+            string name,
+            WillType willType
         );
         Task DeleteWillAsync(ClaimsPrincipal user, string willId);
         #endregion

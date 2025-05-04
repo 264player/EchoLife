@@ -53,7 +53,8 @@ namespace EchoLife.Will.Controllers
                 User,
                 willId,
                 putWillRequest.VersionId,
-                putWillRequest.Name
+                putWillRequest.Name,
+                putWillRequest.WillType
             );
             return Ok(result);
         }

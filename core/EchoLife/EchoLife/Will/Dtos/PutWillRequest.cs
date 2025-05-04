@@ -1,3 +1,5 @@
-﻿namespace EchoLife.Will.Dtos;
+﻿using EchoLife.Will.Models;
 
-public record PutWillRequest(string Name, string VersionId);
+namespace EchoLife.Will.Dtos;
+
+public record PutWillRequest(string Name, WillType WillType, string VersionId);

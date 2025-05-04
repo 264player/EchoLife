@@ -6,7 +6,7 @@ public record WillVersionResponse(
     string Id,
     string WillId,
     string Value,
-    string WillType,
+    WillType WillType,
     DateTime CreatedAt,
     DateTime UpdatedAt
 )
