@@ -25,11 +25,7 @@ public class SqlLiteLifeSubSectionRepository(LifeDbContext _lifeDbContext)
         int count
     )
     {
-        return await LifeSubSections
-            .Where(express)
-            .OrderByDescending(s => s.Id)
-            .Take(count)
-            .ToListAsync();
+        return await LifeSubSections.Where(express).OrderBy(s => s.Id).Take(count).ToListAsync();
     }
 
     public async Task<LifeSubSection?> UpdateAsync(LifeSubSection entity)

@@ -19,16 +19,23 @@
 
 
 <script setup>
-import { ref, defineModel } from 'vue';
+import { ref, defineModel, defineProps, onMounted } from 'vue';
 import { ElMessage } from 'element-plus';
 import { CreateMemberAsync } from './utils/familyHelper';
 import { FamilyMemberRequest } from './utils/familyDtos';
 
-const member = ref(new FamilyMemberRequest(""))
+const member = ref(new FamilyMemberRequest("", "", "male", null, null, null, null, null, 0, 0))
 const status = defineModel("status", { required: true })
 const members = defineModel("list", { required: true })
+const familyId = defineProps(["fid"])
+
+onMounted(() => {
+    member.value.familyId = familyId.fid
+})
 
 async function CreateMember() {
+    console.log(familyId)
+    member.value.familyId = familyId.fid
     var { result, response } = await CreateMemberAsync(member.value);
     console.log(result)
     console.log(response)

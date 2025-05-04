@@ -150,7 +150,7 @@ public class FamilyService(
                     MotherId = familyMemberRequest.MotherId,
                     SpouseId = familyMemberRequest.SpouseId,
                     Generation = familyMemberRequest.Generation,
-                    BirthDate = familyMemberRequest.BirthDate,
+                    BirthDate = familyMemberRequest.BirthDate ?? DateTime.UtcNow,
                     DeathDate = familyMemberRequest.DeathDate,
                     PowerLevel = familyMemberRequest.PowerLevel,
                 }

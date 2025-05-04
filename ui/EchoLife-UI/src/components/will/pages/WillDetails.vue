@@ -2,7 +2,8 @@
     <el-row>
         <el-col :span="16">
             <el-row>
-                <el-col :span="24"><el-text>遗嘱名</el-text>
+                <el-col :span="24">
+                    <p><el-text>遗嘱名</el-text></p>
                     <el-input v-model="willResponse.name" />
                 </el-col>
             </el-row>
@@ -17,7 +18,7 @@
             <el-row>
                 <el-col :span="24">
                     <p><el-text>遗嘱内容</el-text></p>
-                    <el-input v-model="currentVersion.value" type="textarea" :rows="10" />
+                    <MdEditor v-model="currentVersion.value"></MdEditor>
                 </el-col>
             </el-row>
             <el-row>
@@ -65,6 +66,8 @@ import { useRoute } from 'vue-router';
 import { ref, onMounted } from 'vue';
 import { ElMessage } from 'element-plus';
 import { willTypes } from '@/utils/WillRequestDtos';
+import { MdEditor } from 'md-editor-v3';
+import 'md-editor-v3/lib/style.css';
 
 const route = useRoute()
 
@@ -88,6 +91,9 @@ const willVersions = ref([])
 const aiReviewResult = ref("")
 
 onMounted(async () => {
+    // initial editor
+
+
     // load current will.
     willId.value = route.params.willId
     // load will versions.

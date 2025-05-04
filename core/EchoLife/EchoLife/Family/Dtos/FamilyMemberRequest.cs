@@ -7,7 +7,7 @@ public record FamilyMemberRequest(
     string? FatherId,
     string? MotherId,
     string? SpouseId,
-    DateTime BirthDate,
+    DateTime? BirthDate,
     DateTime? DeathDate,
     int Generation,
     int PowerLevel

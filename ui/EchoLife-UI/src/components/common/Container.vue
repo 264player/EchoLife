@@ -25,11 +25,17 @@ import { useRouter, useRoute } from 'vue-router';
 import { useUserStore } from '@/stores/counter';
 import { watch, onMounted, ref } from 'vue';
 import { GetUserInfoAsync } from '@/utils/UserRequestHelper';
+import { RefreshAsync } from '@/utils/UserRequestHelper';
 
 const router = useRouter()
 const routeInfo = useRoute()
 const userStore = useUserStore()
 const showNav = ref(false)
+
+// heart beat
+const intervalTime = 5 * 60 * 1000;
+setInterval(Refresh, intervalTime);
+//
 
 onMounted(() => {
   GetUserInfo()
@@ -73,5 +79,16 @@ function GotoLogin(newName) {
   }
 
   router.push({ name: "login" })
+}
+
+async function Refresh() {
+  if (userStore.isLoggedIn) {
+    var { result, response } = await RefreshAsync()
+    if (result) {
+      console.log("refresh success!")
+    } else {
+      router.push({ name: "login" })
+    }
+  }
 }
 </script>

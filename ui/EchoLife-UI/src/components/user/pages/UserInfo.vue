@@ -13,7 +13,6 @@
         <el-col :span="4"></el-col>
         <el-col :span="16">
             <el-button @click="LogOut">退出登录</el-button>
-            <el-button @click="Refresh">刷新登录</el-button>
             <el-button @click="BecomeAReviewer">成为审核员</el-button>
         </el-col>
         <el-col :span="4"></el-col>
@@ -22,7 +21,7 @@
 
 <script setup>
 import { UserInfoResponse } from '@/utils/UserRequestDtos';
-import { BecomeAReviewerAsync, GetUserInfoAsync, LogOutAsync, RefreshAsync } from '@/utils/UserRequestHelper';
+import { BecomeAReviewerAsync, GetUserInfoAsync, LogOutAsync } from '@/utils/UserRequestHelper';
 import { onMounted, ref } from 'vue';
 import { useUserStore } from '@/stores/counter';
 import { ElMessage } from 'element-plus';
@@ -45,15 +44,6 @@ async function LogOut() {
     if (result) {
         userStore.isLoggedIn = false
         console.log("logout success!")
-    } else {
-        console.log(response)
-    }
-}
-
-async function Refresh() {
-    var { result, response } = await RefreshAsync()
-    if (result) {
-        console.log("refresh success!")
     } else {
         console.log(response)
     }

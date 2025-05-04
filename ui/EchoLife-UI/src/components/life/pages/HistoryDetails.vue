@@ -15,7 +15,7 @@
             </el-row>
             <el-row>
                 <el-col :span="24"><el-text>传记内容</el-text>
-                    <el-input v-model="currentSection.content" type="textarea" :rows="10" />
+                    <MdEditor v-model="currentSection.content"></MdEditor>
                 </el-col>
             </el-row>
             <el-row>
@@ -31,6 +31,11 @@
             <el-button @click="newSubSectionStatus = true">新的小节</el-button>
             <el-table :data="sections" height="400" style="width: 100%;overflow: auto;" :stripe="true"
                 :show-overflow-tooltip="true" v-infinite-scroll="GetMyLifeSubsecions" @row-click="SwitchSection">
+                <el-table-column label="序号">
+                    <template #default="scope">
+                        {{ indexGenerator.getIndexById(scope.row.id) }}
+                    </template>
+                </el-table-column>
                 <el-table-column prop="title" label="标题" width="180" />
             </el-table>
         </el-col>
@@ -42,13 +47,15 @@
 </template>
 
 <script setup>
-import { WillResponse, WillVersionResponse, PageInfo } from '@/utils/WillRequestDtos';
+import { PageInfo } from '@/utils/WillRequestDtos';
 import { useRoute } from 'vue-router';
 import { ref, onMounted } from 'vue';
 import { ElMessage } from 'element-plus';
 import { DeleteLifeSubSectionAsync, GetMyLifeHistoryAsync, GetMyLifeSubsectionsAsync, UpdataLifeSubSectionAsync } from '../utils/LifeHelpers';
 import NewLifeSubSection from '../NewLifeSubSection.vue';
 import { LifeSubsectionRequest, LifeSubSectionResponse } from '../utils/LifeDtos';
+import { MdEditor } from 'md-editor-v3';
+import 'md-editor-v3/lib/style.css';
 
 const route = useRoute()
 
@@ -62,16 +69,18 @@ const newSubSectionStatus = ref(false)
 const aiReviewStatus = ref(false)
 
 // models
-const currentSection = ref(new LifeSubSectionResponse())
+const currentSection = ref(new LifeSubSectionResponse("", '', ''))
 const pageInfo = ref(new PageInfo(30, null))
-const willResponse = ref(new WillResponse())
 const sections = ref([])
+const indexGenerator = ref()
 
 onMounted(async () => {
     // load current will.
     historyId.value = route.params.historyId
     // load will versions.
     await Promise.all([GetHistory(), GetMyLifeSubsecions()])
+
+    indexGenerator.value = createIndexGenerator(sections.value)
 })
 
 async function SwitchSection(section) {
@@ -90,8 +99,12 @@ async function GetMyLifeSubsecions() {
     console.log(response)
     console.log(pageInfo.value)
     if (result) {
-        pageInfo.value.cursorId = response[response.length - 1].id
+        if (response.length == 0) {
+            return
+        }
         sections.value = sections.value.concat(response)
+        pageInfo.value.cursorId = response[response.length - 1].id
+        indexGenerator.value = createIndexGenerator(sections.value)
     }
 
     loading.value = false
@@ -130,11 +143,41 @@ async function DeleteSubSection() {
         var index = sections.value.findIndex(v => v.id == currentSection.value.id)
         if (index !== -1) {
             sections.value.splice(index, 1)
-            currentSection.value = new WillVersionResponse()
+            currentSection.value = new LifeSubSectionResponse()
         }
     }
 }
 
+// index generator
+function createIndexGenerator(data) {
+    const indexMap = {};
+    const childrenMap = {};
+
+    // 初始化：构建父子映射并排序
+    data.sort((a, b) => a.id - b.id).forEach(item => {
+        const parentId = item.fatherId ?? null;
+        if (!childrenMap[parentId]) {
+            childrenMap[parentId] = [];
+        }
+        childrenMap[parentId].push(item);
+    });
+
+    // 递归分配层级编号
+    function assignIndex(items, prefix = '') {
+        items.forEach((item, index) => {
+            const currentIndex = prefix ? `${prefix}-${index + 1}` : `${index + 1}`;
+            indexMap[item.id] = currentIndex;
+            assignIndex(childrenMap[item.id] || [], currentIndex);
+        });
+    }
+
+    assignIndex(childrenMap[null]);
+
+    return {
+        getIndexById: (id) => indexMap[id] || null,
+        getAllIndexes: () => ({ ...indexMap })
+    };
+}
 </script>
 
 <style lang="css" scoped>

@@ -1,5 +1,7 @@
 <template>
-    <NewFamilyMember v-model:status="newMemberStatus" v-model:list="members"></NewFamilyMember>
+    <NewFamilyMember :fid="family.id" v-model:status="newMemberStatus" v-model:list="members">
+    </NewFamilyMember>
+    <FamilyMember :model="currentMember" v-model:status="viewMemberDetailsStatus"></FamilyMember>
     <el-row>
         <el-col :span="16">
             <el-row>
@@ -27,9 +29,9 @@
             </el-row>
         </el-col>
         <el-col :span="6" :offset="2">
-            <el-button @click="newWillVersion = true"><el-text>创建新的版本</el-text></el-button>
+            <el-button @click="newMemberStatus = true"><el-text>创建新的家族成员</el-text></el-button>
             <el-table :data="members" height="150" style="width: 100%;overflow: auto;" :stripe="true"
-                @row-dblclick="SwitchVersion">
+                @row-click="ViewMemberDetails">
                 <el-table-column prop="id" label="ID" width="180" />
                 <el-table-column prop="value" label="内容" width="180" />
                 <el-table-column label="操作">
@@ -57,6 +59,7 @@ import { ElMessage } from 'element-plus';
 import { FamilyTreeResponse } from '../utils/familyDtos';
 import { DeleteMemberAsync, GetFamiliyMembersAsync, GetFamilyAsyn } from '../utils/familyHelper';
 import NewFamilyMember from '../NewFamilyMember.vue';
+import FamilyMember from '../FamilyMember.vue';
 
 const route = useRoute()
 
@@ -64,6 +67,7 @@ const route = useRoute()
 
 //status
 const newMemberStatus = ref(false)
+const viewMemberDetailsStatus = ref(false)
 const aiReviewStatus = ref(false)
 
 // model
@@ -71,7 +75,7 @@ const familyId = ref("")
 const family = ref(new FamilyTreeResponse())
 const members = ref([])
 
-const currentVersion = ref()
+const currentMember = ref()
 
 onMounted(async () => {
 
@@ -82,9 +86,10 @@ onMounted(async () => {
     currentVersion.value = willVersions.value[0]
 })
 
-async function SwitchVersion(version) {
-    console.debug(version)
-    currentVersion.value = version
+function ViewMemberDetails(item) {
+    console.debug(item)
+    currentMember.value = item
+    viewMemberDetailsStatus.value = true
 }
 
 async function UpdateWillAndVersion() {

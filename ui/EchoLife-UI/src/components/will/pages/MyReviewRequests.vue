@@ -8,7 +8,7 @@
         <el-table-column label="操作">
             <template #default="scope">
                 <el-button size="small" type="danger" @click="CancelRequest(scope.row)"
-                    :disabled="scope.row.status != 'pendding'">
+                    :disabled="scope.row.status != 'pending'">
                     取消请求
                 </el-button>
             </template>

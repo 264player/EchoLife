@@ -154,7 +154,7 @@ public class FamilyHistoryService(
                 s.FamilyHistoryId == historyId
                 && (
                     queryFamilySubSectionRequest.CursorId == null
-                    || s.Id.CompareTo(queryFamilySubSectionRequest.CursorId) < 0
+                    || s.Id.CompareTo(queryFamilySubSectionRequest.CursorId) > 0
                 ),
             queryFamilySubSectionRequest.Count
         );

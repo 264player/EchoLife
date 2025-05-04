@@ -24,7 +24,7 @@ async function CreateLifePoint() {
         message: result ? "创建成功" : "创建失败"
     })
     if (result) {
-        histories.value.unshift(response)
+        // histories.value.unshift(response)
     }
 }
 </script>

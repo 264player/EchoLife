@@ -157,7 +157,7 @@ public class LifeHistoryService(
                 s.LifeHistoryId == historyId
                 && (
                     queryLifeSubSectionRequest.CursorId == null
-                    || s.Id.CompareTo(queryLifeSubSectionRequest.CursorId) < 0
+                    || s.Id.CompareTo(queryLifeSubSectionRequest.CursorId) > 0
                 ),
             queryLifeSubSectionRequest.Count
         );

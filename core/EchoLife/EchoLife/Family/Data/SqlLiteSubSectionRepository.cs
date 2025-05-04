@@ -26,11 +26,7 @@ public class SqlLiteSubSectionRepository(FamilyDbContext _familyDbContext)
         int count
     )
     {
-        return await SubSections
-            .Where(express)
-            .OrderByDescending(s => s.Id)
-            .Take(count)
-            .ToListAsync();
+        return await SubSections.Where(express).OrderBy(s => s.Id).Take(count).ToListAsync();
     }
 
     public async Task<FamilySubSection?> UpdateAsync(FamilySubSection entity)

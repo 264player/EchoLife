@@ -3,15 +3,18 @@
         <el-row>
             <el-col :span="4"></el-col>
             <el-col :span="16">
-                <el-text type="=info">遗嘱内容</el-text>
-                <el-input v-model="willVersion.value" size="large" /></el-col>
+                <el-divider>遗嘱内容</el-divider>
+                <MdPreview :editorId="id" :modelValue="willVersion.value"></MdPreview>
+                <!-- <MdCatalog :editorId="id" :scrollElement="html"></MdCatalog> -->
+            </el-col>
             <el-col :span="4"></el-col>
         </el-row>
         <el-row>
             <el-col :span="4"></el-col>
             <el-col :span="16">
-                <el-text type="=info">评论</el-text>
-                <el-input v-model="review.comments" type="textarea" /></el-col>
+                <el-divider>评论</el-divider>
+                <MdEditor v-model="review.comments"></MdEditor>
+            </el-col>
             <el-col :span="4"></el-col>
         </el-row>
         <el-row>
@@ -31,6 +34,8 @@ import { CompleteReviewAsync, GetReviewDetailsAsync } from '@/utils/WillRequestH
 import { ref, defineModel, onMounted, watch } from 'vue';
 import { ElMessage } from 'element-plus';
 import { useRoute } from 'vue-router';
+import { MdPreview, MdCatalog, MdEditor } from 'md-editor-v3';
+import 'md-editor-v3/lib/preview.css';
 
 const review = ref(new ReviewResponse(""))
 const willVersion = ref(new WillVersionResponse())

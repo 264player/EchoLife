@@ -38,7 +38,7 @@ async function CreateWill() {
         message: result ? "创建成功" : "创建失败"
     })
     if (result) {
-        myWills.value.unshift(response)
+        // myWills.value.unshift(response)
     }
 }
 

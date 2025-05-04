@@ -2,7 +2,7 @@
     <NewWill v-model:status="viewNewWill" v-model:list="myWills"></NewWill>
     <el-button @click="viewNewWill = true">新的遗嘱</el-button>
     <el-table v-infinite-scroll="GetMyWill" :data="myWills" height="800px" style="width: 100%;overflow: auto;"
-        :stripe="true" @row-click="TableItemClick">
+        :stripe="true" @row-dblclick="TableItemClick">
         <el-table-column prop="name" label="名称" width="180" />
         <el-table-column prop="testaorId" label="所属人" width="180" />
         <el-table-column prop="willType" label="遗嘱类型" />
@@ -22,7 +22,7 @@ import { QueryWillsRequest } from '@/utils/WillRequestDtos'
 import { GetMyWillsAsync, DeleteWillAsync } from '@/utils/WillRequestHelper'
 import NewWill from '../NewWill.vue'
 import { useRouter } from 'vue-router'
-import { ElMessage } from 'element-plus'
+import { ElMessage, ElMessageBox } from 'element-plus'
 
 const route = useRouter()
 const viewNewWill = ref(false)
@@ -57,6 +57,9 @@ function TableItemClick(row) {
 }
 
 async function DeleteWill(willResponse) {
+    if (!await ConfirmDelete()) {
+        return
+    }
     var { result, response } = await DeleteWillAsync(willResponse.id)
     console.log(result)
     console.log(response)
@@ -70,6 +73,26 @@ async function DeleteWill(willResponse) {
             myWills.value.splice(index, 1)
         }
     }
+}
+
+async function ConfirmDelete() {
+    var result = false
+    await ElMessageBox.confirm(
+        '是否确认删除?',
+        {
+            confirmButtonText: '确认',
+            cancelButtonText: '取消',
+            type: 'warning',
+        }
+    )
+        .then(() => {
+            result = true
+        })
+        .catch(() => {
+            result = false
+        })
+    console.log(result)
+    return result
 }
 </script>
 
