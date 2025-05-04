@@ -20,7 +20,7 @@ public class AccountController(IAccountService _accountService) : ControllerBase
         {
             return BadRequest(result.Errors);
         }
-        return Ok();
+        return Empty;
     }
 
     [HttpPost("login")]
@@ -32,10 +32,7 @@ public class AccountController(IAccountService _accountService) : ControllerBase
         {
             return Empty;
         }
-        if (result.RequiresTwoFactor)
-        {
-            return Challenge();
-        }
+
         if (result.IsLockedOut)
         {
             return BadRequest("Account was locked.");

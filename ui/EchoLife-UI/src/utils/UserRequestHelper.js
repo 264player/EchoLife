@@ -13,7 +13,7 @@ export async function RegisterAsync(RegisterUserRequest) {
       return { result: true, response: response.data }
     })
     .catch((error) => {
-      return { result: false, response: error }
+      return { result: false, response: error.response.data }
     })
 }
 
@@ -26,10 +26,10 @@ export async function LoginAsync(LoginRequest) {
   return await axios
     .post('account/login', LoginRequest, { withCredentials: true })
     .then((response) => {
-      return { result: true, response: response }
+      return { result: true, response: response.data }
     })
     .catch((error) => {
-      return { result: false, response: error }
+      return { result: false, response: error.response.data }
     })
 }
 

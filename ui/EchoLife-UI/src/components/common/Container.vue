@@ -5,14 +5,13 @@
         <Header></Header>
       </el-header>
       <el-container>
-        <el-aside width="400px">
+        <el-aside width="400px" v-if="showNav">
           <NavDev></NavDev>
         </el-aside>
         <el-container>
           <el-main width="100%">
             <RouterView></RouterView>
           </el-main>
-          <el-footer><el-empty description="footer"></el-empty></el-footer>
         </el-container>
       </el-container>
     </el-container>
@@ -24,12 +23,13 @@ import Header from './Header.vue';
 import NavDev from './NavDev.vue';
 import { useRouter, useRoute } from 'vue-router';
 import { useUserStore } from '@/stores/counter';
-import { watch, onMounted } from 'vue';
+import { watch, onMounted, ref } from 'vue';
 import { GetUserInfoAsync } from '@/utils/UserRequestHelper';
 
 const router = useRouter()
 const routeInfo = useRoute()
 const userStore = useUserStore()
+const showNav = ref(false)
 
 onMounted(() => {
   GetUserInfo()
@@ -40,6 +40,7 @@ watch(() => routeInfo.name, (newName) => {
 })
 
 watch(() => userStore.isLoggedIn, async (status) => {
+  showNav.value = status
   if (!status) {
     router.push({ name: "login" })
   } else {

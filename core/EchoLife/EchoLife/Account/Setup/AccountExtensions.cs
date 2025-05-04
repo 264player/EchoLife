@@ -79,7 +79,7 @@ public static class AccountExtensions
             options.Password.RequireDigit = false;
             options.Password.RequireLowercase = false;
             options.Password.RequireUppercase = false;
-            options.Password.RequiredLength = 3;
+            options.Password.RequiredLength = 6;
         });
 
         services

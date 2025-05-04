@@ -27,7 +27,12 @@ public class AccountService(
             UserName = registerRequest.Username,
         };
         var result = await _userManager.CreateAsync(user, registerRequest.Password);
-        await AddRoleToUserAsync(user.Id, AccountRoles.User);
+
+        if (result.Succeeded)
+        {
+            await AddRoleToUserAsync(user.Id, AccountRoles.User);
+        }
+
         return result;
     }
 
