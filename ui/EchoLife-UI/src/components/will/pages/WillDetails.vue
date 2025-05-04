@@ -24,7 +24,7 @@
                 <el-col :span="24">
                     <el-button @click="UpdateWillAndVersion">保存更改</el-button>
                     <el-button @click="DeleteWillVersion">删除该版本</el-button>
-                    <el-button @click="aiReviewStatus = true" :disabled="true">查看AI审核</el-button>
+                    <el-button @click="aiReviewStatus = true">查看AI审核</el-button>
                     <el-button @click="RequestHumanReview">请求审核</el-button>
                 </el-col>
             </el-row>
@@ -52,13 +52,15 @@
     </el-dialog>
 
     <el-drawer v-model="aiReviewStatus" title="I am the title" :with-header="false">
-        <span>Hi there!</span>
+        <span>{{ aiReviewResult }}</span>
+        <br />
+        <el-button @click="RequestAIReview">重新生成内容</el-button>
     </el-drawer>
 </template>
 
 <script setup>
 import { WillResponse, QueryWillVersionsRequest, WillVersionRequest, WillVersionResponse, WillRequest, PutWillRequest } from '@/utils/WillRequestDtos';
-import { GetWillAsyn, GetWillVersionsAsync, CreateWillVersionAsync, UpdateWillAsync, UpdateWillVersionAsync, DeleteWillVersionAsync, RequestHumanReviewAsync } from '@/utils/WillRequestHelper';
+import { GetWillAsyn, GetWillVersionsAsync, CreateWillVersionAsync, UpdateWillAsync, UpdateWillVersionAsync, DeleteWillVersionAsync, RequestHumanReviewAsync, RequestAIReviewAsync } from '@/utils/WillRequestHelper';
 import { useRoute } from 'vue-router';
 import { ref, onMounted } from 'vue';
 import { ElMessage } from 'element-plus';
@@ -82,6 +84,8 @@ const queryWillVersionsRequest = ref(new QueryWillVersionsRequest(10, null))
 const willResponse = ref(new WillResponse())
 
 const willVersions = ref([])
+
+const aiReviewResult = ref("")
 
 onMounted(async () => {
     // load current will.
@@ -189,6 +193,14 @@ async function RequestHumanReview() {
         })
     }
 }
+
+async function RequestAIReview() {
+    var { result, response } = await RequestAIReviewAsync(currentVersion.value.id)
+    if (result) {
+        aiReviewResult.value = response
+    }
+}
+
 </script>
 
 <style lang="css" scoped>

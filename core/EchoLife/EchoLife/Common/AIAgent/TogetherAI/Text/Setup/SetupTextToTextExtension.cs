@@ -17,7 +17,7 @@ public static class SetupTextToTextExtension
             .Configure<TextToTextSettings>(configuration.GetSection("AIAgent:TogetherAI:Text"))
             .AddHttpClient<ITextToTextClient, TogetherAITextToTextClient>(x =>
             {
-                x.DefaultRequestHeaders.Add("Authorization", $"Bearer ${textToTextSettings.Token}");
+                x.DefaultRequestHeaders.Add("Authorization", $"Bearer {textToTextSettings.Token}");
             });
 
         return services;

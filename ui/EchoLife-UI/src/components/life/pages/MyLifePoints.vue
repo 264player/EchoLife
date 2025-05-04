@@ -4,7 +4,6 @@
     <el-button @click="newLifePoint = true">新的节点</el-button>
     <el-table v-infinite-scroll="GetMyLifePoints" :data="lifePoints" height="800" style="width: 100%;overflow: auto;"
         :stripe="true" @row-dblclick="GetPointDetails">
-        <el-table-column prop="id" label="ID" width="100" />
         <el-table-column prop="content" label="内容" width="100" />
         <el-table-column prop="hidden" label="可见度" width="100" />
         <el-table-column prop="createdAt" label="创建时间" />

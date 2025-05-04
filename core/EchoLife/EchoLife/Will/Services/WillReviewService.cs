@@ -39,10 +39,7 @@ public class WillReviewService(
         return WillReviewResponse.From(result, willVersion);
     }
 
-    public async Task<WillReviewResponse> RequestAIReviewAsync(
-        ClaimsPrincipal me,
-        string willVersinoId
-    )
+    public async Task<string> RequestAIReviewAsync(ClaimsPrincipal me, string willVersinoId)
     {
         ClaimsManager.EnsureRole(me, AccountRoles.User);
         var myId = ClaimsManager.GetAuthorizedUserId(me);
@@ -51,19 +48,7 @@ public class WillReviewService(
 
         var comment = await _textToTextClient.TalkAsync(willVersion.Value);
 
-        var result =
-            await _willReviewRepository.CreateAsync(
-                new WillReview
-                {
-                    Id = IdGenerator.GenerateUlid(),
-                    UserId = myId,
-                    VersionId = willVersinoId,
-                    Comments = comment,
-                    ReviewedAt = DateTime.UtcNow,
-                }
-            ) ?? throw new UnknowException();
-
-        return WillReviewResponse.From(result, willVersion);
+        return comment;
     }
 
     public async Task<WillReviewResponse> GetReviewAsync(ClaimsPrincipal me, string reviewId)

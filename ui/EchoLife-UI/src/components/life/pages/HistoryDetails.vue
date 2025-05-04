@@ -9,12 +9,12 @@
                 </el-col>
             </el-row>
             <el-row>
-                <el-col :span="24"><el-text>遗嘱类型</el-text>
+                <el-col :span="24"><el-text>传记标题</el-text>
                     <el-input v-model="currentSection.title" />
                 </el-col>
             </el-row>
             <el-row>
-                <el-col :span="24"><el-text>遗嘱内容</el-text>
+                <el-col :span="24"><el-text>传记内容</el-text>
                     <el-input v-model="currentSection.content" type="textarea" :rows="10" />
                 </el-col>
             </el-row>
@@ -31,8 +31,7 @@
             <el-button @click="newSubSectionStatus = true">新的小节</el-button>
             <el-table :data="sections" height="400" style="width: 100%;overflow: auto;" :stripe="true"
                 :show-overflow-tooltip="true" v-infinite-scroll="GetMyLifeSubsecions" @row-click="SwitchSection">
-                <el-table-column prop="id" label="ID" width="180" />
-                <el-table-column prop="content" label="内容" width="180" />
+                <el-table-column prop="title" label="标题" width="180" />
             </el-table>
         </el-col>
     </el-row>

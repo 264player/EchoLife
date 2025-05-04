@@ -98,7 +98,11 @@ internal class WillTests : ControllerTestsBase
         var client = GetClient();
         var will = WillSeeder.SeedOfficiousWill();
         Assert.That(await Sut.CreateWillAsync(will), Is.Not.Null);
-        var putWillRequest = new PutWillRequest("newName", "VersionId");
+        var putWillRequest = new PutWillRequest(
+            "newName",
+            EchoLife.Will.Models.WillType.SelfWritten,
+            "VersionId"
+        );
 
         // Act
         var response = await client.PutAsJsonAsync(UrlPackage.Will(will.Id), putWillRequest);
@@ -114,7 +118,11 @@ internal class WillTests : ControllerTestsBase
         var client = await GetCookieTokenClientAsync(Guid.NewGuid().ToString());
         var userId = (await client.GetUserInfoAsync()).Id;
         var will = WillSeeder.SeedOfficiousWill(w => w.TestaorId = userId);
-        var putWillRequest = new PutWillRequest("newName", "VersionId");
+        var putWillRequest = new PutWillRequest(
+            "newName",
+            EchoLife.Will.Models.WillType.SelfWritten,
+            "VersionId"
+        );
 
         // Act
         var response = await client.PutAsJsonAsync(UrlPackage.Will(will.Id), putWillRequest);
@@ -131,7 +139,11 @@ internal class WillTests : ControllerTestsBase
         var userId = (await client.GetUserInfoAsync()).Id;
         var will = WillSeeder.SeedOfficiousWill(w => w.TestaorId = userId);
         Assert.That(await Sut.CreateWillAsync(will), Is.Not.Null);
-        var putWillRequest = new PutWillRequest("newName", "VersionId");
+        var putWillRequest = new PutWillRequest(
+            "newName",
+            EchoLife.Will.Models.WillType.SelfWritten,
+            "VersionId"
+        );
 
         // Act
         var response = await client.PutAsJsonAsync(UrlPackage.Will(will.Id), putWillRequest);

@@ -15,7 +15,7 @@ namespace EchoLife.Tests.Integration.Will.Utils
                 {
                     Id = IdGenerator.GenerateUlid(),
                     Name = NewGuid().ToString(),
-                    WillType = NewGuid().ToString(),
+                    WillType = WillType.SelfWritten,
                     VersionId = NewGuid().ToString(),
                     TestaorId = NewGuid().ToString(),
                 }
@@ -30,7 +30,7 @@ namespace EchoLife.Tests.Integration.Will.Utils
                     Id = IdGenerator.GenerateUlid(),
                     Content = NewGuid().ToString(),
                     WillId = NewGuid().ToString(),
-                    WillType = NewGuid().ToString(),
+                    WillType = WillType.SelfWritten,
                     CreatedAt = DateTime.UtcNow,
                     UpdatedAt = DateTime.UtcNow,
                 }
@@ -43,12 +43,12 @@ namespace EchoLife.Tests.Integration.Will.Utils
         }
 
         public static WillVersionRequest SeedWillVersionRequest(
-            string? willType = null,
+            WillType? willType = null,
             string? value = null
         )
         {
             return new WillVersionRequest(
-                willType ?? NewGuid().ToString(),
+                willType ?? WillType.SelfWritten,
                 value ?? NewGuid().ToString()
             );
         }

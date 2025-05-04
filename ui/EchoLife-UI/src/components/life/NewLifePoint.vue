@@ -2,7 +2,7 @@
     <el-dialog v-model="newLifePoint" title="新的节点" width="800">
         <el-text>内容</el-text>
         <el-input v-model="lifePointRequest.content" type="textarea" />
-        <el-switch class="mb-2" style="--el-switch-on-color: #13ce66; --el-switch-off-color: #ff4949"
+        <el-switch class="mb-2" style="--el-switch-on-color: #ff4949; --el-switch-off-color: #13ce66"
             v-model="lifePointRequest.hidden" inline-prompt active-text="隐藏" inactive-text="公开" />
         <p>
             <el-button @click="CreateLifePoint">创建</el-button>

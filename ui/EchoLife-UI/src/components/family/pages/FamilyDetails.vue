@@ -3,12 +3,12 @@
     <el-row>
         <el-col :span="16">
             <el-row>
-                <el-col :span="24"><el-text>遗嘱名</el-text>
+                <el-col :span="24"><el-text></el-text>
                     <el-input v-model="family.id" />
                 </el-col>
             </el-row>
             <el-row>
-                <el-col :span="24"><el-text>遗嘱类型</el-text>
+                <el-col :span="24"><el-text>家族名称</el-text>
                     <el-input v-model="family.name" />
                 </el-col>
             </el-row>

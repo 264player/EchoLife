@@ -7,8 +7,6 @@
         <p>确定新添加的位置</p>
         <el-text>属于哪个小节</el-text>
         <el-input v-model="subsection.fatherId" />
-        <el-text>第几小节</el-text>
-        <el-input v-model="subsection.index" />
         <p>
             <el-button @click="CreateLifeSubSection">确认</el-button>
         </p>

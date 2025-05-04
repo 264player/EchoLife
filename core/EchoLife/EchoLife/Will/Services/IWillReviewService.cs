@@ -7,7 +7,7 @@ namespace EchoLife.Will.Services;
 public interface IWillReviewService
 {
     Task<WillReviewResponse> RequestHumanReviewAsync(ClaimsPrincipal me, string willVersinoId);
-    Task<WillReviewResponse> RequestAIReviewAsync(ClaimsPrincipal me, string willVersinoId);
+    Task<string> RequestAIReviewAsync(ClaimsPrincipal me, string willVersinoId);
     Task<WillReviewResponse> GetReviewAsync(ClaimsPrincipal me, string reviewId);
     Task<List<WillReviewResponse>> GetMyReviewAsync(ClaimsPrincipal me, int count, string? cusorId);
     Task<List<WillReviewResponse>> GetMyReviewRequestAsync(
