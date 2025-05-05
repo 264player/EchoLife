@@ -15,8 +15,9 @@ export class LoginRequest {
 }
 
 export class UserInfoResponse {
-  constructor(username, userId) {
+  constructor(username, userId, roles) {
     this.username = username
     this.userId = userId
+    this.roles = roles
   }
 }

@@ -4,7 +4,6 @@
     <el-button @click="newLifeHistoryStatus = true">新的传记</el-button>
     <el-table v-infinite-scroll="GetMyHistories" :data="histories" height="800" style="width: 100%;overflow: auto;"
         :stripe="true" @row-dblclick="GetPointDetails">
-        <el-table-column prop="id" label="ID" width="100" />
         <el-table-column prop="title" label="传记标题" width="100" />
         <el-table-column label="操作">
             <template #default="scope">

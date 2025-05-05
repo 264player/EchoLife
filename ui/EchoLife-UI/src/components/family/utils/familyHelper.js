@@ -121,6 +121,19 @@ export async function GetFamiliyMembersAsync(familyId) {
     })
 }
 
+export async function GetFamiliyMemberAsync(memberId) {
+  return await axios
+    .get(`families/members/${memberId}`, {
+      withCredentials: true,
+    })
+    .then((response) => {
+      return { result: true, response: response.data }
+    })
+    .catch((error) => {
+      return { result: false, response: error }
+    })
+}
+
 /**
  *
  * @param {string} familyId

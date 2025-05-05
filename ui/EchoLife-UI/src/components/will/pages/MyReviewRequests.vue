@@ -6,9 +6,16 @@
                 {{ reviewStatusMap[scope.row.status] }}
             </template>
         </el-table-column>
-        <el-table-column prop="reviewerId" label="审核人" />
-        <el-table-column prop="createdAt" label="请求时间" width="180" />
-        <el-table-column prop="reviewedAt" label="审核完成时间" width="180" />
+        <el-table-column prop="createdAt" label="请求时间" width="180">
+            <template #default="scope">
+                {{ ConvertUTCToBeijingTime(scope.row.createdAt) }}
+            </template>
+        </el-table-column>
+        <el-table-column prop="reviewedAt" label="审核完成时间" width="180">
+            <template #default="scope">
+                {{ ConvertUTCToBeijingTime(scope.row.reviewedAt) }}
+            </template>
+        </el-table-column>
         <el-table-column label="操作">
             <template #default="scope">
                 <el-button size="small" type="danger" @click="CancelRequest(scope.row)"
@@ -27,6 +34,7 @@ import { GetMyReviewRequestsAsync, CancelReviewAsync } from '@/utils/WillRequest
 import { useRouter } from 'vue-router'
 import { ElMessage } from 'element-plus'
 import { reviewStatusMap } from '@/utils/WillRequestDtos'
+import { ConvertUTCToBeijingTime } from '@/components/common/utils/ConvertTime'
 
 const route = useRouter()
 

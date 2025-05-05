@@ -48,7 +48,7 @@ public class AccountController(IAccountService _accountService) : ControllerBase
     public async Task<IActionResult> Refresh()
     {
         await _accountService.RefreshSignInAsync(User);
-        return Ok();
+        return Empty;
     }
 
     [Authorize]
@@ -64,6 +64,13 @@ public class AccountController(IAccountService _accountService) : ControllerBase
     public async Task<IActionResult> GetUserInfo()
     {
         return Ok(await _accountService.GetUserInfoAsync(User));
+    }
+
+    [Authorize]
+    [HttpGet("{userId}/userinfo")]
+    public async Task<IActionResult> GetUserInfo([FromRoute] string userId)
+    {
+        return Ok(await _accountService.GetUserInfoAsync(userId));
     }
 
     [Authorize]

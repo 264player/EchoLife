@@ -29,11 +29,12 @@ public interface IFamilyService
         ClaimsPrincipal user,
         FamilyMemberRequest familyMemberRequest
     );
-    Task<List<FamilyMemberResponse>> GetFamilyMemberAsync(string familyTreeId);
+    Task<List<FamilyMemberResponse>> GetFamilyMembersAsync(string familyTreeId);
     Task<FamilyMemberResponse> UpdateFamilyMemberAsync(
         ClaimsPrincipal me,
         FamilyMemberRequest familyMemberRequest
     );
+    Task<FamilyMemberResponse> GetFamilyMemberAsync(string memberId);
     Task DeleteFamilyMemberAsync(ClaimsPrincipal me, string familyMemberId);
     #endregion
 }

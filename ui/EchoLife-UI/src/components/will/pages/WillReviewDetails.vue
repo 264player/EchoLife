@@ -7,9 +7,11 @@
                 }}</el-descriptions-item>
                 <el-descriptions-item label="遗嘱ID">{{ willVersion.id }}</el-descriptions-item>
                 <el-descriptions-item label="遗嘱类型">{{ willTypeMap[willVersion.willType] }}</el-descriptions-item>
-                <el-descriptions-item label="审核人">{{ review.reviewerId }}</el-descriptions-item>
-                <el-descriptions-item label="请求时间">{{ review.createdAt }}</el-descriptions-item>
-                <el-descriptions-item label="审核时间">{{ review.reviewedAt }}</el-descriptions-item>
+                <el-descriptions-item label="审核人">{{ reviewer.username }}</el-descriptions-item>
+                <el-descriptions-item label="请求时间">{{ ConvertUTCToBeijingTime(review.createdAt)
+                    }}</el-descriptions-item>
+                <el-descriptions-item label="审核时间">{{ ConvertUTCToBeijingTime(review.reviewedAt)
+                }}</el-descriptions-item>
             </el-descriptions>
             <el-divider>遗嘱内容</el-divider>
             <MdPreview :modelValue="willVersion.value"></MdPreview>
@@ -29,11 +31,15 @@ import { onMounted, ref } from 'vue';
 import { useRoute } from 'vue-router';
 import { MdPreview } from 'md-editor-v3';
 import { willTypeMap, reviewStatusMap } from '@/utils/WillRequestDtos';
+import { ConvertUTCToBeijingTime } from '@/components/common/utils/ConvertTime';
+import { GetOtherUserInfoAsync } from '@/utils/UserRequestHelper';
+import { UserInfoResponse } from '@/utils/UserRequestDtos';
 
 
 const reviewId = ref(null)
 const review = ref(new ReviewResponse('', '', '', '', '', "", ''))
 const willVersion = ref(new WillVersionResponse('', '', '', '', '', ''))
+const reviewer = ref(new UserInfoResponse('', '', []))
 
 const route = useRoute()
 
@@ -42,6 +48,7 @@ onMounted(async () => {
     reviewId.value = route.params.reviewId
 
     await Promise.all([GetReview()])
+    await GetReviewer(review.value.reviewerId)
 })
 
 async function GetReview() {
@@ -52,6 +59,18 @@ async function GetReview() {
         review.value = response
         willVersion.value = review.value.willVersion
     }
+}
+
+async function GetReviewer(userId) {
+    if (userId == null || userId == '') {
+        return "Unknown"
+    }
+    var { result, response } = await GetOtherUserInfoAsync(userId)
+    if (result) {
+        reviewer.value = response
+    }
+
+    return "Unknown"
 }
 
 </script>

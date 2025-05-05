@@ -40,7 +40,18 @@ export async function GetUserInfoAsync() {
       return { result: true, response: response.data }
     })
     .catch((error) => {
-      return { result: false, response: error }
+      return { result: false, response: error.response.data }
+    })
+}
+
+export async function GetOtherUserInfoAsync(userId) {
+  return await axios
+    .get(`account/${userId}/userinfo`, { withCredentials: true })
+    .then((response) => {
+      return { result: true, response: response.data }
+    })
+    .catch((error) => {
+      return { result: false, response: error.response.data }
     })
 }
 

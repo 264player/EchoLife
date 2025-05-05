@@ -7,6 +7,7 @@ using EchoLife.Common.Exceptions;
 using EchoLife.Common.Validation;
 using FluentValidation;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 
 namespace EchoLife.Account.Services;
 
@@ -70,12 +71,22 @@ public class AccountService(
         await _signInManager.RefreshSignInAsync(result);
     }
 
-    public async Task<IdentityAccountResponse?> GetUserInfoAsync(ClaimsPrincipal user)
+    public async Task<IdentityAccountResponse> GetUserInfoAsync(ClaimsPrincipal user)
     {
         var result =
             await _userManager.GetUserAsync(user)
             ?? throw new ForbiddenException(ClaimsManager.GetAuthorizedUserId(user));
-        return IdentityAccountResponse.From(result);
+        var roles = await _userManager.GetRolesAsync(result);
+        return IdentityAccountResponse.From(result, roles);
+    }
+
+    public async Task<IdentityAccountResponse> GetUserInfoAsync(string userId)
+    {
+        var result =
+            await _userManager.Users.Where(u => u.Id == userId).SingleOrDefaultAsync()
+            ?? throw new UserNotFoundException(userId);
+        var roles = await _userManager.GetRolesAsync(result);
+        return IdentityAccountResponse.From(result, roles);
     }
 
     public async Task BecomeAReviewerAsync(ClaimsPrincipal me)

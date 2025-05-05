@@ -1,8 +1,16 @@
 <template>
     <el-table v-infinite-scroll="GetMyReviewRequests" :data="myReviewRequests" height="100%"
         style="width: 100%;overflow: auto;" :stripe="true" @row-dblclick="TableItemClick">
-        <el-table-column prop="status" label="名称" width="180" />
-        <el-table-column prop="createdAt" label="请求时间" width="180" />
+        <el-table-column prop="status" label="状态" width="180">
+            <template #default="scope">
+                {{ reviewStatusMap[scope.row.status] }}
+            </template>
+        </el-table-column>
+        <el-table-column label="请求时间" width="180">
+            <template #default="scope">
+                {{ ConvertUTCToBeijingTime(scope.row.createdAt) }}
+            </template>
+        </el-table-column>
         <el-table-column label="操作">
             <template #default="scope">
                 <el-button size="small" @click="ProcessReview(scope.row)">
@@ -19,6 +27,8 @@ import { PageInfo } from '@/utils/WillRequestDtos'
 import { GetAllReviewRequestAsync, ProcessReviewAsync } from '@/utils/WillRequestHelper'
 import { useRouter } from 'vue-router'
 import { ElMessage } from 'element-plus'
+import { ConvertUTCToBeijingTime } from '@/components/common/utils/ConvertTime'
+import { reviewStatusMap } from '@/utils/WillRequestDtos'
 
 const route = useRouter()
 

@@ -44,26 +44,26 @@ export class FamilyMemberResponse {
     id,
     userId,
     familyId,
-    DisplayName,
+    displayName,
     gender,
     fatherId,
     motherId,
     spouseId,
     birthDate,
-    DeathDate,
+    deathDate,
     generation,
     powerLevel,
   ) {
     this.id = id
     this.userId = userId
     this.familyId = familyId
-    this.DisplayName = DisplayName
+    this.displayName = displayName
     this.gender = gender
     this.fatherId = fatherId
     this.motherId = motherId
     this.spouseId = spouseId
     this.birthDate = birthDate
-    this.DeathDate = DeathDate
+    this.deathDate = deathDate
     this.generation = generation
     this.powerLevel = powerLevel
   }

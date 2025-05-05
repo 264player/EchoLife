@@ -60,7 +60,13 @@ public class FamilyTreeController(IFamilyService _familyTreeService) : Controlle
     [HttpGet("families/{familyId}/members")]
     public async Task<IActionResult> GetMembers([FromRoute] string familyId)
     {
-        return Ok(await _familyTreeService.GetFamilyMemberAsync(familyId));
+        return Ok(await _familyTreeService.GetFamilyMembersAsync(familyId));
+    }
+
+    [HttpGet("families/members/{memberId}")]
+    public async Task<IActionResult> GetMember([FromRoute] string memberId)
+    {
+        return Ok(await _familyTreeService.GetFamilyMemberAsync(memberId));
     }
 
     [HttpPut("families/members")]

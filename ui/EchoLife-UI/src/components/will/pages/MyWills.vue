@@ -4,7 +4,6 @@
     <el-table v-infinite-scroll="GetMyWill" :data="myWills" height="800px" style="width: 100%;overflow: auto;"
         :stripe="true" @row-dblclick="TableItemClick">
         <el-table-column prop="name" label="名称" width="180" />
-        <el-table-column prop="testaorId" label="所属人" width="180" />
         <el-table-column label="遗嘱类型">
             <template #default="scope">
                 {{ willTypeMap[scope.row.willType] }}

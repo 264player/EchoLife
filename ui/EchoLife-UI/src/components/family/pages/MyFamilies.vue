@@ -3,10 +3,13 @@
     <el-button @click="newFamilyStatus = true">新的家族</el-button>
     <el-table v-infinite-scroll="GetMyFamily" :data="myFamilies" height="800px" style="width: 100%;overflow: auto;"
         :stripe="true" @row-dblclick="TableItemClick">
-        <el-table-column prop="id" label="ID" width="180" />
         <el-table-column prop="name" label="名称" width="180" />
         <el-table-column prop="createdUserId" label="所属人" />
-        <el-table-column prop="createdAt" label="创建日期" />
+        <el-table-column prop="createdAt" label="创建日期">
+            <template #default="scope">
+                {{ ConvertUTCToBeijingTime(scope.row.createdAt) }}
+            </template>
+        </el-table-column>
         <el-table-column label="操作">
             <template #default="scope">
                 <el-button size="small" type="danger" @click="TableItemClick(scope.row)">
@@ -27,6 +30,7 @@ import { useRouter } from 'vue-router'
 import { ElMessage } from 'element-plus'
 import NewFamily from '../NewFamily.vue'
 import { DeleteFamilyAsync, GetMyFamiliesAsync } from '../utils/familyHelper'
+import { ConvertUTCToBeijingTime } from '@/components/common/utils/ConvertTime'
 
 const route = useRouter()
 

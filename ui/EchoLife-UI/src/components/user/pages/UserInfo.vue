@@ -5,6 +5,7 @@
             <el-descriptions title="个人信息" :column="1" :border="true">
                 <el-descriptions-item label="ID">{{ userInfoResponse.userId }}</el-descriptions-item>
                 <el-descriptions-item label="用户名">{{ userInfoResponse.username }}</el-descriptions-item>
+                <el-descriptions-item label="角色">{{ userInfoResponse.roles }}</el-descriptions-item>
             </el-descriptions>
         </el-col>
         <el-col :span="4"></el-col>
@@ -32,7 +33,7 @@ const userInfoResponse = ref(new UserInfoResponse("", ""))
 onMounted(async () => {
     var { result, response } = await GetUserInfoAsync()
     if (result) {
-        userInfoResponse.value.username = response.username;
+        userInfoResponse.value = response
         userInfoResponse.value.userId = response.id;
     } else {
         console.log(response)

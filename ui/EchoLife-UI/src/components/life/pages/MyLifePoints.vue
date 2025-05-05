@@ -5,9 +5,21 @@
     <el-table v-infinite-scroll="GetMyLifePoints" :data="lifePoints" height="800" style="width: 100%;overflow: auto;"
         :stripe="true" @row-dblclick="GetPointDetails">
         <el-table-column prop="content" label="内容" width="100" />
-        <el-table-column prop="hidden" label="可见度" width="100" />
-        <el-table-column prop="createdAt" label="创建时间" />
-        <el-table-column prop="updatedAt" label="更新时间" />
+        <el-table-column prop="hidden" label="可见度" width="100">
+            <template #default="scope">
+                {{ scope.row.hidden == true ? "隐藏" : "公开" }}
+            </template>
+        </el-table-column>
+        <el-table-column prop="createdAt" label="创建时间">
+            <template #default="scope">
+                {{ ConvertUTCToBeijingTime(scope.row.createdAt) }}
+            </template>
+        </el-table-column>
+        <el-table-column prop="updatedAt" label="更新时间">
+            <template #default="scope">
+                {{ ConvertUTCToBeijingTime(scope.row.updatedAt) }}
+            </template>
+        </el-table-column>
         <el-table-column label="操作">
             <template #default="scope">
                 <el-button size="small" @click="UpdatePoint(scope.row)">
@@ -19,6 +31,15 @@
             </template>
         </el-table-column>
     </el-table>
+    <el-timeline style="max-width: 600px">
+        <el-timeline-item :timestamp="ConvertUTCToBeijingTime(point.createdAt)" placement="top"
+            v-for="point in lifePoints" :key="point.id">
+            <el-card>
+                <p>{{ point.content }}</p>
+                <MdPreview v-model="point.content"></MdPreview>
+            </el-card>
+        </el-timeline-item>
+    </el-timeline>
 </template>
 
 <script setup>
@@ -29,6 +50,9 @@ import { GetMyLifePointsAsync, DeleteLifePointAsync } from '../utils/LifeHelpers
 import { useUserStore } from '@/stores/counter';
 import { PageInfo } from '@/utils/WillRequestDtos';
 import { ElMessage } from 'element-plus';
+import { ConvertUTCToBeijingTime } from '@/components/common/utils/ConvertTime';
+import { MdPreview, MdCatalog, MdEditor } from 'md-editor-v3';
+import 'md-editor-v3/lib/preview.css';
 
 // status
 const newLifePoint = ref(false)

@@ -41,8 +41,16 @@
             <el-button @click="newWillVersion = true"><el-text>创建新的版本</el-text></el-button>
             <el-table :data="willVersions" height="800" style="width: 100%;overflow: auto;" :stripe="true"
                 :show-overflow-tooltip="true" v-infinite-scroll="GetWillVersions" @row-click="SwitchVersion">
-                <el-table-column prop="updatedAt" label="更新时间" width="180" />
-                <el-table-column prop="willType" label="遗嘱类型" width="180" />
+                <el-table-column label="更新时间" width="180">
+                    <template #default="scope">
+                        {{ ConvertUTCToBeijingTime(scope.row.updatedAt) }}
+                    </template>
+                </el-table-column>
+                <el-table-column prop="willType" label="遗嘱类型" width="180">
+                    <template #default="scope">
+                        {{ willTypeMap[scope.row.willType] }}
+                    </template>
+                </el-table-column>
             </el-table>
         </el-col>
     </el-row>
@@ -72,12 +80,13 @@ import { GetWillAsyn, GetWillVersionsAsync, CreateWillVersionAsync, UpdateWillAs
 import { useRoute } from 'vue-router';
 import { ref, onMounted, computed } from 'vue';
 import { ElMessage } from 'element-plus';
-import { willTypes, willTypeArray } from '@/utils/WillRequestDtos';
+import { willTypes, willTypeArray, willTypeMap } from '@/utils/WillRequestDtos';
 import { MdEditor } from 'md-editor-v3';
 import 'md-editor-v3/lib/style.css';
 import { UploadAsync } from '@/components/common/utils/upload';
 import { GetChineseWillType } from '@/utils/WillRequestDtos';
 import MyFileList from '@/components/common/MyFileList.vue';
+import { ConvertUTCToBeijingTime } from '@/components/common/utils/ConvertTime';
 
 const route = useRoute()
 

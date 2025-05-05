@@ -158,7 +158,7 @@ public class FamilyService(
         return FamilyMemberResponse.From(result);
     }
 
-    public async Task<List<FamilyMemberResponse>> GetFamilyMemberAsync(string familyTreeId)
+    public async Task<List<FamilyMemberResponse>> GetFamilyMembersAsync(string familyTreeId)
     {
         return
         [
@@ -166,6 +166,14 @@ public class FamilyService(
                 FamilyMemberResponse.From
             ),
         ];
+    }
+
+    public async Task<FamilyMemberResponse> GetFamilyMemberAsync(string memberId)
+    {
+        return FamilyMemberResponse.From(
+            await _familyMemberRepository.ReadAsync(memberId)
+                ?? throw new FamilyMemberNotFoundException(memberId)
+        );
     }
 
     public async Task<FamilyMemberResponse> UpdateFamilyMemberAsync(

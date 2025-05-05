@@ -12,7 +12,8 @@ public interface IAccountService
     Task<SignInResult> LoginWithUsernameAsync(LoginRequest loginRequest);
     Task LogoutAsync();
     Task RefreshSignInAsync(ClaimsPrincipal user);
-    Task<IdentityAccountResponse?> GetUserInfoAsync(ClaimsPrincipal user);
+    Task<IdentityAccountResponse> GetUserInfoAsync(ClaimsPrincipal user);
+    Task<IdentityAccountResponse> GetUserInfoAsync(string userId);
     Task BecomeAReviewerAsync(ClaimsPrincipal me);
     Task AddRoleToUserAsync(string userId, AccountRoles accountRoles);
 }
