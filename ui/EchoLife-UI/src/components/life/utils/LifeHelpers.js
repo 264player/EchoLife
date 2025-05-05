@@ -166,18 +166,10 @@ export async function CreateLifeSubSectionAsync(lifeSubSectionRequest) {
     })
 }
 
-/**
- *
- * @param {PageInfo} queryLifeSubSectionRequest
- */
-export async function GetMyLifeSubsectionsAsync(historyId, queryLifeSubSectionRequest) {
+export async function GetMyLifeSubsectionsAsync(historyId) {
   return await axios
     .get(`life/history/${historyId}/subsections`, {
       withCredentials: true,
-      params: {
-        count: queryLifeSubSectionRequest.count,
-        cursorId: queryLifeSubSectionRequest.cursorId,
-      },
     })
     .then((response) => {
       return { result: true, response: response.data }

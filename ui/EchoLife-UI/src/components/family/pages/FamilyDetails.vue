@@ -5,43 +5,33 @@
     <el-row>
         <el-col :span="16">
             <el-row>
-                <el-col :span="24"><el-text></el-text>
-                    <el-input v-model="family.id" />
-                </el-col>
-            </el-row>
-            <el-row>
                 <el-col :span="24"><el-text>家族名称</el-text>
                     <el-input v-model="family.name" />
                 </el-col>
             </el-row>
             <el-row>
-                <el-col :span="24"><el-text>遗嘱内容</el-text>
-                    <el-input v-model="family.name" type="textarea" :rows="10" />
-                </el-col>
-            </el-row>
-            <el-row>
                 <el-col :span="24">
-                    <el-button @click="UpdateWillAndVersion">保存更改</el-button>
-                    <el-button @click="DeleteWillVersion">删除该版本</el-button>
-                    <el-button @click="aiReviewStatus = true">查看AI审核</el-button>
-                    <el-button @click="RequestHumanReview">请求审核</el-button>
+                    <el-button @click="newMemberStatus = true"><el-text>创建新的家族成员</el-text></el-button>
+                    <el-table :data="members" height="600" style="width: 100%;overflow: auto;" :stripe="true"
+                        @row-click="ViewMemberDetails">
+                        <el-table-column prop="displayName" label="名称" width="180" />
+                        <el-table-column label="性别" width="180">
+                            <template #default="scope">
+                                {{ ChineseGenderMap[scope.row.gender] }}
+                            </template>
+                        </el-table-column>
+                        <el-table-column label="操作">
+                            <template #default="scope">
+                                <el-button size="small" type="danger" @click="DeleteMember(scope.row)">
+                                    删除
+                                </el-button>
+                            </template>
+                        </el-table-column>
+                    </el-table>
                 </el-col>
             </el-row>
         </el-col>
         <el-col :span="6" :offset="2">
-            <el-button @click="newMemberStatus = true"><el-text>创建新的家族成员</el-text></el-button>
-            <el-table :data="members" height="150" style="width: 100%;overflow: auto;" :stripe="true"
-                @row-click="ViewMemberDetails">
-                <el-table-column prop="id" label="ID" width="180" />
-                <el-table-column prop="value" label="内容" width="180" />
-                <el-table-column label="操作">
-                    <template #default="scope">
-                        <el-button size="small" type="danger" @click="DeleteMember(scope.row)">
-                            删除
-                        </el-button>
-                    </template>
-                </el-table-column>
-            </el-table>
         </el-col>
     </el-row>
 
@@ -56,7 +46,7 @@ import { GetWillAsyn, UpdateWillVersionAsync } from '@/utils/WillRequestHelper';
 import { useRoute } from 'vue-router';
 import { ref, onMounted } from 'vue';
 import { ElMessage } from 'element-plus';
-import { FamilyTreeResponse } from '../utils/familyDtos';
+import { ChineseGenderMap, FamilyTreeResponse } from '../utils/familyDtos';
 import { DeleteMemberAsync, GetFamiliyMembersAsync, GetFamilyAsyn } from '../utils/familyHelper';
 import NewFamilyMember from '../NewFamilyMember.vue';
 import FamilyMember from '../FamilyMember.vue';

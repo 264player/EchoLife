@@ -68,3 +68,17 @@ export class FamilyMemberResponse {
     this.powerLevel = powerLevel
   }
 }
+
+const Genders = ['unknown', 'male', 'female']
+const ChineseGenderMap = {
+  unknown: '未知',
+  male: '男',
+  female: '女',
+}
+
+const GenderArray = Object.entries(ChineseGenderMap).map(([key, value]) => ({
+  key,
+  value,
+}))
+
+export { Genders, ChineseGenderMap, GenderArray }

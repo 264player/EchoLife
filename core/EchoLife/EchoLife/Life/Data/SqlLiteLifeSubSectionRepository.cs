@@ -28,6 +28,14 @@ public class SqlLiteLifeSubSectionRepository(LifeDbContext _lifeDbContext)
         return await LifeSubSections.Where(express).OrderBy(s => s.Id).Take(count).ToListAsync();
     }
 
+    public async Task<List<LifeSubSection>> ReadAllSubSectionsAsync(string historyId)
+    {
+        return await LifeSubSections
+            .Where(s => s.LifeHistoryId == historyId)
+            .OrderBy(s => s.Id)
+            .ToListAsync();
+    }
+
     public async Task<LifeSubSection?> UpdateAsync(LifeSubSection entity)
     {
         var result = await LifeSubSections

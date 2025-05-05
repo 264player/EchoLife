@@ -7,13 +7,15 @@ using EchoLife.Common.Exceptions;
 using EchoLife.Will.Data;
 using EchoLife.Will.Dtos;
 using EchoLife.Will.Models;
+using Microsoft.Extensions.Options;
 
 namespace EchoLife.Will.Services;
 
 public class WillReviewService(
     IWillReviewRepository _willReviewRepository,
     IWillService _willService,
-    ITextToTextClient _textToTextClient
+    ITextToTextClient _textToTextClient,
+    IOptions<TextToTextPrompts> _prompts
 ) : IWillReviewService
 {
     public async Task<WillReviewResponse> RequestHumanReviewAsync(
@@ -46,7 +48,10 @@ public class WillReviewService(
 
         var willVersion = await _willService.GetWillVersionAsync(willVersinoId);
 
-        var comment = await _textToTextClient.TalkAsync(willVersion.Value);
+        var comment = await _textToTextClient.TalkAsync(
+            willVersion.Value,
+            _prompts.Value.WillReviewPrompt
+        );
 
         return comment;
     }
@@ -132,7 +137,7 @@ public class WillReviewService(
 
         var result = await _willReviewRepository.ReadAsync(
             r =>
-                (r.Status == WillReviewStatus.Pending)
+                (r.Status == WillReviewStatus.Pendding)
                 && (cusorId == null || r.Id.CompareTo(cusorId) < 0),
             count
         );
@@ -156,7 +161,7 @@ public class WillReviewService(
 
         var review = await EnsureAndGetAsync(reviewId);
 
-        if (review.Status != WillReviewStatus.Pending)
+        if (review.Status != WillReviewStatus.Pendding)
         { // throw bussiness exception
             return;
         }
@@ -209,7 +214,7 @@ public class WillReviewService(
             throw new ForbiddenException(myId);
         }
 
-        if (review.Status != WillReviewStatus.Pending)
+        if (review.Status != WillReviewStatus.Pendding)
         {
             throw new EntityArgumentException(
                 "review status error",

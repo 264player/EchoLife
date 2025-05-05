@@ -13,7 +13,7 @@ public static class MinIOExtensions
     )
     {
         var minIOSettings =
-            configuration.GetSection("MinIOStoragr").Get<MinIOSettings>()
+            configuration.GetSection("MinIOStorage").Get<MinIOSettings>()
             ?? throw new ResourceNotFoundException(
                 "settings are not found",
                 "MinIOStoragr settings are not found."

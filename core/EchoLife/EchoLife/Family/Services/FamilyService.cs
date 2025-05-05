@@ -38,7 +38,7 @@ public class FamilyService(
                 UserId = userId,
                 FamilyId = result.Id,
                 DisplayName = userId,
-                Gender = "x",
+                Gender = Gender.Unknown,
             }
         );
 

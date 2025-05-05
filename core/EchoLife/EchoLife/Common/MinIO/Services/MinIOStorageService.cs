@@ -49,6 +49,26 @@ public class MinIOStorageService(IMinioClient _minio) : IStorageService
         return presignedUrl;
     }
 
+    public async Task<IEnumerable<string>> ListObjectsAsync(
+        string bucketName,
+        string prefix,
+        bool recursive = true,
+        bool versions = false
+    )
+    {
+        var listArgs = new ListObjectsArgs()
+            .WithBucket(bucketName)
+            .WithPrefix(prefix)
+            .WithRecursive(recursive)
+            .WithVersions(versions);
+        var result = new List<string>();
+        await foreach (var item in _minio.ListObjectsEnumAsync(listArgs).ConfigureAwait(false))
+        {
+            result.Add(item.Key);
+        }
+        return result;
+    }
+
     public async Task<string> PresignedGetObjectAsync(string bucketName, string objectName)
     {
         var args = new PresignedGetObjectArgs()

@@ -8,7 +8,7 @@ public class FamilyMember : IEntity
     public string UserId { get; set; } = null!;
     public string FamilyId { get; set; } = null!;
     public string DisplayName { get; set; } = null!;
-    public string Gender { get; set; } = null!;
+    public Gender Gender { get; set; }
     public string? FatherId { get; set; }
     public string? MotherId { get; set; }
     public string? SpouseId { get; set; }

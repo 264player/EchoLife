@@ -3,6 +3,7 @@ using System.Text.Json.Serialization;
 using EchoLife.Account.Setup;
 using EchoLife.Account.Validators;
 using EchoLife.Common.AIAgent.TogetherAI.Text.Setup;
+using EchoLife.Common.MinIO.Setup;
 using EchoLife.Common.Setup;
 using EchoLife.Family.Setup;
 using EchoLife.Life.Setup;
@@ -30,6 +31,7 @@ public class Program
         builder.Services.AddWill(builder.Configuration);
         builder.Services.AddFamily(builder.Configuration);
         builder.Services.AddTextToTextAiAgent(builder.Configuration);
+        builder.Services.AddMinIOStorage(builder.Configuration);
         #endregion
 
         #region Logger

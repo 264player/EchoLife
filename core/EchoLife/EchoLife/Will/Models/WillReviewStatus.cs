@@ -2,7 +2,7 @@
 
 public enum WillReviewStatus
 {
-    Pending,
+    Pendding,
     InProgress,
     Approved,
     Rejected,

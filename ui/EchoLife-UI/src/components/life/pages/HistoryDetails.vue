@@ -1,20 +1,16 @@
 <template>
-    <NewLifeSubSection v-model:status="newSubSectionStatus" v-model:historyId="historyId"></NewLifeSubSection>
-    <el-input v-model="history.title" />
+    <NewLifeSubSection v-model:status="newSubSectionStatus" v-model:historyId="historyId" v-model:sections="sections">
+    </NewLifeSubSection>
+    <el-text size="large">{{ history.title }}</el-text>
     <el-row>
         <el-col :span="16">
             <el-row>
-                <el-col :span="24"><el-text>遗嘱名</el-text>
-                    <el-input v-model="currentSection.id" />
-                </el-col>
-            </el-row>
-            <el-row>
-                <el-col :span="24"><el-text>传记标题</el-text>
+                <el-col :span="24"><el-text>小节标题</el-text>
                     <el-input v-model="currentSection.title" />
                 </el-col>
             </el-row>
             <el-row>
-                <el-col :span="24"><el-text>传记内容</el-text>
+                <el-col :span="24"><el-text>小节内容</el-text>
                     <MdEditor v-model="currentSection.content"></MdEditor>
                 </el-col>
             </el-row>
@@ -30,7 +26,7 @@
         <el-col :span="6" :offset="2">
             <el-button @click="newSubSectionStatus = true">新的小节</el-button>
             <el-table :data="sections" height="400" style="width: 100%;overflow: auto;" :stripe="true"
-                :show-overflow-tooltip="true" v-infinite-scroll="GetMyLifeSubsecions" @row-click="SwitchSection">
+                :show-overflow-tooltip="true" @row-click="SwitchSection">
                 <el-table-column label="序号">
                     <template #default="scope">
                         {{ indexGenerator.getIndexById(scope.row.id) }}
@@ -70,17 +66,16 @@ const aiReviewStatus = ref(false)
 
 // models
 const currentSection = ref(new LifeSubSectionResponse("", '', ''))
-const pageInfo = ref(new PageInfo(30, null))
 const sections = ref([])
 const indexGenerator = ref()
 
 onMounted(async () => {
-    // load current will.
+
     historyId.value = route.params.historyId
-    // load will versions.
+
     await Promise.all([GetHistory(), GetMyLifeSubsecions()])
 
-    indexGenerator.value = createIndexGenerator(sections.value)
+    // indexGenerator.value = createIndexGenerator(sections.value)
 })
 
 async function SwitchSection(section) {
@@ -89,21 +84,14 @@ async function SwitchSection(section) {
 }
 
 async function GetMyLifeSubsecions() {
-    if (loading.value) {
-        return
-    }
-    loading.value = true
-
-    var { result, response } = await GetMyLifeSubsectionsAsync(historyId.value, pageInfo.value)
+    var { result, response } = await GetMyLifeSubsectionsAsync(historyId.value)
     console.log(result)
     console.log(response)
-    console.log(pageInfo.value)
     if (result) {
         if (response.length == 0) {
             return
         }
-        sections.value = sections.value.concat(response)
-        pageInfo.value.cursorId = response[response.length - 1].id
+        sections.value = response
         indexGenerator.value = createIndexGenerator(sections.value)
     }
 

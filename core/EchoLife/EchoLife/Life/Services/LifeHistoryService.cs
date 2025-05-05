@@ -142,26 +142,48 @@ public class LifeHistoryService(
         return LifeSubSectionResponse.From(result);
     }
 
-    public async Task<List<LifeSubSectionResponse>> GetLifeSubSectionAsync(
+    public async Task<List<LifeSubSectionResponse>> GetAllLifeSubSectionAsync(
         ClaimsPrincipal me,
-        string historyId,
-        QueryLifeSubSectionRequest queryLifeSubSectionRequest
+        string historyId
     )
     {
         var userId = ClaimsManager.GetAuthorizedUserId(me);
 
         var history = await EnsureAndGetLifeHistoryAsync(historyId);
 
-        var result = await _lifeSubSectionRepository.ReadAsync(
-            s =>
-                s.LifeHistoryId == historyId
-                && (
-                    queryLifeSubSectionRequest.CursorId == null
-                    || s.Id.CompareTo(queryLifeSubSectionRequest.CursorId) > 0
-                ),
-            queryLifeSubSectionRequest.Count
-        );
-        return [.. result.Select(LifeSubSectionResponse.From)];
+        var result = await _lifeSubSectionRepository.ReadAllSubSectionsAsync(historyId);
+
+        return [.. SortToTree(result).Select(LifeSubSectionResponse.From)];
+
+        List<LifeSubSection> SortToTree(List<LifeSubSection> sections)
+        {
+            var insertPosition = new Dictionary<string, string>();
+            var result = new List<LifeSubSection>();
+
+            foreach (var item in sections)
+            {
+                if (string.IsNullOrWhiteSpace(item.FatherId))
+                {
+                    result.Add(item);
+                    insertPosition[item.Id] = item.Id;
+                }
+                else
+                {
+                    var lastChildId = insertPosition[item.FatherId];
+
+                    var parentIndex = result.FindIndex(n => n.Id == item.FatherId);
+                    if (parentIndex != -1)
+                    {
+                        var lastChildIndex = result.FindIndex(n => n.Id == lastChildId);
+                        result.Insert(lastChildIndex + 1, item);
+                    }
+
+                    insertPosition[item.FatherId] = item.Id;
+                    insertPosition[item.Id] = item.Id;
+                }
+            }
+            return result;
+        }
     }
 
     public async Task<LifeSubSectionResponse?> GetLifeSubSectionAsync(

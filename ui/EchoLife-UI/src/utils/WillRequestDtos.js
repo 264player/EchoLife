@@ -90,13 +90,57 @@ export class ReviewRequest {
   }
 }
 
+// willTypes
 const willTypes = [
-  'SelfWritten',
-  'WrittenByOthers',
-  'Audio',
-  'Video',
-  'Living',
-  'Notarized',
-  'Trust',
+  'selfWritten',
+  'writtenByOthers',
+  'audio',
+  'video',
+  'living',
+  'notarized',
+  'trust',
 ]
-export { willTypes }
+
+const willTypeMap = {
+  selfWritten: '自书遗嘱',
+  writtenByOthers: '代书遗嘱',
+  audio: '录音遗嘱',
+  video: '录像遗嘱',
+  living: '口头遗嘱',
+  notarized: '公证遗嘱',
+  trust: '信托遗嘱',
+}
+const willTypeArray = Object.entries(willTypeMap).map(([key, value]) => ({
+  key,
+  value,
+}))
+
+const willTypeMapLowerCase = Object.fromEntries(
+  Object.entries(willTypeMap).map(([key, value]) => [key.toLowerCase(), value]),
+)
+
+export function GetChineseWillType(willType) {
+  if (!willType || typeof willType !== 'string') {
+    throw new Error('Invalid input: willType must be a string')
+  }
+
+  const lowerCaseWillType = willType.toLowerCase()
+
+  const chineseName = willTypeMapLowerCase[lowerCaseWillType]
+
+  if (!chineseName) {
+    throw new Error(`Invalid willType: ${willType}`)
+  }
+}
+
+// willReviewTypes
+const reviewStatus = ['pendding', 'inProgress', 'approved', 'rejected']
+
+const reviewStatusMap = {
+  pendding: '未受理',
+  inProgress: '审核中',
+  approved: '通过',
+  rejected: '未通过',
+}
+
+export { willTypes, willTypeArray, willTypeMap, reviewStatusMap }

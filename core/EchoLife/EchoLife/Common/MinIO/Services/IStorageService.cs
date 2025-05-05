@@ -11,6 +11,12 @@ public interface IStorageService
 
     #region Objects
     Task<string> PutObjectAsync(string bucketName, string objectName);
+    Task<IEnumerable<string>> ListObjectsAsync(
+        string bucketName,
+        string prefix,
+        bool recursive = true,
+        bool versions = false
+    );
     Task<string> PresignedGetObjectAsync(string bucketName, string objectName);
     Task RemoveObjectAsync(string bucketName, string objectName);
     Task<bool> StateObjectAsync(string bucketName, string objectName);

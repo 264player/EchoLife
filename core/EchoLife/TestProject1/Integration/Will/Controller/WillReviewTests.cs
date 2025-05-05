@@ -55,7 +55,7 @@ internal class WillReviewTests : ControllerTestsBase
         Assert.Multiple(() =>
         {
             Assert.That(result.WillVersion.Id, Is.EqualTo(version.Id));
-            Assert.That(result.Status, Is.EqualTo(WillReviewStatus.Pending));
+            Assert.That(result.Status, Is.EqualTo(WillReviewStatus.Pendding));
         });
     }
 

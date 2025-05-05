@@ -1,9 +1,11 @@
-﻿namespace EchoLife.Family.Dtos;
+﻿using EchoLife.Family.Models;
+
+namespace EchoLife.Family.Dtos;
 
 public record FamilyMemberRequest(
     string FamilyId,
     string DisplayName,
-    string Gender,
+    Gender Gender,
     string? FatherId,
     string? MotherId,
     string? SpouseId,

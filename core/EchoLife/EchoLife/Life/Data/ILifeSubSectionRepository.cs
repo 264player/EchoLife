@@ -3,4 +3,7 @@ using EchoLife.Life.Models;
 
 namespace EchoLife.Life.Data;
 
-public interface ILifeSubSectionRepository : IEntityRepository<LifeSubSection> { }
+public interface ILifeSubSectionRepository : IEntityRepository<LifeSubSection>
+{
+    Task<List<LifeSubSection>> ReadAllSubSectionsAsync(string historyId);
+}

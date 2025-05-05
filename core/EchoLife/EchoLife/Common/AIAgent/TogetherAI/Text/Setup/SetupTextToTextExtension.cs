@@ -14,6 +14,7 @@ public static class SetupTextToTextExtension
             ?? throw new Exception();
 
         services
+            .Configure<TextToTextPrompts>(configuration.GetSection("Prompts"))
             .Configure<TextToTextSettings>(configuration.GetSection("AIAgent:TogetherAI:Text"))
             .AddHttpClient<ITextToTextClient, TogetherAITextToTextClient>(x =>
             {

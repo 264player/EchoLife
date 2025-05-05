@@ -11,22 +11,29 @@
                 <el-col :span="24">
                     <p><el-text>遗嘱类型</el-text></p>
                     <el-select v-model="currentVersion.willType" placeholder="Select" style="width: 240px">
-                        <el-option v-for="item in willTypes" :key="item" :label="item" :value="item" />
+                        <el-option v-for="item in willTypeArray" :key="item.value" :label="item.value"
+                            :value="item.key" />
                     </el-select>
                 </el-col>
             </el-row>
             <el-row>
                 <el-col :span="24">
                     <p><el-text>遗嘱内容</el-text></p>
-                    <MdEditor v-model="currentVersion.value"></MdEditor>
+                    <MdEditor v-model="currentVersion.value" v-if="!needFile"></MdEditor>
+                    <div v-else>
+                        <el-link target="_blank" :href="currentVersion.value" underline>点击此处下载附件</el-link>
+                        <input type="file" @change="HandleFileChange" />
+                        <button @click="UploadFile">上传文件</button>
+                    </div>
                 </el-col>
             </el-row>
             <el-row>
                 <el-col :span="24">
                     <el-button @click="UpdateWillAndVersion">保存更改</el-button>
                     <el-button @click="DeleteWillVersion">删除该版本</el-button>
-                    <el-button @click="aiReviewStatus = true">查看AI审核</el-button>
+                    <el-button @click="aiReviewStatus = true" :disabled="needFile">查看AI审核</el-button>
                     <el-button @click="RequestHumanReview">请求审核</el-button>
+                    <MyFileList></MyFileList>
                 </el-col>
             </el-row>
         </el-col>
@@ -44,7 +51,7 @@
         <p><el-text>遗嘱类型</el-text></p>
         <p>
             <el-select v-model="willVersionRequest.WillType" placeholder="Select" style="width: 240px">
-                <el-option v-for="item in willTypes" :key="item" :label="item" :value="item" />
+                <el-option v-for="item in willTypeArray" :key="item.value" :label="item.value" :value="item.key" />
             </el-select>
         </p>
         <el-text>内容</el-text>
@@ -63,22 +70,64 @@
 import { WillResponse, QueryWillVersionsRequest, WillVersionRequest, WillVersionResponse, WillRequest, PutWillRequest } from '@/utils/WillRequestDtos';
 import { GetWillAsyn, GetWillVersionsAsync, CreateWillVersionAsync, UpdateWillAsync, UpdateWillVersionAsync, DeleteWillVersionAsync, RequestHumanReviewAsync, RequestAIReviewAsync } from '@/utils/WillRequestHelper';
 import { useRoute } from 'vue-router';
-import { ref, onMounted } from 'vue';
+import { ref, onMounted, computed } from 'vue';
 import { ElMessage } from 'element-plus';
-import { willTypes } from '@/utils/WillRequestDtos';
+import { willTypes, willTypeArray } from '@/utils/WillRequestDtos';
 import { MdEditor } from 'md-editor-v3';
 import 'md-editor-v3/lib/style.css';
+import { UploadAsync } from '@/components/common/utils/upload';
+import { GetChineseWillType } from '@/utils/WillRequestDtos';
+import MyFileList from '@/components/common/MyFileList.vue';
 
 const route = useRoute()
 
 const willId = ref("")
 
+// status
 const loading = ref(false)
 const isEnd = ref(false)
 const newWillVersion = ref(false)
 const aiReviewStatus = ref(false)
 
-const currentVersion = ref(new WillVersionResponse())
+// computed
+const needFile = computed(() =>
+    currentVersion.value.willType.toLowerCase() == "audio" || currentVersion.value.willType.toLowerCase() == "video"
+)
+const willType = computed(() =>
+    GetChineseWillType(currentVersion.value.willType)
+)
+
+
+// file upload
+function HandleFileChange(event) {
+    file.value = event.target.files[0];
+    console.log(file.value)
+    console.log(event)
+}
+async function UploadFile() {
+    if (!file || !file.value) {
+        alert("请选择文件");
+        return;
+    }
+    console.log(file.value)
+    const uploadUrl = `http://localhost:9000/static/test/${file.value.name}`;
+    currentVersion.value.value = uploadUrl
+    // 使用 axios 上传文件
+    var { result, response } = await UploadAsync(uploadUrl, file.value);
+    ElMessage({
+        type: result ? "success" : "error",
+        message: result ? "上传成功" : "上传失败"
+    })
+    if (result) {
+        UpdateWillAndVersion()
+    }
+
+}
+
+const file = ref()
+
+// model
+const currentVersion = ref(new WillVersionResponse("", '', '', '', '', ''))
 
 const willVersionRequest = ref(new WillVersionRequest(null, null))
 

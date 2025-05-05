@@ -28,10 +28,9 @@ public interface ILifeHistoryService
         ClaimsPrincipal me,
         LifeSubSectionRequest lifeSubSectionRequest
     );
-    Task<List<LifeSubSectionResponse>> GetLifeSubSectionAsync(
+    Task<List<LifeSubSectionResponse>> GetAllLifeSubSectionAsync(
         ClaimsPrincipal me,
-        string historyId,
-        QueryLifeSubSectionRequest queryLifeSubSectionRequest
+        string historyId
     );
     Task<LifeSubSectionResponse?> GetLifeSubSectionAsync(ClaimsPrincipal me, string sectionId);
     Task UpdateLifeSubSectionAsync(

@@ -1,7 +1,11 @@
 <template>
     <el-table v-infinite-scroll="GetMyReviewRequests" :data="myReviewRequests" height="100%"
         style="width: 100%;overflow: auto;" :stripe="true" @row-dblclick="TableItemClick">
-        <el-table-column prop="status" label="名称" width="180" />
+        <el-table-column label="状态" width="180">
+            <template #default="scope">
+                {{ reviewStatusMap[scope.row.status] }}
+            </template>
+        </el-table-column>
         <el-table-column prop="reviewerId" label="审核人" />
         <el-table-column prop="createdAt" label="请求时间" width="180" />
         <el-table-column prop="reviewedAt" label="审核完成时间" width="180" />
@@ -22,6 +26,7 @@ import { PageInfo } from '@/utils/WillRequestDtos'
 import { GetMyReviewRequestsAsync, CancelReviewAsync } from '@/utils/WillRequestHelper'
 import { useRouter } from 'vue-router'
 import { ElMessage } from 'element-plus'
+import { reviewStatusMap } from '@/utils/WillRequestDtos'
 
 const route = useRouter()
 

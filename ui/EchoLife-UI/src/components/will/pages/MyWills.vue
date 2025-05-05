@@ -5,7 +5,11 @@
         :stripe="true" @row-dblclick="TableItemClick">
         <el-table-column prop="name" label="名称" width="180" />
         <el-table-column prop="testaorId" label="所属人" width="180" />
-        <el-table-column prop="willType" label="遗嘱类型" />
+        <el-table-column label="遗嘱类型">
+            <template #default="scope">
+                {{ willTypeMap[scope.row.willType] }}
+            </template>
+        </el-table-column>
         <el-table-column label="操作">
             <template #default="scope">
                 <el-button size="small" type="danger" @click="DeleteWill(scope.row)">
@@ -17,15 +21,19 @@
 </template>
 
 <script setup>
-import { ref } from 'vue'
+import { computed, ref } from 'vue'
 import { QueryWillsRequest } from '@/utils/WillRequestDtos'
 import { GetMyWillsAsync, DeleteWillAsync } from '@/utils/WillRequestHelper'
 import NewWill from '../NewWill.vue'
 import { useRouter } from 'vue-router'
 import { ElMessage, ElMessageBox } from 'element-plus'
+import { willTypeMap } from '@/utils/WillRequestDtos'
 
 const route = useRouter()
 const viewNewWill = ref(false)
+
+//computed
+
 
 const queryWillsRequest = ref(new QueryWillsRequest(5, null))
 

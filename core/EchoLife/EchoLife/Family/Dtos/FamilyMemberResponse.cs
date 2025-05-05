@@ -7,7 +7,7 @@ public record FamilyMemberResponse(
     string UserId,
     string FamilyId,
     string DisplayName,
-    string Gender,
+    Gender Gender,
     string? FatherId,
     string? MotherId,
     string? SpouseId,

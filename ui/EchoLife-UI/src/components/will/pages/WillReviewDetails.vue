@@ -3,9 +3,10 @@
         <el-col :span="4"></el-col>
         <el-col :span="16">
             <el-descriptions title="遗嘱审核详情" :column="1" :border="true">
-                <el-descriptions-item label="状态">{{ review.status }}</el-descriptions-item>
+                <el-descriptions-item label="状态">{{ reviewStatusMap[review.status]
+                }}</el-descriptions-item>
                 <el-descriptions-item label="遗嘱ID">{{ willVersion.id }}</el-descriptions-item>
-                <el-descriptions-item label="遗嘱类型">{{ willVersion.willType }}</el-descriptions-item>
+                <el-descriptions-item label="遗嘱类型">{{ willTypeMap[willVersion.willType] }}</el-descriptions-item>
                 <el-descriptions-item label="审核人">{{ review.reviewerId }}</el-descriptions-item>
                 <el-descriptions-item label="请求时间">{{ review.createdAt }}</el-descriptions-item>
                 <el-descriptions-item label="审核时间">{{ review.reviewedAt }}</el-descriptions-item>
@@ -27,11 +28,12 @@ import { GetReviewDetailsAsync } from '@/utils/WillRequestHelper';
 import { onMounted, ref } from 'vue';
 import { useRoute } from 'vue-router';
 import { MdPreview } from 'md-editor-v3';
+import { willTypeMap, reviewStatusMap } from '@/utils/WillRequestDtos';
 
 
 const reviewId = ref(null)
-const review = ref(new ReviewResponse(null, null, null, null, null, "", null))
-const willVersion = ref(new WillVersionResponse())
+const review = ref(new ReviewResponse('', '', '', '', '', "", ''))
+const willVersion = ref(new WillVersionResponse('', '', '', '', '', ''))
 
 const route = useRoute()
 

@@ -59,7 +59,7 @@ namespace EchoLife.Tests.Integration.Will.Utils
                 new WillReview
                 {
                     Id = IdGenerator.GenerateUlid(),
-                    Status = WillReviewStatus.Pending,
+                    Status = WillReviewStatus.Pendding,
                     Comments = null,
                     CreatedAt = DateTime.UtcNow,
                     UserId = IdGenerator.GenerateGuid(),
