@@ -1,16 +1,21 @@
 ﻿using System.Security.Claims;
+using EchoLife.Account.Models;
 using EchoLife.Account.Services;
 using EchoLife.Common;
+using EchoLife.Common.AIAgent.TogetherAI.Text.Services;
 using EchoLife.Common.Exceptions;
 using EchoLife.Life.Data;
 using EchoLife.Life.Dtos;
 using EchoLife.Life.Models;
+using Microsoft.Extensions.Options;
 
 namespace EchoLife.Life.Services;
 
 public class LifeHistoryService(
     ILifeHitoryRepository _lifeHitoryRepository,
-    ILifeSubSectionRepository _lifeSubSectionRepository
+    ILifeSubSectionRepository _lifeSubSectionRepository,
+    ITextToTextClient _textToTextClient,
+    IOptions<TextToTextPrompts> _prompts
 ) : ILifeHistoryService
 {
     #region LifeHistory
@@ -257,4 +262,21 @@ public class LifeHistoryService(
             ?? throw new LifeSubSectionNotFoundException(sectionId);
     }
     #endregion
+
+    public async Task<string> AiPolishAync(ClaimsPrincipal me, string sectionId)
+    {
+        ClaimsManager.EnsureRole(me, AccountRoles.User);
+        var myId = ClaimsManager.GetAuthorizedUserId(me);
+
+        var section =
+            await _lifeSubSectionRepository.ReadAsync(sectionId)
+            ?? throw new LifeSubSectionNotFoundException(sectionId);
+
+        var comment = await _textToTextClient.TalkAsync(
+            $"{section.Title}\n{section.Content}",
+            _prompts.Value.LifeHistoryPolishPrompt
+        );
+
+        return comment;
+    }
 }

@@ -29,6 +29,14 @@ public class SqlLiteSubSectionRepository(FamilyDbContext _familyDbContext)
         return await SubSections.Where(express).OrderBy(s => s.Id).Take(count).ToListAsync();
     }
 
+    public async Task<List<FamilySubSection>> ReadAllAsync(string historyId)
+    {
+        return await SubSections
+            .Where(s => s.FamilyHistoryId == historyId)
+            .OrderBy(s => s.Id)
+            .ToListAsync();
+    }
+
     public async Task<FamilySubSection?> UpdateAsync(FamilySubSection entity)
     {
         var result = await SubSections

@@ -55,6 +55,17 @@ export async function GetOtherUserInfoAsync(userId) {
     })
 }
 
+export async function GetAllUserInfoAsync() {
+  return await axios
+    .get(`account/all`, { withCredentials: true })
+    .then((response) => {
+      return { result: true, response: response.data }
+    })
+    .catch((error) => {
+      return { result: false, response: error.response.data }
+    })
+}
+
 export async function LogOutAsync() {
   return await axios
     .get('account/logout', { withCredentials: true })

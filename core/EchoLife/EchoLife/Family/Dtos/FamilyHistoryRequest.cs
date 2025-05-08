@@ -1,3 +1,3 @@
 ﻿namespace EchoLife.Family.Dtos;
 
-public record FamilyHistoryRequest(string Title);
+public record FamilyHistoryRequest(string Title, string FamilyId);

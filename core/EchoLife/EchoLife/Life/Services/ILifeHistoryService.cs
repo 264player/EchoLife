@@ -40,4 +40,5 @@ public interface ILifeHistoryService
     );
     Task DeleteLifeSubSectionAsync(ClaimsPrincipal me, string sectionId);
     #endregion
+    Task<string> AiPolishAync(ClaimsPrincipal me, string sectionId);
 }

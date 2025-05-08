@@ -7,25 +7,26 @@
 </template>
 
 <script setup>
-import { ref, defineModel, defineProps } from 'vue';
-import { LifeHistoryRequest, } from './utils/LifeDtos';
-import { CreateLifeHistoryAsync } from './utils/LifeHelpers';
+import { ref, defineModel } from 'vue';
 import { ElMessage } from 'element-plus';
+import { FamilyHistoryRequest } from './utils/familyDtos';
+import { CreateFamilyHistoryAsync } from './utils/familyHelper';
 
 const show = defineModel("status", { require: true })
 const histories = defineModel("list", { require: true })
-const reload = defineProps(['reload'])
+const familyId = defineModel("familyId", { require: true })
 
-const history = ref(new LifeHistoryRequest(null))
+const history = ref(new FamilyHistoryRequest('', ''))
 
 async function CreateLifePoint() {
-    var { result, response } = await CreateLifeHistoryAsync(history.value)
+    history.value.familyId = familyId.value
+    var { result, response } = await CreateFamilyHistoryAsync(history.value)
     ElMessage({
         type: result ? "success" : "error",
         message: result ? "创建成功" : "创建失败"
     })
     if (result) {
-        reload.reload()
+        // histories.value.unshift(response)
     }
 }
 </script>

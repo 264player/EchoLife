@@ -1,5 +1,5 @@
 <template>
-    <NewLifeHistory v-model:status="newLifeHistoryStatus" v-model:list="histories"></NewLifeHistory>
+    <NewLifeHistory v-model:status="newLifeHistoryStatus" v-model:list="histories" :reload="Reload"></NewLifeHistory>
     <UpdateHistory v-model:status="updateHistoryStatus" v-model:model="currentHistory"></UpdateHistory>
     <el-button @click="newLifeHistoryStatus = true">新的传记</el-button>
     <el-table v-infinite-scroll="GetMyHistories" :data="histories" height="800" style="width: 100%;overflow: auto;"
@@ -83,6 +83,12 @@ async function DeleteHistory(history) {
             histories.value.splice(index, 1)
         }
     }
+}
+
+async function Reload() {
+    pageInfo.value.cursorId = null;
+    histories.value = [];
+    await GetMyHistories()
 }
 </script>
 

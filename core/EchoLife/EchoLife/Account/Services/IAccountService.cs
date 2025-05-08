@@ -16,4 +16,5 @@ public interface IAccountService
     Task<IdentityAccountResponse> GetUserInfoAsync(string userId);
     Task BecomeAReviewerAsync(ClaimsPrincipal me);
     Task AddRoleToUserAsync(string userId, AccountRoles accountRoles);
+    Task<List<IdentityAccountResponse>> GetAllUserAsync();
 }

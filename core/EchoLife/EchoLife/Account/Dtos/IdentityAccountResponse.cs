@@ -2,7 +2,7 @@
 
 namespace EchoLife.Account.Dtos;
 
-public record IdentityAccountResponse(string Id, string? Username, IEnumerable<string> Roles)
+public record IdentityAccountResponse(string Id, string? Username, IEnumerable<string>? Roles)
 {
     public static IdentityAccountResponse From(
         IdentityAccount identityAccount,
@@ -10,5 +10,10 @@ public record IdentityAccountResponse(string Id, string? Username, IEnumerable<s
     )
     {
         return new IdentityAccountResponse(identityAccount.Id, identityAccount.UserName, roles);
+    }
+
+    public static IdentityAccountResponse From(IdentityAccount identityAccount)
+    {
+        return new IdentityAccountResponse(identityAccount.Id, identityAccount.UserName, null);
     }
 }

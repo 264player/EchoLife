@@ -3,9 +3,11 @@
         <el-col :span="4"></el-col>
         <el-col :span="16">
             <el-descriptions title="个人信息" :column="1" :border="true">
-                <el-descriptions-item label="ID">{{ userInfoResponse.userId }}</el-descriptions-item>
                 <el-descriptions-item label="用户名">{{ userInfoResponse.username }}</el-descriptions-item>
-                <el-descriptions-item label="角色">{{ userInfoResponse.roles }}</el-descriptions-item>
+                <el-descriptions-item label="角色">
+                    <el-tag v-for="item in userInfoResponse.roles" :key="item">
+                        {{ item }}</el-tag>
+                </el-descriptions-item>
             </el-descriptions>
         </el-col>
         <el-col :span="4"></el-col>
@@ -35,6 +37,7 @@ onMounted(async () => {
     if (result) {
         userInfoResponse.value = response
         userInfoResponse.value.userId = response.id;
+        userStore.isReviewer = IsReviewer(userInfoResponse.value.roles)
     } else {
         console.log(response)
     }
@@ -58,6 +61,9 @@ async function BecomeAReviewer() {
         type: result ? "success" : "error",
         message: result ? "已成为审核员" : "未成为审核员"
     })
+}
+function IsReviewer(roles) {
+    return roles.includes("Reviewer")
 }
 
 </script>

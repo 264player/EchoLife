@@ -5,9 +5,11 @@ import { UserInfoResponse } from '@/utils/UserRequestDtos'
 export const useUserStore = defineStore('user', () => {
   const userInfo = ref(new UserInfoResponse(null, null))
   const isLoggedIn = ref(false)
+  const isReviewer = ref(false)
 
   return {
     userInfo,
     isLoggedIn,
+    isReviewer,
   }
 })

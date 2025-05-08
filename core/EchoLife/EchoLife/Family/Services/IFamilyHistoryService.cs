@@ -6,7 +6,10 @@ namespace EchoLife.Family.Services;
 public interface IFamilyHistoryService
 {
     #region FamilyHistory
-    Task CreateFamilyHistoryAsync(ClaimsPrincipal me, FamilyHistoryRequest familyHistoryRequest);
+    Task<FamilyHistoryResponse> CreateFamilyHistoryAsync(
+        ClaimsPrincipal me,
+        FamilyHistoryRequest familyHistoryRequest
+    );
     Task<List<FamilyHistoryResponse>> GetFamilyHistoryAsync(
         ClaimsPrincipal me,
         QueryFamilyHistoryRequest queyFamilyHistoryRequest
@@ -21,7 +24,7 @@ public interface IFamilyHistoryService
     #endregion
 
     #region FamilySubSection
-    Task CreateFamilySubSectionAsync(
+    Task<FamilySubSectionResponse> CreateFamilySubSectionAsync(
         ClaimsPrincipal me,
         FamilySubSectionRequest familySubSectionRequest
     );
@@ -31,6 +34,10 @@ public interface IFamilyHistoryService
         QueryFamilySubSectionRequest queryFamilySubSectionRequest
     );
     Task<FamilySubSectionResponse?> GetFamilySubSectionAsync(ClaimsPrincipal me, string sectionId);
+    Task<List<FamilySubSectionResponse>> GetAllFamilySubSectionAsync(
+        ClaimsPrincipal me,
+        string historyId
+    );
     Task UpdateFamilySubSectionAsync(
         ClaimsPrincipal me,
         string sectionId,
@@ -38,4 +45,5 @@ public interface IFamilyHistoryService
     );
     Task DeleteFamilySubSectionAsync(ClaimsPrincipal me, string sectionId);
     #endregion
+    Task<string> AiPolishAync(ClaimsPrincipal me, string sectionId);
 }

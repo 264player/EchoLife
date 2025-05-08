@@ -80,4 +80,10 @@ public class AccountController(IAccountService _accountService) : ControllerBase
         await _accountService.BecomeAReviewerAsync(User);
         return Ok();
     }
+
+    [HttpGet("all")]
+    public async Task<IActionResult> GetAllUser()
+    {
+        return Ok(await _accountService.GetAllUserAsync());
+    }
 }

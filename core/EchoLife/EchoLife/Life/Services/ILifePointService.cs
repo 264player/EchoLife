@@ -13,6 +13,10 @@ public interface ILifePointService
         string userId,
         QueryLifePointsRequest queryLifePointsRequest
     );
+    Task<List<LifePoint>> GetMyLifePointAsync(
+        ClaimsPrincipal me,
+        QueryLifePointsRequest queryLifePointsRequest
+    );
     Task<LifePointResponse> UpdateLifePointAsync(
         ClaimsPrincipal me,
         string pointId,

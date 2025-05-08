@@ -19,7 +19,7 @@
 
 
 <script setup>
-import { ref, defineModel } from 'vue';
+import { ref, defineModel, defineProps } from 'vue';
 import { ElMessage } from 'element-plus';
 import { CreateFamilyAsync } from './utils/familyHelper';
 import { FamilyTreeRequest } from './utils/familyDtos';
@@ -27,6 +27,7 @@ import { FamilyTreeRequest } from './utils/familyDtos';
 const family = ref(new FamilyTreeRequest(""))
 const status = defineModel("status", { required: true })
 const families = defineModel("list", { required: true })
+const reload = defineProps(["reload"])
 
 async function CreateFamily() {
     var { result, response } = await CreateFamilyAsync(family.value);
@@ -37,7 +38,7 @@ async function CreateFamily() {
         message: result ? "创建成功" : "创建失败"
     })
     if (result) {
-        families.value.unshift(response)
+        await reload.reload()
     }
 }
 

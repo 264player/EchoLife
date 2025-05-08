@@ -38,7 +38,10 @@ import { LoginRequest } from '@/utils/UserRequestDtos'
 import { LoginAsync } from '@/utils/UserRequestHelper'
 import { useUserStore } from '@/stores/counter'
 import { ElMessage } from 'element-plus'
+import { GetUserInfoAsync } from '@/utils/UserRequestHelper'
+import { useRouter } from 'vue-router'
 
+const router = useRouter()
 const userStore = useUserStore()
 
 const requestDto = ref(new LoginRequest("string", "P@ssw0rd", false))
@@ -53,6 +56,19 @@ async function Login() {
     })
     if (result) {
         userStore.isLoggedIn = true
+        await GetUserInfo()
+        router.push({ name: "user-info", params: { id: `${userStore.userInfo.userId}` } })
+    }
+}
+
+async function GetUserInfo() {
+    var { result, response } = await GetUserInfoAsync()
+    if (result) {
+        userStore.userInfo.username = response.username;
+        userStore.userInfo.userId = response.id;
+        userStore.isLoggedIn = true
+    } else {
+        console.log(response)
     }
 }
 </script>

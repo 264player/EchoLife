@@ -1,10 +1,9 @@
 <template>
-    <NewFamily v-model:status="newFamilyStatus" v-model:list="myFamilies"></NewFamily>
+    <NewFamily v-model:status="newFamilyStatus" v-model:list="myFamilies" :reload="ReloadFamily"></NewFamily>
     <el-button @click="newFamilyStatus = true">新的家族</el-button>
     <el-table v-infinite-scroll="GetMyFamily" :data="myFamilies" height="800px" style="width: 100%;overflow: auto;"
         :stripe="true" @row-dblclick="TableItemClick">
         <el-table-column prop="name" label="名称" width="180" />
-        <el-table-column prop="createdUserId" label="所属人" />
         <el-table-column prop="createdAt" label="创建日期">
             <template #default="scope">
                 {{ ConvertUTCToBeijingTime(scope.row.createdAt) }}
@@ -12,8 +11,11 @@
         </el-table-column>
         <el-table-column label="操作">
             <template #default="scope">
-                <el-button size="small" type="danger" @click="TableItemClick(scope.row)">
+                <el-button size="small" @click="TableItemClick(scope.row)">
                     查看详情
+                </el-button>
+                <el-button size="small" @click="GotoFamilyHistory(scope.row.id)">
+                    查看家族传记
                 </el-button>
                 <el-button size="small" type="danger" @click="DeleteFamily(scope.row)">
                     删除
@@ -82,6 +84,17 @@ async function DeleteFamily(family) {
             myFamilies.value.splice(index, 1)
         }
     }
+}
+
+function GotoFamilyHistory(familyId) {
+    route.push({ name: 'family-history', params: { familyId: familyId } })
+}
+
+async function ReloadFamily() {
+    myFamilies.value = [];
+    pageInfo.value.cursorId = null;
+    await GetMyFamily()
+    console.log("重新加载数据")
 }
 
 

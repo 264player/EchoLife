@@ -1,5 +1,5 @@
 <template>
-    <NewLifePoint v-model:status="newLifePoint" v-model:list="lifePoints"></NewLifePoint>
+    <NewLifePoint v-model:status="newLifePoint" v-model:list="lifePoints" :reload="Reload"></NewLifePoint>
     <UpdateLifePoint v-model:status="updatePoint" v-model:point="currentPoint"></UpdateLifePoint>
     <el-button @click="newLifePoint = true">新的节点</el-button>
     <el-table v-infinite-scroll="GetMyLifePoints" :data="lifePoints" height="800" style="width: 100%;overflow: auto;"
@@ -25,6 +25,7 @@
                 <el-button size="small" @click="UpdatePoint(scope.row)">
                     修改
                 </el-button>
+                <InviteOtherUser v-model:pointId="scope.row.id"></InviteOtherUser>
                 <el-button size="small" type="danger" @click="DeleteLifePoint(scope.row)">
                     删除
                 </el-button>
@@ -46,18 +47,20 @@
 import { ref } from 'vue';
 import NewLifePoint from '../NewLifePoint.vue';
 import UpdateLifePoint from '../UpdateLifePoint.vue';
-import { GetMyLifePointsAsync, DeleteLifePointAsync } from '../utils/LifeHelpers';
+import { GetMyLifePointsAsync, DeleteLifePointAsync, GetLifePointsAsync } from '../utils/LifeHelpers';
 import { useUserStore } from '@/stores/counter';
 import { PageInfo } from '@/utils/WillRequestDtos';
 import { ElMessage } from 'element-plus';
 import { ConvertUTCToBeijingTime } from '@/components/common/utils/ConvertTime';
 import { MdPreview, MdCatalog, MdEditor } from 'md-editor-v3';
 import 'md-editor-v3/lib/preview.css';
+import InviteOtherUser from '../InviteOtherUser.vue';
 
 // status
 const newLifePoint = ref(false)
 const updatePoint = ref(false)
 const loading = ref(false)
+
 
 const currentPoint = ref({})
 
@@ -73,7 +76,7 @@ async function GetMyLifePoints() {
     }
     loading.value = true
 
-    var { result, response } = await GetMyLifePointsAsync(userStore.userInfo.userId, pageInfo.value)
+    var { result, response } = await GetLifePointsAsync(pageInfo.value)
     if (result) {
         console.log(response)
         if (response.length != 0) {
@@ -110,6 +113,13 @@ async function DeleteLifePoint(lifePoint) {
         }
     }
 }
+
+async function Reload() {
+    pageInfo.value.cursorId = null;
+    lifePoints.value = [];
+    await GetMyLifePoints()
+}
+
 </script>
 
 <style lang="css" scoped></style>

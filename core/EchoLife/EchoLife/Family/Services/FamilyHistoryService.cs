@@ -1,32 +1,42 @@
 ﻿using System.Security.Claims;
+using EchoLife.Account.Models;
 using EchoLife.Account.Services;
 using EchoLife.Common;
+using EchoLife.Common.AIAgent.TogetherAI.Text.Services;
 using EchoLife.Common.Exceptions;
 using EchoLife.Family.Data;
 using EchoLife.Family.Dtos;
 using EchoLife.Family.Models;
 using EchoLife.Life.Services;
+using Microsoft.Extensions.Options;
 
 namespace EchoLife.Family.Services;
 
 public class FamilyHistoryService(
-    IFamilyHistoryRepository familyHistoryRepository,
-    IFamilySubSectionRepository familySubSectionRepository
+    IFamilyHistoryRepository _familyHistoryRepository,
+    IFamilySubSectionRepository _familySubSectionRepository,
+    ITextToTextClient _textToTextClient,
+    IOptions<TextToTextPrompts> _prompts
 ) : IFamilyHistoryService
 {
     #region FamilyHistory
-    public async Task CreateFamilyHistoryAsync(ClaimsPrincipal me, FamilyHistoryRequest lifeHistory)
+    public async Task<FamilyHistoryResponse> CreateFamilyHistoryAsync(
+        ClaimsPrincipal me,
+        FamilyHistoryRequest familyHistory
+    )
     {
         var myId = ClaimsManager.GetAuthorizedUserId(me)!;
 
-        await familyHistoryRepository.CreateAsync(
-            new FamilyHistory
-            {
-                Id = IdGenerator.GenerateUlid(),
-                Title = lifeHistory.Title,
-                UserId = myId,
-            }
-        );
+        var result =
+            await _familyHistoryRepository.CreateAsync(
+                new FamilyHistory
+                {
+                    Id = IdGenerator.GenerateUlid(),
+                    Title = familyHistory.Title,
+                    FamilyId = familyHistory.FamilyId,
+                }
+            ) ?? throw new UnknowException();
+        return FamilyHistoryResponse.From(result);
     }
 
     public async Task<List<FamilyHistoryResponse>> GetFamilyHistoryAsync(
@@ -36,9 +46,9 @@ public class FamilyHistoryService(
     {
         var myId = ClaimsManager.GetAuthorizedUserId(me);
 
-        var result = await familyHistoryRepository.ReadAsync(
+        var result = await _familyHistoryRepository.ReadAsync(
             h =>
-                h.UserId == myId
+                h.FamilyId == queyFamilyHistoryRequest.FamilyId
                 && (
                     queyFamilyHistoryRequest.CursorId == null
                     || h.Id.CompareTo(queyFamilyHistoryRequest.CursorId) < 0
@@ -57,10 +67,10 @@ public class FamilyHistoryService(
         var myId = ClaimsManager.GetAuthorizedUserId(me);
 
         var result = await EnsureAndGetFamilyHistoryAsync(familyHistoryId);
-        if (result.UserId != myId)
-        {
-            throw new ForbiddenException(myId);
-        }
+        //if (result.FamilyId != myId)
+        //{
+        //    throw new ForbiddenException(myId);
+        //}
 
         return FamilyHistoryResponse.From(result);
     }
@@ -74,12 +84,12 @@ public class FamilyHistoryService(
         var familyHistory = await EnsureAndGetFamilyHistoryAsync(familyHistoryId);
 
         var myId = ClaimsManager.GetAuthorizedUserId(me);
-        if (familyHistory.UserId != myId)
-        {
-            throw new ForbiddenException(myId);
-        }
+        //if (familyHistory.FamilyId != myId)
+        //{
+        //    throw new ForbiddenException(myId);
+        //}
 
-        await familyHistoryRepository.UpdateAsync(Update(familyHistory, familyHistoryRequest));
+        await _familyHistoryRepository.UpdateAsync(Update(familyHistory, familyHistoryRequest));
 
         static FamilyHistory Update(
             FamilyHistory lifeHistory,
@@ -96,23 +106,23 @@ public class FamilyHistoryService(
         var myId = ClaimsManager.GetAuthorizedUserId(me);
 
         var result = await EnsureAndGetFamilyHistoryAsync(familyHistoryId);
-        if (result.UserId != myId)
-        {
-            throw new ForbiddenException(myId);
-        }
+        //if (result.familyId != myId)
+        //{
+        //    throw new ForbiddenException(myId);
+        //}
 
-        await familyHistoryRepository.DeleteAsync(familyHistoryId);
+        await _familyHistoryRepository.DeleteAsync(familyHistoryId);
     }
 
     private async Task<FamilyHistory> EnsureAndGetFamilyHistoryAsync(string lifeHistoryId)
     {
-        return await familyHistoryRepository.ReadAsync(lifeHistoryId)
+        return await _familyHistoryRepository.ReadAsync(lifeHistoryId)
             ?? throw new FamilyHistoryNotFoundException(lifeHistoryId);
     }
     #endregion
 
     #region FamilySubSection
-    public async Task CreateFamilySubSectionAsync(
+    public async Task<FamilySubSectionResponse> CreateFamilySubSectionAsync(
         ClaimsPrincipal me,
         FamilySubSectionRequest familySubSectionRequest
     )
@@ -121,22 +131,24 @@ public class FamilyHistoryService(
 
         var history = await EnsureAndGetFamilyHistoryAsync(familySubSectionRequest.FamilyHistoryId);
 
-        if (myId != history.UserId)
-        {
-            throw new ForbiddenException(myId);
-        }
+        //if (myId != history.FamilyId)
+        //{
+        //    throw new ForbiddenException(myId);
+        //}
 
-        await familySubSectionRepository.CreateAsync(
-            new FamilySubSection
-            {
-                Id = IdGenerator.GenerateUlid(),
-                Title = familySubSectionRequest.Title,
-                Content = familySubSectionRequest.Content,
-                FamilyHistoryId = familySubSectionRequest.FamilyHistoryId,
-                FatherId = familySubSectionRequest.FatherId,
-                Index = familySubSectionRequest.Index,
-            }
-        );
+        var result =
+            await _familySubSectionRepository.CreateAsync(
+                new FamilySubSection
+                {
+                    Id = IdGenerator.GenerateUlid(),
+                    Title = familySubSectionRequest.Title,
+                    Content = familySubSectionRequest.Content,
+                    FamilyHistoryId = familySubSectionRequest.FamilyHistoryId,
+                    FatherId = familySubSectionRequest.FatherId,
+                    Index = familySubSectionRequest.Index,
+                }
+            ) ?? throw new UnknowException();
+        return FamilySubSectionResponse.From(result);
     }
 
     public async Task<List<FamilySubSectionResponse>> GetFamilySubSectionAsync(
@@ -149,7 +161,7 @@ public class FamilyHistoryService(
 
         var history = await EnsureAndGetFamilyHistoryAsync(historyId);
 
-        var result = await familySubSectionRepository.ReadAsync(
+        var result = await _familySubSectionRepository.ReadAsync(
             s =>
                 s.FamilyHistoryId == historyId
                 && (
@@ -159,6 +171,50 @@ public class FamilyHistoryService(
             queryFamilySubSectionRequest.Count
         );
         return [.. result.Select(FamilySubSectionResponse.From)];
+    }
+
+    public async Task<List<FamilySubSectionResponse>> GetAllFamilySubSectionAsync(
+        ClaimsPrincipal me,
+        string historyId
+    )
+    {
+        var userId = ClaimsManager.GetAuthorizedUserId(me);
+
+        var history = await EnsureAndGetFamilyHistoryAsync(historyId);
+
+        var result = await _familySubSectionRepository.ReadAllAsync(historyId);
+
+        return [.. SortToTree(result).Select(FamilySubSectionResponse.From)];
+
+        List<FamilySubSection> SortToTree(List<FamilySubSection> sections)
+        {
+            var insertPosition = new Dictionary<string, string>();
+            var result = new List<FamilySubSection>();
+
+            foreach (var item in sections)
+            {
+                if (string.IsNullOrWhiteSpace(item.FatherId))
+                {
+                    result.Add(item);
+                    insertPosition[item.Id] = item.Id;
+                }
+                else
+                {
+                    var lastChildId = insertPosition[item.FatherId];
+
+                    var parentIndex = result.FindIndex(n => n.Id == item.FatherId);
+                    if (parentIndex != -1)
+                    {
+                        var lastChildIndex = result.FindIndex(n => n.Id == lastChildId);
+                        result.Insert(lastChildIndex + 1, item);
+                    }
+
+                    insertPosition[item.FatherId] = item.Id;
+                    insertPosition[item.Id] = item.Id;
+                }
+            }
+            return result;
+        }
     }
 
     public async Task<FamilySubSectionResponse?> GetFamilySubSectionAsync(
@@ -171,10 +227,10 @@ public class FamilyHistoryService(
 
         var history = await EnsureAndGetFamilyHistoryAsync(result.FamilyHistoryId);
 
-        if (history.UserId != myId)
-        {
-            throw new ForbiddenException(myId);
-        }
+        //if (history.familyId != myId)
+        //{
+        //    throw new ForbiddenException(myId);
+        //}
 
         return FamilySubSectionResponse.From(result);
     }
@@ -190,12 +246,12 @@ public class FamilyHistoryService(
 
         var history = await EnsureAndGetFamilyHistoryAsync(result.FamilyHistoryId);
 
-        if (history.UserId != myId)
-        {
-            throw new ForbiddenException(myId);
-        }
+        //if (history.familyId != myId)
+        //{
+        //    throw new ForbiddenException(myId);
+        //}
 
-        await familySubSectionRepository.UpdateAsync(Update(result, lifeSubSectionRequest));
+        await _familySubSectionRepository.UpdateAsync(Update(result, lifeSubSectionRequest));
 
         static FamilySubSection Update(
             FamilySubSection lifeSubSection,
@@ -217,18 +273,35 @@ public class FamilyHistoryService(
 
         var history = await EnsureAndGetFamilyHistoryAsync(result.FamilyHistoryId);
 
-        if (history.UserId != myId)
-        {
-            throw new ForbiddenException(myId);
-        }
+        //if (history.familyId != myId)
+        //{
+        //    throw new ForbiddenException(myId);
+        //}
 
-        await familySubSectionRepository.DeleteAsync(sectionId);
+        await _familySubSectionRepository.DeleteAsync(sectionId);
     }
 
     private async Task<FamilySubSection> EnsureAndGetLifeSubSectionAsync(string sectionId)
     {
-        return await familySubSectionRepository.ReadAsync(sectionId)
+        return await _familySubSectionRepository.ReadAsync(sectionId)
             ?? throw new LifeSubSectionNotFoundException(sectionId);
     }
     #endregion
+
+    public async Task<string> AiPolishAync(ClaimsPrincipal me, string sectionId)
+    {
+        ClaimsManager.EnsureRole(me, AccountRoles.User);
+        var myId = ClaimsManager.GetAuthorizedUserId(me);
+
+        var section =
+            await _familySubSectionRepository.ReadAsync(sectionId)
+            ?? throw new LifeSubSectionNotFoundException(sectionId);
+
+        var comment = await _textToTextClient.TalkAsync(
+            $"{section.Title}\n{section.Content}",
+            _prompts.Value.FamilyHitstoryPolishPrompt
+        );
+
+        return comment;
+    }
 }

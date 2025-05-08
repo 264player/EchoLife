@@ -2,29 +2,28 @@
   <div>
     <el-row class="tac">
       <el-col :span="12">
-        <h5 class="mb-2">Development Nav</h5>
-        <el-menu default-active="2" class="el-menu-vertical-demo" @open="handleOpen" @close="handleClose" height="800">
-          <el-sub-menu index="2">
+        <el-menu default-active="1" class="el-menu-vertical-demo" @open="handleOpen" @close="handleClose" height="800">
+          <el-sub-menu index="1">
             <template #title>
               <el-icon>
                 <location />
               </el-icon>
-              <span>遗嘱页面</span>
+              <span>遗嘱管理</span>
             </template>
-            <el-menu-item-group title="遗嘱">
-              <el-menu-item index="2-1">
-                <RouterLink :to="{ name: 'my-wills', params: { id: `${userStore.userInfo.userId}` } }">我的遗嘱</RouterLink>
-              </el-menu-item>
-              <el-menu-item index="2-2">
-                <RouterLink :to="{ name: 'my-reviews-requests' }">我的遗嘱请求</RouterLink>
-              </el-menu-item>
-              <el-menu-item index="2-2">
-                <RouterLink :to="{ name: 'all-reviews-requests' }">审核请求中心</RouterLink>
-              </el-menu-item>
-              <el-menu-item index="2-3">
-                <RouterLink :to="{ name: 'my-reviews' }">待处理的请求</RouterLink>
-              </el-menu-item>
-            </el-menu-item-group>
+            <el-menu-item index="1-1">
+              <RouterLink :to="{ name: 'my-wills', params: { id: `${userStore.userInfo.userId}` } }">
+                <el-link>我的遗嘱</el-link>
+              </RouterLink>
+            </el-menu-item>
+            <el-menu-item index="1-2">
+              <RouterLink :to="{ name: 'my-reviews-requests' }">我的遗嘱请求</RouterLink>
+            </el-menu-item>
+            <el-menu-item index="1-3" v-if="userStore.isReviewer">
+              <RouterLink :to="{ name: 'all-reviews-requests' }">审核请求中心</RouterLink>
+            </el-menu-item>
+            <el-menu-item index="1-4" v-if="userStore.isReviewer">
+              <RouterLink :to="{ name: 'my-reviews' }">待处理的请求</RouterLink>
+            </el-menu-item>
           </el-sub-menu>
           <el-sub-menu index="3">
             <template #title>
@@ -55,4 +54,5 @@
 import { RouterLink, RouterView } from 'vue-router'
 import { useUserStore } from '@/stores/counter';
 const userStore = useUserStore()
+
 </script>

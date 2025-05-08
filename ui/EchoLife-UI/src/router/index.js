@@ -15,6 +15,7 @@ import ProcessReview from '@/components/will/ProcessReview.vue'
 import HistoryDetails from '@/components/life/pages/HistoryDetails.vue'
 import FamilyDetails from '@/components/family/pages/FamilyDetails.vue'
 import MyFamilies from '@/components/family/pages/MyFamilies.vue'
+import FamilyHistory from '@/components/family/pages/FamilyHistory.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -103,6 +104,16 @@ const router = createRouter({
       path: '/family',
       name: 'my-families',
       component: MyFamilies,
+    },
+    {
+      path: '/family/:familyId/history',
+      name: 'family-history',
+      component: FamilyHistory,
+    },
+    {
+      path: '/family/history/:historyId',
+      name: 'family-history-details',
+      component: HistoryDetails,
     },
   ],
 })

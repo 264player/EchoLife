@@ -22,7 +22,7 @@ export class WillResponse {
 
 export class WillRequest {
   constructor(name) {
-    this.Name = name
+    this.name = name
   }
 }
 
@@ -139,8 +139,8 @@ const reviewStatus = ['pendding', 'inProgress', 'approved', 'rejected']
 const reviewStatusMap = {
   pendding: '未受理',
   inProgress: '审核中',
-  approved: '通过',
-  rejected: '未通过',
+  approved: '完成',
+  rejected: '未完成',
 }
 
 export { willTypes, willTypeArray, willTypeMap, reviewStatusMap }

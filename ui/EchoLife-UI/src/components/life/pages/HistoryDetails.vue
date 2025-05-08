@@ -19,7 +19,8 @@
                     <el-button @click="UpdateSubsectino">保存更改</el-button>
                     <el-button @click="DeleteSubSection">删除当前小节</el-button>
                     <el-button @click="aiReviewStatus = true">查看AI润色</el-button>
-                    <el-button @click="propmt">查看内容提示</el-button>
+                    <el-button @click="prompt = true">查看内容提示</el-button>
+                    <MyFileList></MyFileList>
                 </el-col>
             </el-row>
         </el-col>
@@ -38,7 +39,14 @@
     </el-row>
 
     <el-drawer v-model="aiReviewStatus" title="I am the title" :with-header="false">
-        <span>promp is here</span>
+        <el-text>{{ polishText }}</el-text>
+        <el-button @click="Polish">点击此处进行润色</el-button>
+    </el-drawer>
+
+    <el-drawer v-model="prompt" title="I am the title" :with-header="false">
+        <iframe src="https://en.wikipedia.org/wiki/Nelson_Mandela" width="100%" height='100%'>
+            Your browser does not support iframes.
+        </iframe>
     </el-drawer>
 </template>
 
@@ -47,11 +55,12 @@ import { PageInfo } from '@/utils/WillRequestDtos';
 import { useRoute } from 'vue-router';
 import { ref, onMounted } from 'vue';
 import { ElMessage } from 'element-plus';
-import { DeleteLifeSubSectionAsync, GetMyLifeHistoryAsync, GetMyLifeSubsectionsAsync, UpdataLifeSubSectionAsync } from '../utils/LifeHelpers';
+import { DeleteLifeSubSectionAsync, GetMyLifeHistoryAsync, GetMyLifeSubsectionsAsync, GetSubSectionPolishAsync, UpdataLifeSubSectionAsync } from '../utils/LifeHelpers';
 import NewLifeSubSection from '../NewLifeSubSection.vue';
 import { LifeSubsectionRequest, LifeSubSectionResponse } from '../utils/LifeDtos';
 import { MdEditor } from 'md-editor-v3';
 import 'md-editor-v3/lib/style.css';
+import MyFileList from '@/components/common/MyFileList.vue';
 
 const route = useRoute()
 
@@ -63,11 +72,13 @@ const loading = ref(false)
 const isEnd = ref(false)
 const newSubSectionStatus = ref(false)
 const aiReviewStatus = ref(false)
+const prompt = ref(false)
 
 // models
 const currentSection = ref(new LifeSubSectionResponse("", '', ''))
 const sections = ref([])
 const indexGenerator = ref()
+const polishText = ref("")
 
 onMounted(async () => {
 
@@ -136,6 +147,13 @@ async function DeleteSubSection() {
     }
 }
 
+async function Polish() {
+    var { result, response } = await GetSubSectionPolishAsync(currentSection.value.id)
+    if (result) {
+        polishText.value = response
+    }
+}
+
 // index generator
 function createIndexGenerator(data) {
     const indexMap = {};
@@ -166,6 +184,8 @@ function createIndexGenerator(data) {
         getAllIndexes: () => ({ ...indexMap })
     };
 }
+
+
 </script>
 
 <style lang="css" scoped>

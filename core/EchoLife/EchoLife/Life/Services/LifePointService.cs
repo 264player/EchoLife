@@ -32,6 +32,15 @@ public class LifePointService(
         var lifePoint =
             await _lifePointRepository.CreateAsync(point) ?? throw new UnknowException();
 
+        await _lifePointUserMapRepository.CreateAsync(
+            new PointUserMap
+            {
+                Id = IdGenerator.GenerateUlid(),
+                UserId = userId,
+                PointId = lifePoint.Id,
+            }
+        );
+
         return LifePointResponse.From(lifePoint);
     }
 
@@ -69,6 +78,30 @@ public class LifePointService(
                 ),
             queryLifePointsRequest.Count
         );
+    }
+
+    public async Task<List<LifePoint>> GetMyLifePointAsync(
+        ClaimsPrincipal me,
+        QueryLifePointsRequest queryLifePointsRequest
+    )
+    {
+        queryLifePointsRequestValidator.ValidateAndThrow(queryLifePointsRequest);
+
+        var myId = ClaimsManager.GetUserId(me);
+
+        var map = await _lifePointUserMapRepository.ReadAsync(
+            m =>
+                m.UserId == myId
+                && (
+                    queryLifePointsRequest.CursorId == null
+                    || m.Id.CompareTo(queryLifePointsRequest.CursorId) < 0
+                ),
+            queryLifePointsRequest.Count
+        );
+        var ids = map.Select(x => x.PointId);
+        var result = await _lifePointRepository.ReadAsync(p => ids.Contains(p.Id), 999);
+
+        return result;
     }
 
     public async Task<LifePointResponse> UpdateLifePointAsync(
@@ -126,7 +159,7 @@ public class LifePointService(
             await _lifePointUserMapRepository.CreateAsync(
                 new PointUserMap
                 {
-                    Id = Guid.NewGuid().ToString(),
+                    Id = IdGenerator.GenerateUlid(),
                     UserId = userId,
                     PointId = pointId,
                 }

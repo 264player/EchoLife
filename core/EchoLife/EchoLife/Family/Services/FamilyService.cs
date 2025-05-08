@@ -71,7 +71,7 @@ public class FamilyService(
             count
         );
         var families = await _familyTreeRepository.ReadAsync(familyMembers.Select(m => m.FamilyId));
-        return [.. families.Select(FamilyTreeResponse.From)];
+        return [.. families.Select(FamilyTreeResponse.From).OrderByDescending(f => f.Id)];
     }
 
     public async Task<FamilyTreeResponse> UpdateFamilyTreeAsync(

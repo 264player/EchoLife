@@ -69,7 +69,7 @@ public class FamilyTreeController(IFamilyService _familyTreeService) : Controlle
         return Ok(await _familyTreeService.GetFamilyMemberAsync(memberId));
     }
 
-    [HttpPut("families/members")]
+    [HttpPut("families/members/{memberId}")]
     public async Task<IActionResult> UpdateMember(
         [FromBody] FamilyMemberRequest familyMemberRequest
     )

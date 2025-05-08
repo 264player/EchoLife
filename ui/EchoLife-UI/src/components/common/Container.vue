@@ -51,7 +51,7 @@ watch(() => userStore.isLoggedIn, async (status) => {
     router.push({ name: "login" })
   } else {
     await GetUserInfo()
-    router.push({ name: "user-info", params: { id: `${userStore.userInfo.userId}` } })
+    // router.push({ name: "user-info", params: { id: `${userStore.userInfo.userId}` } })
   }
 })
 

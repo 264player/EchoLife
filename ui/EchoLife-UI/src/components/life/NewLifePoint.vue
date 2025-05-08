@@ -7,19 +7,22 @@
         <p>
             <el-button @click="CreateLifePoint">创建</el-button>
         </p>
+        <MyFileList></MyFileList>
     </el-dialog>
 </template>
 
 <script setup>
-import { ref, defineModel } from 'vue';
+import { ref, defineModel, defineProps } from 'vue';
 import { LifePointRequest } from './utils/LifeDtos';
 import { CreateLifePointAsync } from './utils/LifeHelpers';
 import { ElMessage } from 'element-plus';
 import { MdEditor } from 'md-editor-v3';
 import 'md-editor-v3/lib/preview.css';
+import MyFileList from '../common/MyFileList.vue';
 
 const newLifePoint = defineModel("status", { require: true })
 const mylifePoints = defineModel("list", { require: true })
+const reload = defineProps(['reload'])
 
 const lifePointRequest = ref(new LifePointRequest("", false))
 
@@ -30,7 +33,7 @@ async function CreateLifePoint() {
         message: result ? "创建成功" : "创建失败"
     })
     if (result) {
-        // mylifePoints.value = []
+        reload.reload()
     }
 }
 </script>

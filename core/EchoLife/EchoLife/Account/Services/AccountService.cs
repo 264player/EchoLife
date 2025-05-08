@@ -130,4 +130,10 @@ public class AccountService(
             }
         }
     }
+
+    public async Task<List<IdentityAccountResponse>> GetAllUserAsync()
+    {
+        var result = await _userManager.Users.ToListAsync();
+        return [.. result.Select(IdentityAccountResponse.From).ToList()];
+    }
 }

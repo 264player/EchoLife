@@ -18,6 +18,30 @@ export async function CreateLifePointAsync(lifePointRequest) {
     })
 }
 
+export async function InviteOtherUserToPointAsync(pointId, userIdList) {
+  return await axios
+    .post(`life/points/${pointId}/join`, userIdList, { withCredentials: true })
+    .then((response) => {
+      console.log(response)
+      return { result: true, response: response.data }
+    })
+    .catch((error) => {
+      return { result: false, response: error }
+    })
+}
+
+export async function LeavePointAsync(pointId) {
+  return await axios
+    .delete(`life/points/${pointId}/leave`, { withCredentials: true })
+    .then((response) => {
+      console.log(response)
+      return { result: true, response: response.data }
+    })
+    .catch((error) => {
+      return { result: false, response: error }
+    })
+}
+
 /**
  *
  * @param {PageInfo} queryLifePointsRequest
@@ -25,6 +49,20 @@ export async function CreateLifePointAsync(lifePointRequest) {
 export async function GetMyLifePointsAsync(userId, queryLifePointsRequest) {
   return await axios
     .get(`${userId}/life/points`, {
+      withCredentials: true,
+      params: { count: queryLifePointsRequest.count, cursorId: queryLifePointsRequest.cursorId },
+    })
+    .then((response) => {
+      return { result: true, response: response.data }
+    })
+    .catch((error) => {
+      return { result: false, response: error }
+    })
+}
+
+export async function GetLifePointsAsync(queryLifePointsRequest) {
+  return await axios
+    .get(`life/points`, {
       withCredentials: true,
       params: { count: queryLifePointsRequest.count, cursorId: queryLifePointsRequest.cursorId },
     })
@@ -182,6 +220,19 @@ export async function GetMyLifeSubsectionsAsync(historyId) {
 export async function GetMyLifeSubSecionAsync(sectionId) {
   return await axios
     .get(`life/history/subsections/${sectionId}`, {
+      withCredentials: true,
+    })
+    .then((response) => {
+      return { result: true, response: response.data }
+    })
+    .catch((error) => {
+      return { result: false, response: error }
+    })
+}
+
+export async function GetSubSectionPolishAsync(sectionId) {
+  return await axios
+    .get(`life/history/subsections/${sectionId}/polish`, {
       withCredentials: true,
     })
     .then((response) => {

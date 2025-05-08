@@ -14,8 +14,7 @@ public class FamilyHistoryController(IFamilyHistoryService _familyHistoryService
     [HttpPost("family/history")]
     public async Task<IActionResult> Post([FromBody] FamilyHistoryRequest familyHistoryRequest)
     {
-        await _familyHistoryService.CreateFamilyHistoryAsync(User, familyHistoryRequest);
-        return Created();
+        return Ok(await _familyHistoryService.CreateFamilyHistoryAsync(User, familyHistoryRequest));
     }
 
     [HttpGet("family/history")]
@@ -58,8 +57,9 @@ public class FamilyHistoryController(IFamilyHistoryService _familyHistoryService
         [FromBody] FamilySubSectionRequest familySubSectionRequest
     )
     {
-        await _familyHistoryService.CreateFamilySubSectionAsync(User, familySubSectionRequest);
-        return Created();
+        return Ok(
+            await _familyHistoryService.CreateFamilySubSectionAsync(User, familySubSectionRequest)
+        );
     }
 
     [HttpGet("family/history/{historyId}/subsections")]
@@ -104,4 +104,10 @@ public class FamilyHistoryController(IFamilyHistoryService _familyHistoryService
         return NoContent();
     }
     #endregion
+
+    [HttpGet("family/history/subsections/{sectionId}/polish")]
+    public async Task<IActionResult> PolishSubsection([FromRoute] string sectionId)
+    {
+        return Ok(await _familyHistoryService.AiPolishAync(User, sectionId));
+    }
 }

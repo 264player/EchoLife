@@ -31,6 +31,15 @@ public class LifePointController(ILifePointService _lifePointService) : Controll
     }
 
     [Authorize]
+    [HttpGet("life/points")]
+    public async Task<IActionResult> GetMyLifePoints(
+        [FromQuery] QueryLifePointsRequest queryLifePointsRequest
+    )
+    {
+        return Ok(await _lifePointService.GetMyLifePointAsync(User, queryLifePointsRequest));
+    }
+
+    [Authorize]
     [HttpGet("life/points/{pointId}")]
     public async Task<IActionResult> Get([FromRoute] string pointId)
     {

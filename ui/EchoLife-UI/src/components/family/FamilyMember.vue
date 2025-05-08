@@ -10,10 +10,10 @@
                     <el-descriptions-item label="母亲">{{ mother.displayName }}</el-descriptions-item>
                     <el-descriptions-item label="伴侣">{{ spouse.displayName }}</el-descriptions-item>
                     <el-descriptions-item label="出生日期">{{ ConvertUTCToBeijingTime(member.model.birthDate)
-                        }}</el-descriptions-item>
-                    <el-descriptions-item label="死亡日期">{{ ConvertUTCToBeijingTime(member.model.deathDate)
                     }}</el-descriptions-item>
-                    <el-descriptions-item label="世代">{{ member.model.generation }}</el-descriptions-item>
+                    <el-descriptions-item label="死亡日期">{{ ConvertUTCToBeijingTime(member.model.deathDate)
+                        }}</el-descriptions-item>
+                    <!-- <el-descriptions-item label="世代">{{ member.model.generation }}</el-descriptions-item> -->
                     <el-descriptions-item label="权限等级">{{ member.model.powerLevel }}</el-descriptions-item>
                 </el-descriptions>
             </el-col>

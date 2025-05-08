@@ -89,4 +89,10 @@ public class LifeHistoryController(ILifeHistoryService _lifeHistoryService) : Co
         return NoContent();
     }
     #endregion
+
+    [HttpGet("life/history/subsections/{sectionId}/polish")]
+    public async Task<IActionResult> PolishSubsection([FromRoute] string sectionId)
+    {
+        return Ok(await _lifeHistoryService.AiPolishAync(User, sectionId));
+    }
 }

@@ -1,5 +1,5 @@
 <template>
-    <NewWill v-model:status="viewNewWill" v-model:list="myWills"></NewWill>
+    <NewWill v-model:status="viewNewWill" :reload="Reload"></NewWill>
     <el-button @click="viewNewWill = true">新的遗嘱</el-button>
     <el-table v-infinite-scroll="GetMyWill" :data="myWills" height="800px" style="width: 100%;overflow: auto;"
         :stripe="true" @row-dblclick="TableItemClick">
@@ -34,7 +34,7 @@ const viewNewWill = ref(false)
 //computed
 
 
-const queryWillsRequest = ref(new QueryWillsRequest(5, null))
+const queryWillsRequest = ref(new QueryWillsRequest(30, null))
 
 const myWills = ref([])
 
@@ -100,6 +100,12 @@ async function ConfirmDelete() {
         })
     console.log(result)
     return result
+}
+
+async function Reload() {
+    queryWillsRequest.value.CusorId = null
+    myWills.value = []
+    await GetMyWill()
 }
 </script>
 

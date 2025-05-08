@@ -82,3 +82,33 @@ const GenderArray = Object.entries(ChineseGenderMap).map(([key, value]) => ({
 }))
 
 export { Genders, ChineseGenderMap, GenderArray }
+
+export class FamilySubsectionRequest {
+  constructor(title, content, familyHistoryId, fatherId, index) {
+    this.title = title
+    this.content = content
+    this.familyHistoryId = familyHistoryId
+    this.fatherId = fatherId
+    this.index = index
+  }
+}
+
+export class FamilySubSectionResponse {
+  constructor(id, title, content, fatherId, familyHistoryId, index, createdAt, updatedAt) {
+    this.id = id
+    this.title = title
+    this.content = content
+    this.fatherId = fatherId
+    this.familyHistoryId = familyHistoryId
+    this.index = index
+    this.createdAt = createdAt
+    this.updatedAt = updatedAt
+  }
+}
+
+export class FamilyHistoryRequest {
+  constructor(title, familyId) {
+    this.title = title
+    this.familyId = familyId
+  }
+}
