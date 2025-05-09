@@ -36,7 +36,11 @@
             </template>
             <el-menu-item-group title="人生节点">
               <el-menu-item index="2-1">
-                <RouterLink :to="{ name: 'my-points', params: { userId: '1234567890' } }">我的人生节点</RouterLink>
+                <RouterLink :to="{ name: 'my-points', params: { userId: '1234567890' } }">
+                  <el-link>
+                    我的人生节点
+                  </el-link>
+                </RouterLink>
               </el-menu-item>
               <el-menu-item index="2-2">
                 <RouterLink :to="{ name: 'life-history' }">个人传记</RouterLink>

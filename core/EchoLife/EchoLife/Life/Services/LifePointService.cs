@@ -1,6 +1,7 @@
 ﻿using System.Security.Claims;
 using EchoLife.Account.Services;
 using EchoLife.Common;
+using EchoLife.Common.Dtos;
 using EchoLife.Common.Exceptions;
 using EchoLife.Life.Data;
 using EchoLife.Life.Dtos;
@@ -80,28 +81,13 @@ public class LifePointService(
         );
     }
 
-    public async Task<List<LifePoint>> GetMyLifePointAsync(
-        ClaimsPrincipal me,
-        QueryLifePointsRequest queryLifePointsRequest
-    )
+    public async Task<List<LifePoint>> GetMyLifePointAsync(ClaimsPrincipal me, PageInfo pageInfo)
     {
-        queryLifePointsRequestValidator.ValidateAndThrow(queryLifePointsRequest);
+        //queryLifePointsRequestValidator.ValidateAndThrow(queryLifePointsRequest);
 
-        var myId = ClaimsManager.GetUserId(me);
+        var myId = ClaimsManager.GetAuthorizedUserId(me);
 
-        var map = await _lifePointUserMapRepository.ReadAsync(
-            m =>
-                m.UserId == myId
-                && (
-                    queryLifePointsRequest.CursorId == null
-                    || m.Id.CompareTo(queryLifePointsRequest.CursorId) < 0
-                ),
-            queryLifePointsRequest.Count
-        );
-        var ids = map.Select(x => x.PointId);
-        var result = await _lifePointRepository.ReadAsync(p => ids.Contains(p.Id), 999);
-
-        return result;
+        return await _lifePointRepository.ReadMyLifePointAsync(myId, pageInfo);
     }
 
     public async Task<LifePointResponse> UpdateLifePointAsync(

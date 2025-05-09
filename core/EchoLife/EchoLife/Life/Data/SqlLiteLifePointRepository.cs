@@ -1,4 +1,5 @@
 ﻿using System.Linq.Expressions;
+using EchoLife.Common.Dtos;
 using EchoLife.Life.Models;
 using Microsoft.EntityFrameworkCore;
 
@@ -7,6 +8,7 @@ namespace EchoLife.Life.Data;
 public class SqlLiteLifePointRepository(LifeDbContext _lifeDbContext) : ILifePointRepository
 {
     private DbSet<LifePoint> LifePoints => _lifeDbContext.LifePoints;
+    private DbSet<PointUserMap> PointUserMap => _lifeDbContext.PointUserMaps;
 
     public async Task<LifePoint?> CreateAsync(LifePoint entity)
     {
@@ -28,6 +30,23 @@ public class SqlLiteLifePointRepository(LifeDbContext _lifeDbContext) : ILifePoi
             .Where(express)
             .OrderByDescending(l => l.Id)
             .Take(count)
+            .ToListAsync();
+    }
+
+    public async Task<List<LifePoint>> ReadMyLifePointAsync(string userId, PageInfo pageInfo)
+    {
+        return await PointUserMap
+            .Where(m => m.UserId == userId)
+            .Join(
+                LifePoints,
+                map => map.PointId,
+                point => point.Id,
+                (map, point) => new { map, point }
+            )
+            .Where(x => (pageInfo.CursorId == null || x.point.Id.CompareTo(pageInfo.CursorId) < 0))
+            .Select(x => x.point)
+            .OrderByDescending(x => x.Id)
+            .Take(pageInfo.Count)
             .ToListAsync();
     }
 

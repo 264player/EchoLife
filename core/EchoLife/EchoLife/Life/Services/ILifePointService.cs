@@ -1,4 +1,5 @@
 ﻿using System.Security.Claims;
+using EchoLife.Common.Dtos;
 using EchoLife.Life.Dtos;
 using EchoLife.Life.Models;
 
@@ -13,10 +14,7 @@ public interface ILifePointService
         string userId,
         QueryLifePointsRequest queryLifePointsRequest
     );
-    Task<List<LifePoint>> GetMyLifePointAsync(
-        ClaimsPrincipal me,
-        QueryLifePointsRequest queryLifePointsRequest
-    );
+    Task<List<LifePoint>> GetMyLifePointAsync(ClaimsPrincipal me, PageInfo pageInfo);
     Task<LifePointResponse> UpdateLifePointAsync(
         ClaimsPrincipal me,
         string pointId,

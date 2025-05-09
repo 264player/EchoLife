@@ -17,5 +17,5 @@ export function ConvertUTCToBeijingTime(utcTimeStr) {
   const minute = String(localTime.getMinutes()).padStart(2, '0')
   const second = String(localTime.getSeconds()).padStart(2, '0')
 
-  return `${year}年${month}月${day}日 ${hour}时${minute}分${second}秒`
+  return `${year}/${month}/${day} ${hour}:${minute}:${second}`
 }

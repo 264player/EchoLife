@@ -1,4 +1,5 @@
-﻿using EchoLife.Common.Exceptions;
+﻿using EchoLife.Common.Dtos;
+using EchoLife.Common.Exceptions;
 using EchoLife.Life.Dtos;
 using EchoLife.Life.Services;
 using Microsoft.AspNetCore.Authorization;
@@ -32,11 +33,9 @@ public class LifePointController(ILifePointService _lifePointService) : Controll
 
     [Authorize]
     [HttpGet("life/points")]
-    public async Task<IActionResult> GetMyLifePoints(
-        [FromQuery] QueryLifePointsRequest queryLifePointsRequest
-    )
+    public async Task<IActionResult> GetMyLifePoints([FromQuery] PageInfo pageInfo)
     {
-        return Ok(await _lifePointService.GetMyLifePointAsync(User, queryLifePointsRequest));
+        return Ok(await _lifePointService.GetMyLifePointAsync(User, pageInfo));
     }
 
     [Authorize]
