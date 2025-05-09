@@ -6,20 +6,22 @@
                 {{ reviewStatusMap[scope.row.status] }}
             </template>
         </el-table-column>
-        <el-table-column prop="createdAt" label="请求时间" width="180">
+        <el-table-column prop="createdAt" label="请求时间" width="280">
             <template #default="scope">
                 {{ ConvertUTCToBeijingTime(scope.row.createdAt) }}
             </template>
         </el-table-column>
-        <el-table-column prop="reviewedAt" label="审核完成时间" width="180">
+        <el-table-column prop="reviewedAt" label="审核完成时间" width="280">
             <template #default="scope">
                 {{ ConvertUTCToBeijingTime(scope.row.reviewedAt) }}
             </template>
         </el-table-column>
         <el-table-column label="操作">
             <template #default="scope">
-                <el-button size="small" type="danger" @click="CancelRequest(scope.row)"
-                    :disabled="scope.row.status != 'pending'">
+                <el-button @click="TableItemClick(scope.row)">
+                    查看详情
+                </el-button>
+                <el-button type="danger" @click="CancelRequest(scope.row)" v-if="scope.row.status == 'pendding'">
                     取消请求
                 </el-button>
             </template>

@@ -10,7 +10,8 @@ namespace EchoLife.Will.Services
 {
     public class WillService(
         IWillVersionRepository _willVersionRepository,
-        IOfficiousWillRepository _officiousWillRepository
+        IOfficiousWillRepository _officiousWillRepository,
+        IWillReviewRepository _willReviewRepository
     ) : IWillService
     {
         #region Will
@@ -79,8 +80,8 @@ namespace EchoLife.Will.Services
 
             await EnsureAndGetWillAsync(willId, userId);
 
-            await _officiousWillRepository.DeleteAsync(willId);
             await _willVersionRepository.DeleteAllVersionsByWillIdAsync(willId);
+            await _officiousWillRepository.DeleteAsync(willId);
         }
 
         public async Task<WillResponse> UpdateWillAsync(
@@ -185,6 +186,8 @@ namespace EchoLife.Will.Services
             var version = await EnsureGetWillVersionAsync(versionId);
             await EnsureAndGetWillAsync(version.WillId, userId);
 
+            await AllowModification(versionId);
+
             var updatedVersino =
                 await _willVersionRepository.UpdateAsync(Update(version, willVersionRequest))
                 ?? throw new UnknowException();
@@ -206,6 +209,8 @@ namespace EchoLife.Will.Services
             try
             {
                 var version = await EnsureGetWillVersionAsync(versionId);
+
+                await AllowModification(versionId);
 
                 await EnsureAndGetWillAsync(version.WillId, userId);
             }
@@ -239,6 +244,20 @@ namespace EchoLife.Will.Services
                 await _willVersionRepository.ReadAsync(willVersionId)
                 ?? throw new WillVersionNotFoundException(willVersionId);
             return version;
+        }
+
+        protected async Task AllowModification(string willVersionId)
+        {
+            var result = await _willReviewRepository
+                .ReadAsync(r => r.VersionId == willVersionId, 1)
+                .ConfigureAwait(false);
+            if (result.Count != 0)
+            {
+                throw new EntityArgumentException(
+                    "Operation is not allowed.",
+                    "This version is under review, operation is not allowed."
+                );
+            }
         }
     }
 }

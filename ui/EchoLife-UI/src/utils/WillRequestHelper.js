@@ -96,14 +96,14 @@ export async function DeleteWillAsync(willId) {
 /**
  *
  * @param {string} willId
- * @param {QueryWillVersionsRequest} queryWillVersionsRequest
+ * @param {PageInfo} pageInfo
  * @returns
  */
-export async function GetWillVersionsAsync(willId, queryWillVersionsRequest) {
+export async function GetWillVersionsAsync(willId, pageInfo) {
   return await axios
     .get(`wills/${willId}/versions`, {
       withCredentials: true,
-      params: { count: queryWillVersionsRequest.Count, cursorId: queryWillVersionsRequest.CusorId },
+      params: { count: pageInfo.count, cursorId: pageInfo.cursorId },
     })
     .then((response) => {
       console.log(response)

@@ -48,8 +48,8 @@ export class QueryWillVersionsRequest {
 
 export class WillVersionRequest {
   constructor(willType, value) {
-    this.WillType = willType
-    this.Value = value
+    this.willType = willType
+    this.value = value
   }
 }
 
@@ -101,19 +101,32 @@ const willTypes = [
   'trust',
 ]
 
+class WillTypeItem {
+  constructor(name, value, supported) {
+    this.name = name
+    this.value = value
+    this.supported = supported
+  }
+}
+const willTypeArray = [
+  new WillTypeItem('自书遗嘱', 'selfWritten', true),
+  new WillTypeItem('代书遗嘱', 'writtenByOthers', true),
+  new WillTypeItem('录音遗嘱', 'audio', true),
+  new WillTypeItem('录像遗嘱', 'video', true),
+  new WillTypeItem('生前遗嘱', 'living', true),
+  new WillTypeItem('公证遗嘱', 'notarized', false),
+  new WillTypeItem('信托遗嘱', 'trust', false),
+]
+
 const willTypeMap = {
   selfWritten: '自书遗嘱',
   writtenByOthers: '代书遗嘱',
   audio: '录音遗嘱',
   video: '录像遗嘱',
-  living: '口头遗嘱',
+  living: '生前遗嘱',
   notarized: '公证遗嘱',
   trust: '信托遗嘱',
 }
-const willTypeArray = Object.entries(willTypeMap).map(([key, value]) => ({
-  key,
-  value,
-}))
 
 const willTypeMapLowerCase = Object.fromEntries(
   Object.entries(willTypeMap).map(([key, value]) => [key.toLowerCase(), value]),

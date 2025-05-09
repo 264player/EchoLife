@@ -1,4 +1,5 @@
-﻿using EchoLife.Common.Exceptions;
+﻿using EchoLife.Common.Dtos;
+using EchoLife.Common.Exceptions;
 using EchoLife.Will.Dtos;
 using EchoLife.Will.Services;
 using Microsoft.AspNetCore.Authorization;
@@ -22,17 +23,9 @@ namespace EchoLife.Will.Controllers
 
         [Authorize]
         [HttpGet("wills")]
-        public async Task<IActionResult> GetWillByUserId(
-            [FromQuery] QueryWillRequest queryWillRequest
-        )
+        public async Task<IActionResult> GetWillByUserId([FromQuery] PageInfo pageInfo)
         {
-            return Ok(
-                await _willService.GetMyWillsAsync(
-                    User,
-                    queryWillRequest.Count,
-                    queryWillRequest.CursorId
-                )
-            );
+            return Ok(await _willService.GetMyWillsAsync(User, pageInfo.Count, pageInfo.CursorId));
         }
 
         [Authorize]
@@ -91,15 +84,15 @@ namespace EchoLife.Will.Controllers
         [HttpGet("wills/{willId}/versions")]
         public async Task<IActionResult> GetWillVersino(
             [FromRoute] string willId,
-            [FromQuery] QueryWillVersionRequest queryWillVersionRequest
+            [FromQuery] PageInfo pageInfo
         )
         {
             return Ok(
                 await _willService.GetMyWillVersionsAsync(
                     User,
                     willId,
-                    queryWillVersionRequest.Count,
-                    queryWillVersionRequest.CursorId
+                    pageInfo.Count,
+                    pageInfo.CursorId
                 )
             );
         }

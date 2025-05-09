@@ -16,7 +16,9 @@
               </RouterLink>
             </el-menu-item>
             <el-menu-item index="1-2">
-              <RouterLink :to="{ name: 'my-reviews-requests' }">我的遗嘱请求</RouterLink>
+              <RouterLink :to="{ name: 'my-reviews-requests' }">
+                <el-link>我的遗嘱请求</el-link>
+              </RouterLink>
             </el-menu-item>
             <el-menu-item index="1-3" v-if="userStore.isReviewer">
               <RouterLink :to="{ name: 'all-reviews-requests' }">审核请求中心</RouterLink>

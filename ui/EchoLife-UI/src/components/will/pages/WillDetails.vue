@@ -1,4 +1,7 @@
 <template>
+    <NewWillVersion v-if="showNewVersionStatus" v-model:status="showNewVersionStatus" :reload="Reload"
+        :current-type="currentVersion.willType" :current-content="currentVersion.value" :willId="willId">
+    </NewWillVersion>
     <el-row>
         <el-col :span="16">
             <el-row>
@@ -11,8 +14,9 @@
                 <el-col :span="24">
                     <p><el-text>遗嘱类型</el-text></p>
                     <el-select v-model="currentVersion.willType" placeholder="Select" style="width: 240px">
-                        <el-option v-for="item in willTypeArray" :key="item.value" :label="item.value"
-                            :value="item.key" />
+                        <el-option v-for="item in willTypeArray" :key="item.value" :label="item.name"
+                            :value="item.value" :disabled="!item.supported" style="border-bottom:0px;"
+                            class="custom-option" />
                     </el-select>
                 </el-col>
             </el-row>
@@ -38,34 +42,27 @@
             </el-row>
         </el-col>
         <el-col :span="6" :offset="2">
-            <el-button @click="newWillVersion = true"><el-text>创建新的版本</el-text></el-button>
-            <el-table :data="willVersions" height="800" style="width: 100%;overflow: auto;" :stripe="true"
-                :show-overflow-tooltip="true" v-infinite-scroll="GetWillVersions" @row-click="SwitchVersion">
-                <el-table-column label="更新时间" width="180">
+            <el-button @click="showNewVersionStatus = true"><el-text>创建新的版本</el-text></el-button>
+            <el-table :data="willVersions" height="800" style="width: 100%;overflow: auto;"
+                :show-overflow-tooltip="true" v-infinite-scroll="GetWillVersions" @row-click="SwitchVersion"
+                :infinite-scroll-distance="10" infinite-scroll-immediate row-class-name="success-row">
+                <el-table-column label="更新时间">
                     <template #default="scope">
-                        {{ ConvertUTCToBeijingTime(scope.row.updatedAt) }}
+                        <el-text class="mx-1" :type="Checked(scope.row.id)">
+                            {{ ConvertUTCToBeijingTime(scope.row.updatedAt) }}
+                        </el-text>
                     </template>
                 </el-table-column>
-                <el-table-column prop="willType" label="遗嘱类型" width="180">
+                <el-table-column prop=" willType" label="遗嘱类型" width="100">
                     <template #default="scope">
-                        {{ willTypeMap[scope.row.willType] }}
+                        <el-text class="mx-1" :type="Checked(scope.row.id)">
+                            {{ willTypeMap[scope.row.willType] }}
+                        </el-text>
                     </template>
                 </el-table-column>
             </el-table>
         </el-col>
     </el-row>
-
-    <el-dialog v-model="newWillVersion" title="新的版本" width="800">
-        <p><el-text>遗嘱类型</el-text></p>
-        <p>
-            <el-select v-model="willVersionRequest.WillType" placeholder="Select" style="width: 240px">
-                <el-option v-for="item in willTypeArray" :key="item.value" :label="item.value" :value="item.key" />
-            </el-select>
-        </p>
-        <el-text>内容</el-text>
-        <el-input v-model="willVersionRequest.Value" />
-        <el-button @click="CreateWillVersion">确认</el-button>
-    </el-dialog>
 
     <el-drawer v-model="aiReviewStatus" title="I am the title" :with-header="false">
         <span>{{ aiReviewResult }}</span>
@@ -75,18 +72,18 @@
 </template>
 
 <script setup>
-import { WillResponse, QueryWillVersionsRequest, WillVersionRequest, WillVersionResponse, WillRequest, PutWillRequest } from '@/utils/WillRequestDtos';
-import { GetWillAsyn, GetWillVersionsAsync, CreateWillVersionAsync, UpdateWillAsync, UpdateWillVersionAsync, DeleteWillVersionAsync, RequestHumanReviewAsync, RequestAIReviewAsync } from '@/utils/WillRequestHelper';
+import { WillResponse, WillVersionRequest, WillVersionResponse, PutWillRequest, PageInfo } from '@/utils/WillRequestDtos';
+import { GetWillAsyn, GetWillVersionsAsync, UpdateWillAsync, UpdateWillVersionAsync, DeleteWillVersionAsync, RequestHumanReviewAsync, RequestAIReviewAsync } from '@/utils/WillRequestHelper';
 import { useRoute } from 'vue-router';
 import { ref, onMounted, computed } from 'vue';
 import { ElMessage } from 'element-plus';
-import { willTypes, willTypeArray, willTypeMap } from '@/utils/WillRequestDtos';
+import { willTypeArray, willTypeMap } from '@/utils/WillRequestDtos';
 import { MdEditor } from 'md-editor-v3';
 import 'md-editor-v3/lib/style.css';
 import { UploadAsync } from '@/components/common/utils/upload';
-import { GetChineseWillType } from '@/utils/WillRequestDtos';
 import MyFileList from '@/components/common/MyFileList.vue';
 import { ConvertUTCToBeijingTime } from '@/components/common/utils/ConvertTime';
+import NewWillVersion from '../NewWillVersion.vue';
 
 const route = useRoute()
 
@@ -94,18 +91,13 @@ const willId = ref("")
 
 // status
 const loading = ref(false)
-const isEnd = ref(false)
-const newWillVersion = ref(false)
 const aiReviewStatus = ref(false)
+const showNewVersionStatus = ref(false)
 
 // computed
 const needFile = computed(() =>
     currentVersion.value.willType.toLowerCase() == "audio" || currentVersion.value.willType.toLowerCase() == "video"
 )
-const willType = computed(() =>
-    GetChineseWillType(currentVersion.value.willType)
-)
-
 
 // file upload
 function HandleFileChange(event) {
@@ -113,6 +105,7 @@ function HandleFileChange(event) {
     console.log(file.value)
     console.log(event)
 }
+
 async function UploadFile() {
     if (!file || !file.value) {
         alert("请选择文件");
@@ -130,28 +123,18 @@ async function UploadFile() {
     if (result) {
         UpdateWillAndVersion()
     }
-
 }
 
 const file = ref()
 
 // model
 const currentVersion = ref(new WillVersionResponse("", '', '', '', '', ''))
-
-const willVersionRequest = ref(new WillVersionRequest(null, null))
-
-const queryWillVersionsRequest = ref(new QueryWillVersionsRequest(10, null))
-
+const pageInfo = ref(new PageInfo(30, null))
 const willResponse = ref(new WillResponse())
-
 const willVersions = ref([])
-
 const aiReviewResult = ref("")
 
 onMounted(async () => {
-    // initial editor
-
-
     // load current will.
     willId.value = route.params.willId
     // load will versions.
@@ -159,6 +142,12 @@ onMounted(async () => {
 
     currentVersion.value = willVersions.value[0]
 })
+
+
+function Checked(id) {
+    if (id == willResponse.value.contentId) { return 'success' }
+    return 'info'
+}
 
 async function SwitchVersion(version) {
     console.debug(version)
@@ -172,36 +161,21 @@ async function UpdateWillAndVersion() {
     await UpdateWillVersion()
 }
 
-async function CreateWillVersion() {
-    var { result, response } = await CreateWillVersionAsync(willId.value, willVersionRequest.value, false)
-    console.log(result)
-    console.log(response)
-    if (result) {
-        ElMessage({
-            type: "success",
-            message: "创建成功"
-        })
-        willVersions.value.unshift(response)
-    }
-}
 
 async function GetWillVersions() {
-    if (loading.value || isEnd.value) {
+    if (loading.value) {
         return
     }
     loading.value = true
 
-    var { result, response } = await GetWillVersionsAsync(willId.value, queryWillVersionsRequest.value)
+    var { result, response } = await GetWillVersionsAsync(willId.value, pageInfo.value)
     console.log(result)
     console.log(response)
-    if (result) {
-        if (response.length == 0) {
-            isEnd.value = true
-        }
+    if (result && response.length > 0) {
         willVersions.value = willVersions.value.concat(response)
-        queryWillVersionsRequest.value.CusorId = willVersions.value[willVersions.value.length - 1].id
+        pageInfo.value.cursorId = response[response.length - 1].id
+        console.log(willVersions.value[willVersions.value.length - 1])
     }
-
     loading.value = false
 }
 
@@ -215,7 +189,7 @@ async function GetWill() {
 }
 
 async function UpdateWill() {
-    var { result, response } = await UpdateWillAsync(willId.value, new PutWillRequest(willResponse.value.name, willResponse.value.contentId, currentVersion.value.willType))
+    var { result, response } = await UpdateWillAsync(willId.value, new PutWillRequest(willResponse.value.name, currentVersion.value.id, currentVersion.value.willType))
     console.debug(result)
     console.debug(response)
 }
@@ -228,6 +202,9 @@ async function UpdateWillVersion() {
         type: result ? "success" : "error",
         message: result ? "保存成功" : "保存失败"
     })
+    if (result) {
+        willResponse.value.contentId = currentVersion.value.id
+    }
 }
 
 async function DeleteWillVersion() {
@@ -265,6 +242,13 @@ async function RequestAIReview() {
     }
 }
 
+async function Reload() {
+    pageInfo.value.cursorId = null
+    willVersions.value = []
+    await GetWillVersions()
+    console.log('reload')
+}
+
 </script>
 
 <style lang="css" scoped>
@@ -293,5 +277,16 @@ li:last-child {
 .el-input,
 .el-textarea {
     margin-bottom: 16px;
+}
+
+.el-table .success-row {
+    color: rgb(209.4, 236.7, 195.9);
+}
+
+.custom-option {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 40px;
 }
 </style>

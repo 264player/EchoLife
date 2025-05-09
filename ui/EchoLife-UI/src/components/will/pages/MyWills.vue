@@ -11,7 +11,10 @@
         </el-table-column>
         <el-table-column label="操作">
             <template #default="scope">
-                <el-button size="small" type="danger" @click="DeleteWill(scope.row)">
+                <el-button @click="TableItemClick(scope.row)">
+                    查看详情
+                </el-button>
+                <el-button type="danger" @click="DeleteWill(scope.row)">
                     删除
                 </el-button>
             </template>
